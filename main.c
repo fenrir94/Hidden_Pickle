@@ -18,8 +18,8 @@
 #include <stdlib.h>
 
 
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH 1800
+#define WINDOW_HEIGHT 900
 #define PLAYER_SPEED 400
 
 CP_Vector player_position;
