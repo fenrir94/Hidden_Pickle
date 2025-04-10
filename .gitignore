@@ -398,3 +398,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+!Hidden_Pickle/CProcessing/lib/x86
+!Hidden_Pickle/CProcessing/lib/x64
