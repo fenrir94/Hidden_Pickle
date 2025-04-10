@@ -26,14 +26,6 @@ void game_init(void)
 void game_update(void)
 {
 	// check input, update simulation, render etc.
-	if (CP_Input_KeyDown(KEY_SPACE)) {
-		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
-
-	}
-	else {
-		CP_Graphics_ClearBackground(CP_Color_Create(255, 255, 255, 255));
-	}
-	
 }
 
 // use CP_Engine_SetNextGameState to specify this function as the exit function
@@ -48,12 +40,7 @@ void game_exit(void)
 // CP_Engine_Run() is the core function that starts the simulation
 int main(void)
 {
-
-	
 	CP_Engine_SetNextGameState(game_init, game_update, game_exit);
-	
 	CP_Engine_Run();
-
-	CP_System_SetWindowTitle("Out of Sight");
 	return 0;
 }
