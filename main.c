@@ -16,34 +16,74 @@
 #include "cprocessing.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include "gameManager.h"
+#include "utility.h"
 
 
 #define WINDOW_WIDTH 1800
 #define WINDOW_HEIGHT 900
 #define PLAYER_SPEED 400
 
+
+
 CP_Vector player_position;
+CP_Vector* patrol_position;
+
+CP_Vector patrol;
+
+int patrolPoints = 3;
+int destination = 1;
+int speed = 4;
+
+int getStartPoint(int dest) {
+	if (dest == 0) return patrolPoints-1;
+	else return dest - 1;
+}
+
+GAME_MANAGER game_Manager;
 
 // use CP_Engine_SetNextGameState to specify this function as the initialization function
 // this function will be called once at the beginning of the program
 void game_init(void)
 {
+	init_Game_Manager(&game_Manager);
 	// initialize variables and CProcessing settings for this gamestate
 	player_position = CP_Vector_Set(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	
+	
+	patrol_position = malloc(patrolPoints * sizeof(CP_Vector));
+	patrol_position[0] = CP_Vector_Set(200, 400);
+	patrol_position[1] = CP_Vector_Set(800, 400);
+	patrol_position[2] = CP_Vector_Set(600, 800);
+
+	patrol = CP_Vector_Set(patrol_position[0].x, patrol_position[0].y);
+
 }
 
 // use CP_Engine_SetNextGameState to specify this function as the update function
 // this function will be called repeatedly every frame
+
 void game_update(void)
 {
+	CP_Graphics_ClearBackground(CP_Color_Create(50, 50, 50, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
 
+	CP_Vector uVector = getKeyVector();
+
+	//if (CP_Input_KeyDown(KEY_W) ) uVector.y--;
+	//if (CP_Input_KeyDown(KEY_S)) uVector.y++;
+	//if (CP_Input_KeyDown(KEY_A)) uVector.x--;
+	//if (CP_Input_KeyDown(KEY_D)) uVector.x++;
+
+	update_Game_Manager(&game_Manager, uVector, dt);
+
 	// Very bad player movement code!
-	if (CP_Input_KeyDown(KEY_W)) player_position.y -= PLAYER_SPEED * dt;
-	if (CP_Input_KeyDown(KEY_S)) player_position.y += PLAYER_SPEED * dt;
-	if (CP_Input_KeyDown(KEY_A)) player_position.x -= PLAYER_SPEED * dt;
-	if (CP_Input_KeyDown(KEY_D)) player_position.x += PLAYER_SPEED * dt;
+	//if (CP_Input_KeyDown(KEY_W)) player_position.y -= PLAYER_SPEED * dt;
+	//if (CP_Input_KeyDown(KEY_S)) player_position.y += PLAYER_SPEED * dt;
+	//if (CP_Input_KeyDown(KEY_A)) player_position.x -= PLAYER_SPEED * dt;
+	//if (CP_Input_KeyDown(KEY_D)) player_position.x += PLAYER_SPEED * dt;
 
 	// In order to understand the code below, 
 	// you need to understand how 'blend modes' work.
@@ -80,38 +120,70 @@ void game_update(void)
 	// Set dark background
 	//
 	// I set it to be not-so-black so that you can see what it's hiding
-	CP_Graphics_ClearBackground(CP_Color_Create(50, 50, 50, 0));
+
 
 	// Add white to certain parts of the dark background that we want to see
 	// This will create the 'light source' effect.
-	CP_Settings_BlendMode(CP_BLEND_ADD);
+	//CP_Settings_BlendMode(CP_BLEND_ADD);
 
 	// This is a 'light source' on the player
-	CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-	CP_Graphics_DrawCircle(player_position.x, player_position.y, 300);
+	//CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+	//CP_Graphics_DrawCircle(player_position.x, player_position.y, 300);
 
 	// Add some more random 'light sources'
-	CP_Graphics_DrawCircle(100, 100, 100);
-	CP_Graphics_DrawCircle(1300, 800, 400);
-	CP_Graphics_DrawCircle(200, 300, 100);
-	CP_Graphics_DrawCircle(200, 300, 100);
+	//CP_Graphics_DrawCircle(100, 100, 100);
+	//CP_Graphics_DrawCircle(1300, 800, 400);
+	//CP_Graphics_DrawCircle(200, 300, 100);
+	//CP_Graphics_DrawCircle(200, 300, 100);
+
+
+
+	// Test Patrol
+	//CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
+
+	//int startPosition = getStartPoint(destination);
+
+	//CP_Vector dPatrolPosition = CP_Vector_Set(patrol_position[destination].x - patrol_position[startPosition].x, patrol_position[destination].y - patrol_position[startPosition].y);
+	////float unit = (float)sqrt(pow(dPatrolPosition.x, 2) + pow(dPatrolPosition.y, 2));
+	///*patrol.x += speed * (dPatrolPosition.x / unit);
+	//patrol.y += speed * (dPatrolPosition.y / unit);*/
+	////patrol = CP_Vector_Set(patrol.x + speed * (dPatrolPosition.x / unit), patrol.y + speed * (dPatrolPosition.y / unit));
+
+	//CP_Vector dPatrolNormal= CP_Vector_Normalize(dPatrolPosition);
+	//patrol = CP_Vector_Set(patrol.x + speed * dPatrolNormal.x, patrol.y + speed * dPatrolNormal.y);
+
+
+	//CP_Graphics_DrawCircle(patrol.x, patrol.y, 100);
+
+	//// Change Destination
+	//if ((dPatrolPosition.x <= 0 && patrol_position[destination].x >= patrol.x) || (dPatrolPosition.x >= 0 && patrol_position[destination].x <= patrol.x)) {
+	//	if ((dPatrolPosition.y <= 0 && patrol_position[destination].y >= patrol.y) || (dPatrolPosition.y >= 0 && patrol_position[destination].y <= patrol.y)) {
+	//		if (destination == patrolPoints-1) destination = 0;
+	//		else {
+	//			destination++;
+	//		}
+	//	}
+	//}
+
 
 	//
 	// Scene
 	//
 	// Multipy the rest of the scene. 
 	// 
-	CP_Settings_BlendMode(CP_BLEND_MULTIPLY);
-	// This is the player
-	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
-	CP_Graphics_DrawCircle(player_position.x, player_position.y, 100);
+	//CP_Settings_BlendMode(CP_BLEND_MULTIPLY);
+	//// This is the player
+	//CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+	//CP_Graphics_DrawCircle(player_position.x, player_position.y, 100);
 
-	// These are some random things on the scene
-	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
-	CP_Graphics_DrawRect(100, 100, 50, 50);
-	CP_Graphics_DrawRect(100, 300, 50, 50);
-	CP_Graphics_DrawRect(1400, 600, 50, 50);
-	CP_Graphics_DrawRect(1300, 100, 50, 50);
+	//// These are some random things on the scene
+	//CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
+	//CP_Graphics_DrawRect(100, 100, 50, 50);
+	//CP_Graphics_DrawRect(100, 300, 50, 50);
+	//CP_Graphics_DrawRect(1400, 600, 50, 50);
+	//CP_Graphics_DrawRect(1300, 100, 50, 50);
+
+	printGameObjects(&game_Manager);
 }
 
 // use CP_Engine_SetNextGameState to specify this function as the exit function
@@ -128,6 +200,7 @@ int main(void)
 {
 	CP_System_SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	CP_Engine_SetNextGameState(game_init, game_update, game_exit);
+	//CP_Engine_SetNextGameState(game_init, update_Game_Manager, game_exit);
 	CP_Engine_Run();
 	return 0;
 }

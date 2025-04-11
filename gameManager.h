@@ -25,5 +25,6 @@ typedef struct gameManager {
 
 void init_Game_Manager(GAME_MANAGER* gameManager);
 
+void update_Game_Manager(GAME_MANAGER* gameManager, CP_Vector updateVector, float dt);
 
 void printGameObjects(GAME_MANAGER* gameManager);
