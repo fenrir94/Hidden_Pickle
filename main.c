@@ -72,19 +72,9 @@ void game_update(void)
 
 	CP_Vector uVector = getKeyVector();
 
-	//if (CP_Input_KeyDown(KEY_W) ) uVector.y--;
-	//if (CP_Input_KeyDown(KEY_S)) uVector.y++;
-	//if (CP_Input_KeyDown(KEY_A)) uVector.x--;
-	//if (CP_Input_KeyDown(KEY_D)) uVector.x++;
-
 	update_Game_Manager(&game_Manager, uVector, dt);
 
-	// Very bad player movement code!
-	//if (CP_Input_KeyDown(KEY_W)) player_position.y -= PLAYER_SPEED * dt;
-	//if (CP_Input_KeyDown(KEY_S)) player_position.y += PLAYER_SPEED * dt;
-	//if (CP_Input_KeyDown(KEY_A)) player_position.x -= PLAYER_SPEED * dt;
-	//if (CP_Input_KeyDown(KEY_D)) player_position.x += PLAYER_SPEED * dt;
-
+	
 	// In order to understand the code below, 
 	// you need to understand how 'blend modes' work.
 	//
@@ -139,31 +129,27 @@ void game_update(void)
 
 
 	// Test Patrol
-	//CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
+	CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
 
-	//int startPosition = getStartPoint(destination);
+	int startPosition = getStartPoint(destination);
 
-	//CP_Vector dPatrolPosition = CP_Vector_Set(patrol_position[destination].x - patrol_position[startPosition].x, patrol_position[destination].y - patrol_position[startPosition].y);
-	////float unit = (float)sqrt(pow(dPatrolPosition.x, 2) + pow(dPatrolPosition.y, 2));
-	///*patrol.x += speed * (dPatrolPosition.x / unit);
-	//patrol.y += speed * (dPatrolPosition.y / unit);*/
-	////patrol = CP_Vector_Set(patrol.x + speed * (dPatrolPosition.x / unit), patrol.y + speed * (dPatrolPosition.y / unit));
+	CP_Vector dPatrolPosition = CP_Vector_Set(patrol_position[destination].x - patrol_position[startPosition].x, patrol_position[destination].y - patrol_position[startPosition].y);
 
-	//CP_Vector dPatrolNormal= CP_Vector_Normalize(dPatrolPosition);
-	//patrol = CP_Vector_Set(patrol.x + speed * dPatrolNormal.x, patrol.y + speed * dPatrolNormal.y);
+	CP_Vector dPatrolNormal= CP_Vector_Normalize(dPatrolPosition);
+	patrol = CP_Vector_Set(patrol.x + speed * dPatrolNormal.x, patrol.y + speed * dPatrolNormal.y);
 
 
-	//CP_Graphics_DrawCircle(patrol.x, patrol.y, 100);
+	CP_Graphics_DrawCircle(patrol.x, patrol.y, 100);
 
-	//// Change Destination
-	//if ((dPatrolPosition.x <= 0 && patrol_position[destination].x >= patrol.x) || (dPatrolPosition.x >= 0 && patrol_position[destination].x <= patrol.x)) {
-	//	if ((dPatrolPosition.y <= 0 && patrol_position[destination].y >= patrol.y) || (dPatrolPosition.y >= 0 && patrol_position[destination].y <= patrol.y)) {
-	//		if (destination == patrolPoints-1) destination = 0;
-	//		else {
-	//			destination++;
-	//		}
-	//	}
-	//}
+	// Change Destination
+	if ((dPatrolPosition.x <= 0 && patrol_position[destination].x >= patrol.x) || (dPatrolPosition.x >= 0 && patrol_position[destination].x <= patrol.x)) {
+		if ((dPatrolPosition.y <= 0 && patrol_position[destination].y >= patrol.y) || (dPatrolPosition.y >= 0 && patrol_position[destination].y <= patrol.y)) {
+			if (destination == patrolPoints-1) destination = 0;
+			else {
+				destination++;
+			}
+		}
+	}
 
 
 	//
