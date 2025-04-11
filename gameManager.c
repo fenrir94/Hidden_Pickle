@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "utility.h"
 
+GAME_MANAGER game_Manager;
+
 void init_Game_Manager(GAME_MANAGER* gameManager)
 {
 	CP_Vector startPositionPlayer = CP_Vector_Set(800, 500);
@@ -57,4 +59,48 @@ void printGameObjects(GAME_MANAGER* gameManager)
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		printEnemy(gameManager->enemies + i);
 	}
+}
+
+
+
+
+// use CP_Engine_SetNextGameState to specify this function as the initialization function
+// this function will be called once at the beginning of the program
+void game_init(void)
+{
+	init_Game_Manager(&game_Manager);
+	// initialize variables and CProcessing settings for this gamestate
+	//player_position = CP_Vector_Set(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+
+
+	//patrol_position = malloc(patrolPoints * sizeof(CP_Vector));
+	//patrol_position[0] = CP_Vector_Set(200, 400);
+	//patrol_position[1] = CP_Vector_Set(800, 400);
+	//patrol_position[2] = CP_Vector_Set(600, 800);
+
+	//patrol = CP_Vector_Set(patrol_position[0].x, patrol_position[0].y);
+
+}
+
+// use CP_Engine_SetNextGameState to specify this function as the update function
+// this function will be called repeatedly every frame
+
+void game_update(void)
+{
+	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
+	// check input, update simulation, render etc.
+	float dt = CP_System_GetDt();
+
+	CP_Vector uVector = getKeyVector();
+
+	update_Game_Manager(&game_Manager, uVector, dt);
+
+	printGameObjects(&game_Manager);
+}
+
+// use CP_Engine_SetNextGameState to specify this function as the exit function
+// this function will be called once just before leaving the current gamestate
+void game_exit(void)
+{
+	// shut down the gamestate and cleanup any dynamic memory
 }
