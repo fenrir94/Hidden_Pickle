@@ -15,5 +15,7 @@ int IsCircleClicked(float circle_center_x, float circle_center_y, float diameter
 void MoveCoords(float *x, float *y);
 /* 좌표 이동 함수 (0,0)이 중심이 되도록 
 x = [-(float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowWidth() / 2]
+-800 ~ 800
 y = [-(float)CP_System_GetWindowHeight() / 2, (float)CP_System_GetWindowHeight() / 2]
+-450 ~ 450
 */
