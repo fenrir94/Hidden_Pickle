@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "cprocessing.h"
 #include "enemy.h"
+#include "player.h"
 
 //CP_Vector_DL* insert_first(CP_Vector_DL* head, CP_Vector vector)
 //{

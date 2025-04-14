@@ -16,5 +16,4 @@ void init_Player(PLAYER* player, CP_Vector startPosition);
 
 void updatePlayer(PLAYER* player, CP_Vector updateVector, float dt);
 
-
 void printPlayer(PLAYER* player);
