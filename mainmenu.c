@@ -2,6 +2,7 @@
 #include "mainmenu.h"
 #include <math.h>
 #include <stdlib.h>
+#include "gameManager.h"
 
 //제목
 char Title[15] = "Hidden Pickle";
@@ -10,8 +11,11 @@ char Title[15] = "Hidden Pickle";
 int menu_state = 0;
 enum menu_state{
 	intro,
-	menu
+	menu, 
+	playGame
 };
+
+
 
 //이미지
 CP_Image DigiPen_IM_File; // 인트로 이미지 파일
@@ -208,7 +212,7 @@ void mainmenu_update(void)
 
 			if(IsAreaClicked(Play_xy.x, Play_xy.y, Button_width, Button_height, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 			{
-				exit(0);
+				CP_Engine_SetNextGameState(init_Game_Manager, update_Game_Manager, exit_Game_Manager);
 			}
 		}
 

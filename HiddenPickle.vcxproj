@@ -196,10 +196,18 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="enemy.c" />
+    <ClCompile Include="gameManager.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="mainmenu.c" />
+    <ClCompile Include="player.c" />
+    <ClCompile Include="utility.c" />
+	<ClCompile Include="mainmenu.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="gameManager.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="utility.h" />
     <ClInclude Include="mainmenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
