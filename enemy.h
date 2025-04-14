@@ -31,8 +31,7 @@ typedef struct enemy {
 
 void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
 
-void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector*destination, int patrolPoints);
-
+void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destination, int patrolPoints);
 
 void updateEnemy(ENEMY* enemy, float dt);
 

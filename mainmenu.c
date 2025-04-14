@@ -212,7 +212,7 @@ void mainmenu_update(void)
 
 			if(IsAreaClicked(Play_xy.x, Play_xy.y, Button_width, Button_height, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 			{
-				CP_Engine_SetNextGameState(game_init, game_update, game_exit);
+				CP_Engine_SetNextGameState(init_Game_Manager, update_Game_Manager, exit_Game_Manager);
 			}
 		}
 

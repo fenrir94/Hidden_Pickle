@@ -7,14 +7,14 @@
 
 GAME_MANAGER game_Manager;
 
-void init_Game_Manager(GAME_MANAGER* gameManager)
+void init_Game_Manager(void )
 {
 	CP_Vector startPositionPlayer = CP_Vector_Set(800, 500);
-	init_Player(&(gameManager->player), startPositionPlayer);
+	init_Player(&((&game_Manager)->player), startPositionPlayer);
 
-	gameManager->enemyCount = 3;
+	(&game_Manager)->enemyCount = 3;
 
-	CP_Vector* startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)*gameManager->enemyCount);
+	CP_Vector* startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)* (&game_Manager)->enemyCount);
 	startPositionEnemies[0] = CP_Vector_Set(200, 200);
 	startPositionEnemies[1] = CP_Vector_Set(1600, 200);
 	startPositionEnemies[2] = CP_Vector_Set(800 , 400);
@@ -32,24 +32,35 @@ void init_Game_Manager(GAME_MANAGER* gameManager)
 	patrol3[1] = CP_Vector_Set(500, 700);
 	patrol3[2] = CP_Vector_Set(1200, 400);
 
-	gameManager->enemies = (ENEMY*)malloc(gameManager->enemyCount * sizeof(ENEMY));
-	init_Enemy_Patrol(gameManager->enemies, startPositionEnemies[0], patrol1, 2);
-	init_Enemy_Patrol(gameManager->enemies+1, startPositionEnemies[1], patrol2, 2);
-	init_Enemy_Patrol(gameManager->enemies+2, startPositionEnemies[2], patrol3, 3);
+	(&game_Manager)->enemies = (ENEMY*)malloc((&game_Manager)->enemyCount * sizeof(ENEMY));
+	init_Enemy_Patrol((&game_Manager)->enemies, startPositionEnemies[0], patrol1, 2);
+	init_Enemy_Patrol((&game_Manager)->enemies + 1, startPositionEnemies[1], patrol2, 2);
+	init_Enemy_Patrol((&game_Manager)->enemies + 2, startPositionEnemies[2], patrol3, 3);
+
 	//for (int i = 0; i < gameManager->enemyCount; i++) {
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
 	//}
 }
 
 // Update Game Objects
-void update_Game_Manager(GAME_MANAGER* gameManager, CP_Vector updateVector, float dt) {
-	// Update plyer's position when input WASD
-	CP_Vector uVectorNoraml = CP_Vector_Normalize(updateVector);
-	updatePlayer(&(gameManager->player), uVectorNoraml, dt);
+void update_Game_Manager(void ) {
+	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
+	// check input, update simulation, render etc.
+	float dt = CP_System_GetDt();
 
-	for (int i = 0; i < gameManager->enemyCount; i++) {
-		updateEnemy(gameManager->enemies+i, dt);
+	CP_Vector uVector = getKeyVector();
+	
+	
+	// Update plyer's position when input WASD
+	CP_Vector uVectorNoraml = CP_Vector_Normalize(uVector);
+	updatePlayer(&((&game_Manager)->player), uVectorNoraml, dt);
+
+	for (int i = 0; i < (&game_Manager)->enemyCount; i++) {
+		updateEnemy((&game_Manager)->enemies+i, dt);
 	}
+
+	printGameObjects(&game_Manager);
+
 }
 
 
@@ -62,45 +73,9 @@ void printGameObjects(GAME_MANAGER* gameManager)
 }
 
 
-
-
-// use CP_Engine_SetNextGameState to specify this function as the initialization function
-// this function will be called once at the beginning of the program
-void game_init(void)
-{
-	init_Game_Manager(&game_Manager);
-	// initialize variables and CProcessing settings for this gamestate
-	//player_position = CP_Vector_Set(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-
-
-	//patrol_position = malloc(patrolPoints * sizeof(CP_Vector));
-	//patrol_position[0] = CP_Vector_Set(200, 400);
-	//patrol_position[1] = CP_Vector_Set(800, 400);
-	//patrol_position[2] = CP_Vector_Set(600, 800);
-
-	//patrol = CP_Vector_Set(patrol_position[0].x, patrol_position[0].y);
-
-}
-
-// use CP_Engine_SetNextGameState to specify this function as the update function
-// this function will be called repeatedly every frame
-
-void game_update(void)
-{
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
-	// check input, update simulation, render etc.
-	float dt = CP_System_GetDt();
-
-	CP_Vector uVector = getKeyVector();
-
-	update_Game_Manager(&game_Manager, uVector, dt);
-
-	printGameObjects(&game_Manager);
-}
-
 // use CP_Engine_SetNextGameState to specify this function as the exit function
 // this function will be called once just before leaving the current gamestate
-void game_exit(void)
+void exit_Game_Manager(void)
 {
 	// shut down the gamestate and cleanup any dynamic memory
 }

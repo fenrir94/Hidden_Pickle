@@ -37,14 +37,10 @@ typedef struct gameManager {
 
 extern GAME_MANAGER game_Manager;
 
-void init_Game_Manager(GAME_MANAGER* gameManager);
+void init_Game_Manager(void);
 
-void update_Game_Manager(GAME_MANAGER* gameManager, CP_Vector updateVector, float dt);
+void update_Game_Manager(void);
 
 void printGameObjects(GAME_MANAGER* gameManager);
 
-void game_init(void);
-
-void game_update(void);
-
-void game_exit(void);
+void exit_Game_Manager(void);
