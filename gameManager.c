@@ -63,8 +63,6 @@ void update_Game_Manager(void) {
 	// Update plyer's position when input WASD
 	CP_Vector uVectorNoraml = CP_Vector_Normalize(uVector);
 
-	updatePlayer(&(game_Manager.player), uVectorNoraml, dt);
-
 	if (checkCameraTrigger(&(game_Manager.player), uVectorNoraml))
 	{
 		updateCamera(uVectorNoraml, dt);
