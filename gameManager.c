@@ -8,6 +8,9 @@
 // GLOBAL
 GAME_MANAGER game_Manager;
 
+CP_Image visionblockerOff;
+CP_Image visionblockerOn;
+
 //to do fix -> to .
 void init_Game_Manager(void )
 {
@@ -37,11 +40,13 @@ void init_Game_Manager(void )
 	patrol3[2] = CP_Vector_Set(600, 600);
 	patrol3[3] = CP_Vector_Set(1000, 400);
 
-
 	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
 	init_Enemy_Patrol(game_Manager.enemies, startPositionEnemies[0], patrol1, 2);
 	init_Enemy_Patrol(game_Manager.enemies + 1, startPositionEnemies[1], patrol2, 2);
 	init_Enemy_Patrol(game_Manager.enemies + 2, startPositionEnemies[2], patrol3, 4);
+
+	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
+	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
 	//for (int i = 0; i < gameManager->enemyCount; i++) {
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
@@ -86,9 +91,12 @@ void update_Game_Manager(void) {
 void printGameObjects(GAME_MANAGER* gameManager)
 {
 	printPlayer(&(gameManager->player));
+
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		printEnemy(gameManager->enemies + i);
 	}
+
+	printVisionblocker(&visionblockerOff, &visionblockerOn);
 }
 
 
@@ -96,5 +104,7 @@ void printGameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
+	CP_Image_Free(&visionblockerOff);
+	CP_Image_Free(&visionblockerOn);
 	// shut down the gamestate and cleanup any dynamic memory
 }
