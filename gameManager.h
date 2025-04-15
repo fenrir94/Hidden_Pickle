@@ -6,9 +6,11 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 
 */
 #include <stdio.h>
+#include <time.h>
 #include "cprocessing.h"
 #include "player.h"
 #include "enemy.h"
+
 
 
 #define WINDOW_WIDTH 1800
@@ -31,9 +33,6 @@ typedef struct gameManager {
 	* 
 	*/
 } GAME_MANAGER;
-
-
-
 
 extern GAME_MANAGER game_Manager;
 
