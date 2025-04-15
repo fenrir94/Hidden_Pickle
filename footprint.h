@@ -13,7 +13,7 @@
 typedef struct footprint {
 	CP_Vector position[COUNT_FOOTPRINT];
 	float generatedTime[COUNT_FOOTPRINT];
-	//float angle[COUNT_FOOTPRINT];
+	float angle[COUNT_FOOTPRINT];
 	int rear; 
 	int front;
 } FOOTPRINT;
@@ -23,7 +23,7 @@ int is_Empty(FOOTPRINT* footprint);
 
 int is_Full(FOOTPRINT* footprint);
 
-void  add_Footprint(FOOTPRINT* footprint, CP_Vector position);
+void  add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Sight);
 
 void checkDuration_Footprint(FOOTPRINT* footprint, float time_present);
 

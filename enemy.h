@@ -20,7 +20,7 @@ typedef struct enemy {
 	int life;
 	int attackPoint;
 	float radius;
-	CP_Vector vector_sight;
+	CP_Vector vector_Sight;
 	FOOTPRINT footprint;
 	CP_Vector* destinations;
 	int patrolPoints;

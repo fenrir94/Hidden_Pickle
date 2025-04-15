@@ -14,17 +14,26 @@ void init_Footprint(FOOTPRINT* footprint) {
 	footprint->rear = footprint->front = -1;
 }
 
-void add_Footprint(FOOTPRINT* footprint, CP_Vector position) {
+void add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Sight) {
 	if (is_Full(footprint)) {
 		return;
 	}
 	else {
-		
 		footprint->rear = (footprint->rear + 1) % COUNT_FOOTPRINT;
 		
 		footprint->position[footprint->rear] = CP_Vector_Set(position.x, position.y);
 		footprint->generatedTime[footprint->rear] = CP_System_GetSeconds();
-		//angle[COUNT_FOOTPRINT];
+		
+		CP_Vector vector_X_Norm = CP_Vector_Set(1, 0);
+		footprint->angle[footprint->rear] = CP_Vector_Angle(vector_Sight, vector_X_Norm);
+
+		// TO DO Need to Change if Change Coordinate 
+		if (vector_Sight.y > 0) footprint->angle[footprint->rear] -= 90;
+		else {
+			footprint->angle[footprint->rear] = 90 - footprint->angle[footprint->rear];
+		}
+
+		
 		printf("Queue Added in [%d] at %.2f\n", footprint->rear, footprint->generatedTime[footprint->rear]);
 	}
 }
@@ -79,8 +88,8 @@ void print_Footprint(FOOTPRINT* footprint)
 		if (time_footprint_duration < ENDTIME_FOOTPRINT) {
 			int alpha = 255 - (int)time_footprint_duration*50;
 			CP_Settings_Fill(CP_Color_Create(0, 0, 0, alpha));
-			CP_Graphics_DrawRect(footprint->position[i].x, footprint->position[i].y, 50, 50);
-			//CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 10, 20, 5, 0);
+			//CP_Graphics_DrawRect(footprint->position[i].x, footprint->position[i].y, 50, 50);
+			CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 100, footprint->angle[i], 0);
 		}
 	}
 }
