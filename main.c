@@ -30,8 +30,6 @@ int main(void)
 {
 	CP_System_SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
-	
-	CP_System_SetWindowSize(1600, 900);
 
 	CP_Engine_Run();
 

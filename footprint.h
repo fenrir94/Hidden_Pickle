@@ -2,14 +2,35 @@
 
 #include <stdio.h>
 #include "cprocessing.h"
+#include "utility.h"
+
+#define COUNT_FOOTPRINT 8
+#define GENTIMEGAP_FOOTPRINT 1
+#define ENDTIME_FOOTPRINT 5
+
+// Footprint is an element of Enemy. 
 
 typedef struct footprint {
-	float* generatedTime;
-	int rear, front;
+	CP_Vector position[COUNT_FOOTPRINT];
+	float generatedTime[COUNT_FOOTPRINT];
+	//float angle[COUNT_FOOTPRINT];
+	int rear; 
+	int front;
 } FOOTPRINT;
+
+// check queue
+int is_Empty(FOOTPRINT* footprint);
+
+int is_Full(FOOTPRINT* footprint);
+
+void  add_Footprint(FOOTPRINT* footprint, CP_Vector position);
+
+void checkDuration_Footprint(FOOTPRINT* footprint, float time_present);
+
+void del_Footprint(FOOTPRINT* footprint);
 
 void init_Footprint(FOOTPRINT* footprint);
 
-void update_Footprint(float dt);
+void update_Footprint(FOOTPRINT* footprint, float dt);
 
 void print_Footprint(FOOTPRINT* footprint);

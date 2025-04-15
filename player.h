@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 
-#define BASIC_LIFE = 3;
+#define BASIC_LIFE 3
 
 typedef struct player {
 	CP_Vector position;

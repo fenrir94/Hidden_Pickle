@@ -1,6 +1,5 @@
-#include <stdio.h>
+
 #include "stdlib.h"
-#include "cprocessing.h"
 #include "enemy.h"
 
 //CP_Vector_DL* insert_first(CP_Vector_DL* head, CP_Vector vector)
@@ -46,6 +45,7 @@ void init_Enemy(ENEMY* enemy, CP_Vector startPosition)
 	enemy->speed = 8;
 	enemy->attackPoint = 1;
 	enemy->radius = 100;
+	init_Footprint(&(enemy->footprint));
 }
 
 void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destinations, int patrolPoints)
@@ -58,17 +58,32 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	enemy->destinations = destinations;
 	enemy->patrolPoints = patrolPoints;
 	enemy->destinationIndex = 1;
+	init_Footprint(&(enemy->footprint));
 }
 
 void updateEnemy(ENEMY* enemy, float dt)
 {
 	patrolEnemy(enemy, dt);
+	
+	// Need to check time to update, add and delete footprint
+	float time_present = CP_System_GetSeconds();
+
+	//update_Footprint(&(enemy->footprint), dt);
+
+	// To Do need to fix
+	if ( is_Empty(&(enemy->footprint)) ||  (time_present - enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT ) {
+		add_Footprint(&(enemy->footprint), enemy->position);
+	}
+
+	//add_Footprint(&(enemy->footprint), enemy->position);
+	checkDuration_Footprint(&(enemy->footprint), time_present);
 }
 
 void printEnemy(ENEMY* enemy)
 {
 	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
 	CP_Graphics_DrawCircle(enemy->position.x, enemy->position.y, enemy->radius);
+	print_Footprint(&(enemy->footprint));
 }
 
 void patrolEnemy(ENEMY* enemy, float dt)
