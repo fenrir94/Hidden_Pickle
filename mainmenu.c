@@ -1,21 +1,18 @@
 #include "cprocessing.h"
 #include "mainmenu.h"
 #include <math.h>
-#include <stdlib.h>
 #include "gameManager.h"
 
 //제목
 char Title[15] = "Hidden Pickle";
 
 //메인메뉴 상태
-int menu_state = 0;
 enum menu_state{
 	intro,
-	menu, 
-	playGame
+	menu
 };
 
-
+int menu_state = intro; //intro
 
 //이미지
 CP_Image DigiPen_IM_File; // 인트로 이미지 파일
@@ -48,8 +45,8 @@ typedef struct Coord{
 
 CD Exit_xy = {0, -300}, Conf_xy = {0, -150}, Play_xy = {0, 0};
 
-//컨피그
-int config_state = 0;
+//컨피그 to do
+int config_state = 0; 
 
 #define Config_width 700
 #define Config_height 800
@@ -150,7 +147,7 @@ void mainmenu_update(void)
 	{
 		if(sound_state == on)
 		{
-			CP_Sound_Play(DigiPen_SFX_File);
+			CP_Sound_Play(DigiPen_SFX_File); // 임시
 			sound_state = off;
 		}
 		
@@ -180,10 +177,7 @@ void mainmenu_update(void)
 
 	if(menu_state == menu)
 	{
-		if(CP_Input_KeyTriggered(KEY_SPACE))
-		{
-			CP_Sound_Play(DigiPen_SFX_File);
-		}
+	
 		CP_Graphics_ClearBackground(CP_Color_Create(128, 128, 128, 255));
 
 		CP_Image_Draw(Title_IM_File, Title_IM.x, Title_IM.y, Title_IM.width, Title_IM.height, Title_IM.alpha);
@@ -202,7 +196,7 @@ void mainmenu_update(void)
 		{
 			if(IsAreaClicked(Exit_xy.x, Exit_xy.y, Button_width, Button_height, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 			{
-				exit(0);
+				CP_Engine_Terminate();
 			}
 
 			if(IsAreaClicked(Conf_xy.x, Conf_xy.y, Button_width, Button_height, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
