@@ -1,6 +1,7 @@
 #include "enemy.h"
 #include "gameManager.h"
 #include "camera.h"
+#include "footprint.h"
 
 #define mapWidth 2400
 #define mapHeight 1200
@@ -49,9 +50,22 @@ void updateCamera(CP_Vector updateVector, float dt)
 
 		for (int j = 0; j < (&game_Manager)->enemies[i].patrolPoints ; j++)
 		{
-		(&game_Manager)->enemies[i].destinations[j] = CP_Vector_Add((&game_Manager)->enemies[i].destinations[j], movingVector);
+			(&game_Manager)->enemies[i].destinations[j] = CP_Vector_Add((&game_Manager)->enemies[i].destinations[j], movingVector);
 		}
+
+		int footprintCnt = (&game_Manager)->enemies[i].footprint.front;
+
+		while (footprintCnt != (&game_Manager)->enemies[i].footprint.rear) {
+
+			footprintCnt = (footprintCnt + 1) % COUNT_FOOTPRINT;
+
+			(&game_Manager)->enemies[i].footprint.position[footprintCnt].x = (&game_Manager)->enemies[i].footprint.position[footprintCnt].x + movingVector.x;
+			(&game_Manager)->enemies[i].footprint.position[footprintCnt].y = (&game_Manager)->enemies[i].footprint.position[footprintCnt].y + movingVector.y;
+		}
+
+
 	}
+
 	/*
 	for (int i = 0; i < (&game_Manager)->....Count; i++) 
 	// .... 위치 변경
