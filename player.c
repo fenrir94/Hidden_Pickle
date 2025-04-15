@@ -1,6 +1,4 @@
 
-#include <stdio.h>
-#include "cprocessing.h"
 #include "player.h"
 #include "utility.h"
 
