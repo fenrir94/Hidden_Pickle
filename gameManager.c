@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "utility.h"
 #include "gameManager.h"
+#include "camera.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -20,6 +21,7 @@ void init_Game_Manager(void )
 	startPositionEnemies[1] = CP_Vector_Set(1600, 200);
 	startPositionEnemies[2] = CP_Vector_Set(600 , 200);
 
+
 	// TO DO add comments
 	CP_Vector* patrol1 = (CP_Vector*)malloc(2*sizeof(CP_Vector));
 	patrol1[0] = CP_Vector_Set(200, 200);
@@ -35,6 +37,7 @@ void init_Game_Manager(void )
 	patrol3[2] = CP_Vector_Set(600, 600);
 	patrol3[3] = CP_Vector_Set(1000, 400);
 
+
 	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
 	init_Enemy_Patrol(game_Manager.enemies, startPositionEnemies[0], patrol1, 2);
 	init_Enemy_Patrol(game_Manager.enemies + 1, startPositionEnemies[1], patrol2, 2);
@@ -43,11 +46,12 @@ void init_Game_Manager(void )
 	//for (int i = 0; i < gameManager->enemyCount; i++) {
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
 	//}
+
+	initCamera();
 }
 
 // Update Game Objects
-void update_Game_Manager(void ) {
-
+void update_Game_Manager(void) {
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
@@ -58,7 +62,17 @@ void update_Game_Manager(void ) {
 	
 	// Update plyer's position when input WASD
 	CP_Vector uVectorNoraml = CP_Vector_Normalize(uVector);
+
 	updatePlayer(&(game_Manager.player), uVectorNoraml, dt);
+
+	if (checkCameraTrigger(&(game_Manager.player), uVectorNoraml))
+	{
+		updateCamera(uVectorNoraml, dt);
+	}
+	else
+	{
+		updatePlayer(&(game_Manager.player), uVectorNoraml, dt);
+	}
 
 	/*for (int i = 0; i < game_Manager.enemyCount; i++) {
 		updateEnemy(game_Manager.enemies+i, dt);

@@ -11,8 +11,10 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 }
 
 void updatePlayer(PLAYER* player, CP_Vector updateVector, float dt) {
+
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
-	player->position=CP_Vector_Add(player->position, dPoistion);
+
+	player->position = CP_Vector_Add(player->position, dPoistion);
 }
 
 
