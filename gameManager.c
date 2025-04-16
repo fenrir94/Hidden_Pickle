@@ -47,11 +47,35 @@ void init_Game_Manager(void )
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
 	//}
 
+	game_Manager.itemCount = 3;
+	game_Manager.item_Boxes = (ITEM_BOX*)malloc(game_Manager.itemCount * sizeof(ITEM_BOX));
+	CP_Vector itemPosition = CP_Vector_Set(1200, 400);
+	init_itemBox(game_Manager.item_Boxes, KEY_Item, itemPosition);
+	itemPosition = CP_Vector_Set(200, 100);
+	init_itemBox(game_Manager.item_Boxes + 1, BULLET_Item, itemPosition);
+	itemPosition = CP_Vector_Set(900, 700);
+	init_itemBox(game_Manager.item_Boxes + 2, BATTERY_Item, itemPosition);
+
 	initCamera();
 }
 
 // Update Game Objects
 void update_Game_Manager(void) {
+	
+	// To Do 
+	// Block Move when collision
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		if (checkCollision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
+			getPlayerHit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+		}
+	}
+
+	for (int i = 0; i < game_Manager.itemCount; i++) {
+		if (!isEmptyBox(game_Manager.item_Boxes + i) && checkCollision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
+			collide_itemBox(game_Manager.item_Boxes + i);
+		}
+	}
+
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
@@ -72,22 +96,38 @@ void update_Game_Manager(void) {
 		updatePlayer(&(game_Manager.player), uVectorNoraml, dt);
 	}
 
-	/*for (int i = 0; i < game_Manager.enemyCount; i++) {
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		updateEnemy(game_Manager.enemies+i, dt);
-	}*/
+	}
 
-	updateEnemy(game_Manager.enemies + 2, dt);
+	//updateEnemy(game_Manager.enemies + 2, dt);
 
-	printGameObjects(&game_Manager);
+
+
+	print_GameObjects(&game_Manager);
 
 }
 
 
-void printGameObjects(GAME_MANAGER* gameManager)
+int checkCollision_Player_Enemy(PLAYER* player, ENEMY* enemy)
+{
+	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+}
+
+int checkCollision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
+{
+	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
+}
+
+void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	printPlayer(&(gameManager->player));
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		printEnemy(gameManager->enemies + i);
+	}
+
+	for (int i = 0; i < gameManager->itemCount; i++) {
+		print_itemBox(gameManager->item_Boxes+i);
 	}
 }
 
@@ -98,3 +138,5 @@ void exit_Game_Manager(void)
 {
 	// shut down the gamestate and cleanup any dynamic memory
 }
+
+

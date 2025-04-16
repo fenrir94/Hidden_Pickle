@@ -18,3 +18,9 @@ CP_Vector getKeyVector(void);
 * float angle(CP_Vector start, CP_Vector dest);
 * 
 */
+
+int checkCollision_Circle_to_Circle(CP_Vector position_Left, float radius_Left, CP_Vector position_Right, float radius_Right);
+
+
+//int isCollided_Circle_to_Rect(CP_Vector position_Circle, float radius, CP_Vector position_Right, float radius_Right);
+
