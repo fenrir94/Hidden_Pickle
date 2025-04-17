@@ -9,6 +9,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->life = 3;
 	player->radius = 50;
 	player->getKey = 0;
+	player->battery = 30;
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
@@ -62,6 +63,7 @@ void print_Player(PLAYER* player) {
 	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
 
 	print_Player_Life(player->life);
+	print_Plyaer_Lamp(player->battery);
 }
 
 
@@ -73,6 +75,23 @@ void print_Player_Life(int life) {
 	for (int i = 0; i < life; i++) {
 		CP_Graphics_DrawCircle(50+(float)i*gap, 50, 80);
 	}
+}
+
+void print_Plyaer_Lamp(int battery)
+{
+	CP_Settings_RectMode(CP_POSITION_CORNER);
+
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Graphics_DrawRect(30,100,202,32);
+
+	//CP_Settings_Fill(CP_Color_Create(255, 0, 255, 0));
+	//CP_Graphics_DrawRect(31, 101, 200, 30);
+
+	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
+	CP_Graphics_DrawRect(31, 101, (float)battery*2, 30);
+
+	CP_Settings_RectMode(CP_POSITION_CENTER);
+
 }
 
 
