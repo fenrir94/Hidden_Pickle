@@ -11,8 +11,12 @@ GAME_MANAGER game_Manager;
 //to do fix -> to .
 void init_Game_Manager(void )
 {
-	CP_Vector startPositionPlayer = CP_Vector_Set(800, 500);
+
+	CP_Vector startPositionPlayer = CP_Vector_Set(800, 400);
 	init_Player(&(game_Manager.player), startPositionPlayer);
+
+	CP_Vector position_Exit_Place = CP_Vector_Set(700, 200);
+	init_Exit_Place(&(game_Manager.exit_Place), position_Exit_Place);
 
 	game_Manager.enemyCount = 3;
 
@@ -47,11 +51,38 @@ void init_Game_Manager(void )
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
 	//}
 
+	game_Manager.itemCount = 3;
+	game_Manager.item_Boxes = (ITEM_BOX*)malloc(game_Manager.itemCount * sizeof(ITEM_BOX));
+	CP_Vector itemPosition = CP_Vector_Set(1200, 400);
+	init_itemBox(game_Manager.item_Boxes, KEY_Item, itemPosition);
+	itemPosition = CP_Vector_Set(200, 100);
+	init_itemBox(game_Manager.item_Boxes + 1, BULLET_Item, itemPosition);
+	itemPosition = CP_Vector_Set(900, 700);
+	init_itemBox(game_Manager.item_Boxes + 2, BATTERY_Item, itemPosition);
+
 	initCamera();
 }
 
 // Update Game Objects
 void update_Game_Manager(void) {
+
+	check_Player_Win();
+
+	// To Do 
+	// Block Movement of Player when collision
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
+			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+		}
+	}
+
+	for (int i = 0; i < game_Manager.itemCount; i++) {
+		if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
+			collide_itemBox(game_Manager.item_Boxes + i);
+			get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
+		}
+	}
+
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
@@ -69,26 +100,56 @@ void update_Game_Manager(void) {
 	}
 	else
 	{
-		updatePlayer(&(game_Manager.player), uVectorNoraml, dt);
+		update_Player(&(game_Manager.player), uVectorNoraml, dt);
 	}
 
-	/*for (int i = 0; i < game_Manager.enemyCount; i++) {
-		updateEnemy(game_Manager.enemies+i, dt);
-	}*/
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		update_Enemy(game_Manager.enemies+i, dt);
+	}
 
-	updateEnemy(game_Manager.enemies + 2, dt);
+	//updateEnemy(game_Manager.enemies + 2, dt);
 
-	printGameObjects(&game_Manager);
+
+
+	print_GameObjects(&game_Manager);
 
 }
 
 
-void printGameObjects(GAME_MANAGER* gameManager)
+int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 {
-	printPlayer(&(gameManager->player));
-	for (int i = 0; i < gameManager->enemyCount; i++) {
-		printEnemy(gameManager->enemies + i);
+	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+}
+
+int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
+{
+	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
+}
+
+int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place)
+{
+	if (player->getKey == 1) {
+		return checkCollision_Circle_to_Circle(player->position, player->radius, exit_Place->position, exit_Place->radius);
 	}
+	else {
+		return 0;
+	}
+	
+}
+
+void print_GameObjects(GAME_MANAGER* gameManager)
+{
+	print_Exit_Place(&(gameManager->exit_Place));
+	
+	for (int i = 0; i < gameManager->enemyCount; i++) {
+		print_Enemy(gameManager->enemies + i);
+	}
+
+	for (int i = 0; i < gameManager->itemCount; i++) {
+		print_itemBox(gameManager->item_Boxes+i);
+	}
+
+	print_Player(&(gameManager->player));
 }
 
 
@@ -96,5 +157,17 @@ void printGameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
+	free(game_Manager.enemies);
+	free(game_Manager.item_Boxes);
 	// shut down the gamestate and cleanup any dynamic memory
+}
+
+
+
+void check_Player_Win(void)
+{
+	if (check_Collision_Player_Enter_Exit_Place(&(game_Manager.player), &(game_Manager.exit_Place))) {
+		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+	}
+	
 }

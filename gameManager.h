@@ -10,8 +10,9 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include "cprocessing.h"
 #include "player.h"
 #include "enemy.h"
-
-
+#include "itemBox.h"
+#include "exitPlace.h"
+#include "mainmenu.h"
 
 #define WINDOW_WIDTH 1800
 #define WINDOW_HEIGHT 900
@@ -22,14 +23,15 @@ typedef struct gameManager {
 	PLAYER player;
 	ENEMY* enemies;
 	int enemyCount;
+	ITEM_BOX* item_Boxes;
+	int itemCount;
+	EXIT_PLACE exit_Place;
 
 	/*
-	* 
-	* Enemy
+	*
 	* Map
 	* Minimap
 	* Camera
-	* item
 	* 
 	*/
 } GAME_MANAGER;
@@ -40,6 +42,16 @@ void init_Game_Manager(void);
 
 void update_Game_Manager(void);
 
-void printGameObjects(GAME_MANAGER* gameManager);
+void print_GameObjects(GAME_MANAGER* gameManager);
 
 void exit_Game_Manager(void);
+
+int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy); 
+
+int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box);
+
+int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place);
+
+void check_Player_Win(void);
+
+

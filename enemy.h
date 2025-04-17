@@ -33,8 +33,8 @@ void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
 
 void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destination, int patrolPoints);
 
-void updateEnemy(ENEMY* enemy, float dt);
+void update_Enemy(ENEMY* enemy, float dt);
 
-void printEnemy(ENEMY* enemy);
+void print_Enemy(ENEMY* enemy);
 
-void patrolEnemy(ENEMY* enemy, float dt);
+void patrol_Enemy(ENEMY* enemy, float dt);
