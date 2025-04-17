@@ -3,16 +3,18 @@
 #include "camera.h"
 #include "footprint.h"
 
-#define mapWidth 2400
-#define mapHeight 1200
+#define visionblockerWidth 2400
+#define visionblockerHeight 1500
 
 extern GAME_MANAGER game_Manager;
 
 void initCamera()
 {
+
 	// 플레이어의 시작 위치가 중심이 되도록 모든 오브젝트의 위치를 초기화
 	CP_Vector center_xy = CP_Vector_Set((float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2);
 	CP_Vector initVector = CP_Vector_Subtract(center_xy, (&game_Manager)->player.position);
+
 
 	(&game_Manager)->player.position = CP_Vector_Add((&game_Manager)->player.position, initVector); // 플레이어 위치 초기화
 
@@ -110,5 +112,19 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 		{	
 			return 1;
 		}
+	}
+}
+
+
+void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn)
+{
+
+	if (CP_Input_KeyDown(KEY_SPACE)) // to do 랜턴 추가하고 수정
+	{
+		CP_Image_Draw(*visionblockerOn , (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
+	}
+	else
+	{
+		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
 	}
 }

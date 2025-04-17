@@ -8,6 +8,9 @@
 // GLOBAL
 GAME_MANAGER game_Manager;
 
+CP_Image visionblockerOff;
+CP_Image visionblockerOn;
+
 //to do fix -> to .
 void init_Game_Manager(void )
 {
@@ -41,11 +44,13 @@ void init_Game_Manager(void )
 	patrol3[2] = CP_Vector_Set(600, 600);
 	patrol3[3] = CP_Vector_Set(1000, 400);
 
-
 	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
 	init_Enemy_Patrol(game_Manager.enemies, startPositionEnemies[0], patrol1, 2);
 	init_Enemy_Patrol(game_Manager.enemies + 1, startPositionEnemies[1], patrol2, 2);
 	init_Enemy_Patrol(game_Manager.enemies + 2, startPositionEnemies[2], patrol3, 4);
+
+	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
+	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
 	//for (int i = 0; i < gameManager->enemyCount; i++) {
 	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
@@ -128,6 +133,7 @@ int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
 
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place)
 {
+
 	if (player->getKey == 1) {
 		return checkCollision_Circle_to_Circle(player->position, player->radius, exit_Place->position, exit_Place->radius);
 	}
@@ -140,7 +146,7 @@ int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Pla
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	print_Exit_Place(&(gameManager->exit_Place));
-	
+
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		print_Enemy(gameManager->enemies + i);
 	}
@@ -149,7 +155,11 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(gameManager->item_Boxes+i);
 	}
 
+
+	printVisionblocker(&visionblockerOff, &visionblockerOn);
+
 	print_Player(&(gameManager->player));
+
 }
 
 
@@ -157,8 +167,12 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
+
+	CP_Image_Free(&visionblockerOff);
+	CP_Image_Free(&visionblockerOn);
 	free(game_Manager.enemies);
 	free(game_Manager.item_Boxes);
+
 	// shut down the gamestate and cleanup any dynamic memory
 }
 

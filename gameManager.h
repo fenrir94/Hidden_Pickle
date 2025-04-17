@@ -10,9 +10,11 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include "cprocessing.h"
 #include "player.h"
 #include "enemy.h"
+#include "camera.h"
 #include "itemBox.h"
 #include "exitPlace.h"
 #include "mainmenu.h"
+
 
 #define WINDOW_WIDTH 1800
 #define WINDOW_HEIGHT 900
