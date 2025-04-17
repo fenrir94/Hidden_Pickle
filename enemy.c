@@ -63,9 +63,9 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	init_Footprint(&(enemy->footprint));
 }
 
-void updateEnemy(ENEMY* enemy, float dt)
+void update_Enemy(ENEMY* enemy, float dt)
 {
-	patrolEnemy(enemy, dt);
+	patrol_Enemy(enemy, dt);
 	
 	// Need to check time to update, add and delete footprint
 	float time_present = CP_System_GetSeconds();
@@ -81,14 +81,14 @@ void updateEnemy(ENEMY* enemy, float dt)
 	checkDuration_Footprint(&(enemy->footprint), time_present);
 }
 
-void printEnemy(ENEMY* enemy)
+void print_Enemy(ENEMY* enemy)
 {
 	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
 	CP_Graphics_DrawCircle(enemy->position.x, enemy->position.y, enemy->radius);
 	print_Footprint(&(enemy->footprint));
 }
 
-void patrolEnemy(ENEMY* enemy, float dt)
+void patrol_Enemy(ENEMY* enemy, float dt)
 {
 	int startPosition = enemy->destinationIndex - 1;
 	if (enemy->destinationIndex == 0)
