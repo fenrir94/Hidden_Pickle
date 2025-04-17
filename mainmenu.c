@@ -72,6 +72,8 @@ CP_Color Green;
 //폰트
 CP_Font Button_Font;
 
+int is_Moved = 0;
+
 int IsAreaClicked(float area_center_x, float area_center_y, float area_width, float area_height, float click_x, float click_y)
 // 사각형 범위 클릭 감지 함수
 {
@@ -122,17 +124,21 @@ void mainmenu_init(void)
 	CP_Settings_TextSize(72.f); // 폰트 사이즈 설정
 
 	DigiPen_IM_File = CP_Image_Load("Assets/DigiPen_WHITE.png"); // 이미지 불러오기
-	MoveCoords(&(DigiPen_IM.x), &(DigiPen_IM.y)); // 이미지 좌표 이동
 
 	Title_IM_File = CP_Image_Load("Assets/Hidden_Pickle_Title.png");
-	MoveCoords(&(Title_IM.x), &(Title_IM.y));
+	
+	if (!is_Moved)
+	{
+		MoveCoords(&(DigiPen_IM.x), &(DigiPen_IM.y)); // 좌표 이동
+		MoveCoords(&(Title_IM.x), &(Title_IM.y));
+		MoveCoords(&(Exit_xy.x), &(Exit_xy.y));
+		MoveCoords(&(Conf_xy.x), &(Conf_xy.y));
+		MoveCoords(&(Play_xy.x), &(Play_xy.y));
+		MoveCoords(&(Config_xy.x), &(Config_xy.y));
+		MoveCoords(&(Config_Exit_xy.x), &(Config_Exit_xy.y));
 
-	MoveCoords(&(Exit_xy.x), &(Exit_xy.y));
-	MoveCoords(&(Conf_xy.x), &(Conf_xy.y));
-	MoveCoords(&(Play_xy.x), &(Play_xy.y));
-
-	MoveCoords(&(Config_xy.x), &(Config_xy.y));
-	MoveCoords(&(Config_Exit_xy.x), &(Config_Exit_xy.y));
+		is_Moved = 1;
+	}
 
 	Black = CP_Color_Create(0, 0, 0, 255);
 	Green = CP_Color_Create(0, 0, 255, 255);
@@ -241,5 +247,4 @@ void mainmenu_exit(void)
 	CP_Image_Free(&DigiPen_IM_File); // 이미지 해제
 	CP_Image_Free(&Title_IM_File);
 	CP_Sound_Free(&DigiPen_SFX_File);
-
 }
