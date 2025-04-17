@@ -39,13 +39,13 @@ typedef struct item_box {
 void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_itemBox);
 
 // Need to Check Collision with player
-int collide_itemBox(ITEM_BOX* item_box);
+void collide_itemBox(ITEM_BOX* item_box);
 
 
 void print_itemBox(ITEM_BOX* item_box);
 
 
-int get_item(EItemType item_type);
+int get_Item_Type(ITEM_BOX* item_box);
 
 int isEmptyBox(ITEM_BOX* item_box);
 

@@ -29,13 +29,9 @@ void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_ite
 // Need to Change
 // Call get_item
 // Check not to display item box
-int collide_itemBox(ITEM_BOX* item_box)
+void collide_itemBox(ITEM_BOX* item_box)
 {
-	int itemGet = get_item(item_box->item_type);
-
 	item_box->isCollided = 1;
-
-	return itemGet;
 }
 
 void print_itemBox(ITEM_BOX* item_box)
@@ -64,23 +60,9 @@ void print_itemBox(ITEM_BOX* item_box)
 
 }
 
-int get_item(EItemType item_type)
+int get_Item_Type(ITEM_BOX* item_box)
 {
-	if (item_type == KEY_Item)
-	{
-		return 1;
-
-	}
-	else if (item_type == BULLET_Item)
-	{
-		return 4;
-	}
-	else if (item_type == BATTERY_Item)
-	{
-		return 50;
-	}
-
-	return 0;
+	return item_box->item_type;
 }
 
 int isEmptyBox(ITEM_BOX* item_box)

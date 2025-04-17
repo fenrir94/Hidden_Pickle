@@ -18,10 +18,12 @@ typedef struct player {
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
 
-void updatePlayer(PLAYER* player, CP_Vector updateVector, float dt);
+void update_Player(PLAYER* player, CP_Vector updateVector, float dt);
 
-int checkCollision_Player_Object(PLAYER* player, CP_Vector position_Object, float radius_Object);
+int check_Collision_Player_Object(PLAYER* player, CP_Vector position_Object, float radius_Object);
 
-void getPlayerHit(PLAYER* player, int attackPoint);
+void get_Player_Hit(PLAYER* player, int attackPoint);
 
-void printPlayer(PLAYER* player);
+void get_Item(PLAYER* player, EItemType item_type);
+
+void print_Player(PLAYER* player);

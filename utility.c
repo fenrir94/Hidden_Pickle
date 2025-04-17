@@ -20,7 +20,7 @@ int checkCollision_Circle_to_Circle(CP_Vector position_Left, float radius_Left, 
 	float distanceVectors = CP_Vector_Distance(position_Left, position_Right);
 	//float distanceVectors = CP_Vector_Length(CP_Vector_Subtract(position_Left, position_Right));
 	if (distanceVectors <= (radius_Left + radius_Right)/2) {
-		printf("Collided!  distance:  %f, sum of radius:   %f\n", distanceVectors, radius_Left + radius_Right);
+		//printf("Collided!  distance:  %f, sum of radius:   %f\n", distanceVectors, radius_Left + radius_Right);
 		return 1;
 	}
 	else {
