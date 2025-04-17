@@ -1,6 +1,6 @@
 #include "utility.h"
 
-CP_Vector getKeyVector(void)
+CP_Vector get_InputVector(void)
 {
 	CP_Vector uVector = CP_Vector_Set(0, 0);
 

@@ -18,6 +18,12 @@ void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
 	player->position = CP_Vector_Add(player->position, dPoistion);
 }
 
+void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
+{
+	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
+
+	player->position = CP_Vector_Subtract(player->position, dPoistion);
+}
 
 int check_Collision_Player_Object(PLAYER* player, CP_Vector position_Object, float radius_Object)
 {
@@ -54,6 +60,19 @@ void get_Item(PLAYER* player, EItemType item_type) {
 void print_Player(PLAYER* player) {
 	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
 	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
+
+	print_Player_Life(player->life);
+}
+
+
+
+void print_Player_Life(int life) {
+	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
+	int gap = 100;
+
+	for (int i = 0; i < life; i++) {
+		CP_Graphics_DrawCircle(50+(float)i*gap, 50, 80);
+	}
 }
 
 
