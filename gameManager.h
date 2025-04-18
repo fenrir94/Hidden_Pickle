@@ -31,6 +31,7 @@ typedef struct gameManager {
 	EXIT_PLACE exit_Place;
 	OBSTACLE* obstacles;
 	int obstacleCount;
+	MAB map_Bounds;
 
 	/*
 	*
