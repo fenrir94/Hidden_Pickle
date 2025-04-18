@@ -76,6 +76,23 @@ void init_Game_Manager(void)
 		init_itemBox(game_Manager.item_Boxes + i, itemInBox, itemPosition);
 	}
 
+	//장애물
+
+	cJSON* obstacles_cJSON = cJSON_GetObjectItem(root, "obstacles");
+	game_Manager.obstacleCount = cJSON_GetArraySize(obstacles_cJSON);
+	game_Manager.obstacles = (OBSTACLE*)malloc(sizeof(OBSTACLE) * game_Manager.obstacleCount);
+
+	for (int i = 0; i < game_Manager.obstacleCount; i++)
+	{
+		cJSON* obstacle_cJSON = cJSON_GetArrayItem(obstacles_cJSON, i);
+		cJSON* obstacle_start_cJSON = cJSON_GetObjectItem(obstacle_cJSON, "startPosition");
+		//cJSON* obstacle_type_cJSON = cJSON_GetObjectItem(obstacle_cJSON, "type");
+
+		CP_Vector position_Wall = CP_Vector_Set((float)cJSON_GetObjectItem(obstacle_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(obstacle_start_cJSON, "y")->valuedouble);
+		init_Obstacle(game_Manager.obstacles + i, position_Wall, WALL);
+	}
+	
+
 	//에너미
 	cJSON* enemies_cJSON = cJSON_GetObjectItem(root, "enemies");
 	game_Manager.enemyCount = cJSON_GetArraySize(enemies_cJSON); 
@@ -84,7 +101,6 @@ void init_Game_Manager(void)
 	startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)* game_Manager.enemyCount);
 	patrolPointEnemies = (int*)malloc(sizeof(int)* game_Manager.enemyCount);
 	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
-
 
 	for (int i = 0; i < game_Manager.enemyCount; i++)
 	{
@@ -112,13 +128,6 @@ void init_Game_Manager(void)
 
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
-
-
-	game_Manager.obstacleCount = 1;
-	game_Manager.obstacles = (OBSTACLE*)malloc(sizeof(OBSTACLE) * game_Manager.obstacleCount);
-	CP_Vector position_Wall = CP_Vector_Set(500, 500);
-	init_Obstacle(game_Manager.obstacles, position_Wall, WALL);
-
 
 	initCamera();
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
