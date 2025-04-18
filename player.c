@@ -10,6 +10,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->radius = 50;
 	player->getKey = 0;
 	player->battery = 30;
+	player->isLampOn = 0;
 	player->time_Hit = 0;
 }
 
@@ -53,6 +54,25 @@ void get_Player_Hit(PLAYER* player, int attackPoint) {
 	
 }
 
+void use_Battery(PLAYER* player) {
+	int useBattery = get_InputSpace();
+	
+	if (useBattery > 0)
+	{
+		player->isLampOn = 1;
+	}
+	else {
+		player->isLampOn = 0;
+	}
+
+	if (player->battery > useBattery) {
+		player->battery -= useBattery;
+	}
+	else {
+		player->battery = 0;
+	}
+}
+
 void get_Item(PLAYER* player, EItemType item_type) {
 	printf("Get Item! %d\n", item_type);
 	if (item_type == KEY_Item)
@@ -89,7 +109,8 @@ void print_Player(PLAYER* player) {
 	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
 
 	print_Player_Life(player->life);
-	print_Plyaer_Lamp(player->battery);
+	print_Player_Battery(player->battery);
+	print_Player_Bulltet(player->gun.bullets);
 }
 
 
@@ -105,7 +126,7 @@ void print_Player_Life(int life) {
 	}
 }
 
-void print_Plyaer_Lamp(int battery)
+void print_Player_Battery(int battery)
 {
 	CP_Settings_RectMode(CP_POSITION_CORNER);
 
@@ -120,6 +141,16 @@ void print_Plyaer_Lamp(int battery)
 
 	CP_Settings_RectMode(CP_POSITION_CENTER);
 
+}
+
+void print_Player_Bulltet(int bullet)
+{
+	CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
+	int gap = 15;
+
+	for (int i = 0; i < bullet; i++) {
+		CP_Graphics_DrawRect((float)30+i*gap, 150, 10, 50);
+	}
 }
 
 

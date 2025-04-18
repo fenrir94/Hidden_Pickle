@@ -145,6 +145,8 @@ void update_Game_Manager(void) {
 	// get WASD Vector
 	CP_Vector inputVector = get_InputVector();
 	
+	// get Space Bar = BatteryUse
+	use_Battery(&(game_Manager.player));
 	
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
@@ -237,7 +239,7 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	
 
-	printVisionblocker(&visionblockerOff, &visionblockerOn);
+	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
 	
 	print_Player(&(gameManager->player));
 }
