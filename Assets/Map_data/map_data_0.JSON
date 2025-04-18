@@ -1,0 +1,90 @@
+{
+	"player":{
+		"startPosition":{
+			"x": 800, "y": 500
+		}
+	},
+
+	"enemyCount": 3,
+
+	"enemies":[
+		{
+			"startPosition":{"x": 200, "y": 200},
+
+			"patrolPoints": 2,
+
+			"destinations":[
+				{"x": 200, "y": 200},
+				{"x": 200, "y": 600}
+			]
+		},
+
+		{
+			"startPosition":{"x": 200, "y": 200},
+
+			"patrolPoints": 2,
+
+			"destinations":[
+				{"x": 1600, "y": 200},
+				{"x": 400, "y": 200}
+			]
+		},
+
+		{
+			"startPosition":{"x": 200, "y": 200},
+
+			"patrolPoints": 4,
+
+			"destinations":[
+				{"x": 600, "y": 200},
+				{"x": 200, "y": 400},
+				{"x": 600, "y": 600},
+				{"x": 1000, "y": 400}
+			]
+		}
+
+	],
+
+	"mabsize": {"w": 6400, "h": 3200},
+
+	"chestCount": 3,
+
+	"chest":[
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"item" : 0
+		},
+
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"item" : 1
+		},
+
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"item" : 2
+		}
+	],
+
+	"obstackleCount": 3,
+
+	"obstackle":[
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"image" : 0
+		},
+
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"image" : 1
+		},
+
+		{
+			"startPosition": {"x": 0, "y": 0},
+			"image" : 2
+		}
+	],
+
+	"exit":{"x": 0, "y": 0}
+
+}
