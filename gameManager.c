@@ -48,18 +48,43 @@ void init_Game_Manager(void)
 
 	//json 파일에서 불러온 값 아래 함수에 삽입
 
+
+    //플레이어
 	cJSON* player_cJSON = cJSON_GetObjectItem(root, "player");
 	cJSON* player_start_cJSON = cJSON_GetObjectItem(player_cJSON, "startPosition");
 	game_Manager.player.position = CP_Vector_Set((float)cJSON_GetObjectItem(player_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(player_start_cJSON, "y")->valuedouble);
 	init_Player(&(game_Manager.player), game_Manager.player.position);
 
-	cJSON* enemies_cJSON = cJSON_GetObjectItem(root, "enemies");
-	game_Manager.enemyCount = cJSON_GetArraySize(enemies_cJSON);
+	//탈출구
+	cJSON* exitPlace_cJSON = cJSON_GetObjectItem(root, "exit_place");
+	CP_Vector position_Exit_Place = CP_Vector_Set((float)cJSON_GetObjectItem(exitPlace_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(exitPlace_cJSON, "y")->valuedouble);
+	init_Exit_Place(&(game_Manager.exit_Place), position_Exit_Place);
 
+	//아이템 박스
+	cJSON* itemBoxes_cJSON = cJSON_GetObjectItem(root, "item_boxes");
+	game_Manager.itemCount = cJSON_GetArraySize(itemBoxes_cJSON);
+	game_Manager.item_Boxes = (ITEM_BOX*)malloc(game_Manager.itemCount * sizeof(ITEM_BOX));
+
+	for (int i = 0; i < game_Manager.itemCount; i++)
+	{
+		cJSON* itemBox_cJSON = cJSON_GetArrayItem(itemBoxes_cJSON, i);
+		cJSON* itemBox_start_cJSON = cJSON_GetObjectItem(itemBox_cJSON, "startPosition");
+
+		CP_Vector itemPosition = CP_Vector_Set((float)cJSON_GetObjectItem(itemBox_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(itemBox_start_cJSON, "y")->valuedouble);
+		int itemInBox = cJSON_GetObjectItem(itemBox_cJSON, "item")->valueint;
+
+		init_itemBox(game_Manager.item_Boxes + i, itemInBox, itemPosition);
+	}
+
+	//에너미
+	cJSON* enemies_cJSON = cJSON_GetObjectItem(root, "enemies");
+	game_Manager.enemyCount = cJSON_GetArraySize(enemies_cJSON); 
+
+	// JSON의 enemies 배열의 크기로 에너미 수 감지 후, 동적할당
 	startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)* game_Manager.enemyCount);
 	patrolPointEnemies = (int*)malloc(sizeof(int)* game_Manager.enemyCount);
-
 	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
+
 
 	for (int i = 0; i < game_Manager.enemyCount; i++)
 	{
@@ -70,6 +95,7 @@ void init_Game_Manager(void)
 
 		init_Enemy(game_Manager.enemies + i, startPositionEnemies[i]);
 
+		// enemies 배열 속 각 에너미의 배열 크기로 패트롤포인츠 감지 후, 동적할당
 		patrolPointEnemies[i] = cJSON_GetObjectItem(enemy_cJSON, "patrolPoints")->valueint;
 
 		destinationsEnemies = (CP_Vector*)malloc(patrolPointEnemies[i]*sizeof(CP_Vector));
@@ -93,6 +119,24 @@ void init_Game_Manager(void)
 
 // Update Game Objects
 void update_Game_Manager(void) {
+
+	check_Player_Win();
+
+	// To Do 
+	// Block Movement of Player when collision
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
+			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+		}
+	}
+
+	for (int i = 0; i < game_Manager.itemCount; i++) {
+		if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
+			collide_itemBox(game_Manager.item_Boxes + i);
+			get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
+		}
+	}
+
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
@@ -123,9 +167,36 @@ void update_Game_Manager(void) {
 
 }
 
+int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
+{
+	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+}
+
+int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
+{
+	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
+}
+
+int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place)
+{
+
+	if (player->getKey == 1) {
+		return checkCollision_Circle_to_Circle(player->position, player->radius, exit_Place->position, exit_Place->radius);
+	}
+	else {
+		return 0;
+	}
+	
+}
 
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
+	print_Exit_Place(&(gameManager->exit_Place));
+
+	for (int i = 0; i < gameManager->itemCount; i++) {
+		print_itemBox(gameManager->item_Boxes+i);
+	}
+
 	print_Player(&(gameManager->player));
 
 	for (int i = 0; i < gameManager->enemyCount; i++) {
@@ -143,10 +214,18 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&visionblockerOff);
 	CP_Image_Free(&visionblockerOn);
 
-
+	free(game_Manager.item_Boxes);
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
 	free(game_Manager.enemies);
 	free(destinationsEnemies);
 	// shut down the gamestate and cleanup any dynamic memory
+}
+
+void check_Player_Win(void)
+{
+	if (check_Collision_Player_Enter_Exit_Place(&(game_Manager.player), &(game_Manager.exit_Place))) {
+		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+	}
+	
 }

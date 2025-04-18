@@ -5,8 +5,6 @@
 		}
 	},
 
-	"enemyCount": 3,
-
 	"enemies":[
 		{
 			"startPosition":{"x": 200, "y": 200},

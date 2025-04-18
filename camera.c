@@ -121,7 +121,7 @@ void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn)
 
 	if (CP_Input_KeyDown(KEY_SPACE)) // to do 랜턴 추가하고 수정
 	{
-		CP_Image_Draw(*visionblockerOn , (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
+		//CP_Image_Draw(*visionblockerOn , (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
 	}
 	else
 	{
