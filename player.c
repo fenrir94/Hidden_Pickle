@@ -10,6 +10,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->radius = 50;
 	player->getKey = 0;
 	player->battery = 30;
+	player->time_Hit = 0;
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
@@ -31,8 +32,25 @@ int check_Collision_Player_Object(PLAYER* player, CP_Vector position_Object, flo
 	return checkCollision_Circle_to_Circle(player->position, player->radius, position_Object, radius_Object);
 }
 
+
+int isInvincibility(PLAYER* player, float dt)
+{
+	if (dt - player->time_Hit <= TIME_INVINCIBILITY) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+
 void get_Player_Hit(PLAYER* player, int attackPoint) {
-	player->life -= attackPoint;
+	float time_Present = CP_System_GetSeconds();
+	if (isInvincibility(player, time_Present) == 0) {
+		player->life -= attackPoint;
+		player->time_Hit = time_Present;
+	}
+	
 }
 
 void get_Item(PLAYER* player, EItemType item_type) {
@@ -59,12 +77,22 @@ void get_Item(PLAYER* player, EItemType item_type) {
 }
 
 void print_Player(PLAYER* player) {
-	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+	float time_present = CP_System_GetSeconds();
+	if ((int)((time_present - player->time_Hit) * 10) % 2 != 1 && time_present - player->time_Hit <= TIME_INVINCIBILITY) {
+		CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+	}
+	else {
+		CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+	}
+	
+	
 	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
 
 	print_Player_Life(player->life);
 	print_Plyaer_Lamp(player->battery);
 }
+
+
 
 
 

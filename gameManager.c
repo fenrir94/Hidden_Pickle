@@ -120,6 +120,8 @@ void update_Game_Manager(void) {
 		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
 	}
 
+	check_Player_Lose(&(game_Manager.player));
+
 	print_GameObjects(&game_Manager);
 
 }
@@ -197,4 +199,11 @@ void check_Player_Win(void)
 		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
 	}
 	
+}
+
+void check_Player_Lose(PLAYER* player)
+{
+	if (player->life <= 0) {
+		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+	}
 }

@@ -59,4 +59,4 @@ int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Pla
 
 void check_Player_Win(void);
 
-
+void check_Player_Lose(PLAYER* player);
