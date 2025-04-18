@@ -16,7 +16,7 @@
 #include "cprocessing.h"
 
 #define MAX_BULLET 6
-#define MAX_BATTERY 20
+#define MAX_BATTERY 100
 
 typedef enum item {
 	KEY_Item,

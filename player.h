@@ -15,8 +15,8 @@ typedef struct player {
 	int getKey;
 	GUN gun;
 	int battery;
+	int isLampOn;
 	float time_Hit;
-
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
@@ -31,9 +31,14 @@ void get_Player_Hit(PLAYER* player, int attackPoint);
 
 void get_Item(PLAYER* player, EItemType item_type);
 
+void use_Battery(PLAYER* player);
+
 void print_Player_Life(int life);
 
-void print_Plyaer_Lamp(int battery);
+void print_Player_Battery(int battery);
+
+void print_Player_Bulltet(int bullet);
+
 
 void print_Player(PLAYER* player);
 
