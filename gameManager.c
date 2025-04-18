@@ -186,6 +186,12 @@ void update_Game_Manager(void) {
 		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
 	}
 
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		if (check_Collision_Enemy_Obstacles(game_Manager.enemies+i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Move_Enemy_Position(game_Manager.enemies+i, game_Manager.enemies[i].vector_Sight, dt* 3);
+		}
+	}
+
 	check_Player_Win(); 
 
 	check_Player_Lose(&(game_Manager.player));
@@ -224,6 +230,16 @@ int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Pla
 		return 0;
 	}
 	
+}
+
+int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count_Obstacles)
+{
+	for (int i = 0; i < count_Obstacles; i++) {
+		if (check_Collision_Enemy_Object(enemy, obstacles[i].position, obstacles[i].radius)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void print_GameObjects(GAME_MANAGER* gameManager)

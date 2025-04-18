@@ -38,3 +38,7 @@ void update_Enemy(ENEMY* enemy, float dt);
 void print_Enemy(ENEMY* enemy);
 
 void patrol_Enemy(ENEMY* enemy, float dt);
+
+int check_Collision_Enemy_Object(ENEMY* enemy, CP_Vector position_Object, float radius_Object);
+
+void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt);

@@ -95,7 +95,7 @@ void patrol_Enemy(ENEMY* enemy, float dt)
 	{
 		startPosition = enemy->patrolPoints - 1;
 	}
-	CP_Vector dPatrolPosition = CP_Vector_Set(enemy->destinations[enemy->destinationIndex].x - enemy->destinations[startPosition].x, enemy->destinations[enemy->destinationIndex].y - enemy->destinations[startPosition].y);
+	CP_Vector dPatrolPosition = CP_Vector_Set(enemy->destinations[enemy->destinationIndex].x - enemy->position.x, enemy->destinations[enemy->destinationIndex].y - enemy->position.y);
 
 	CP_Vector dPatrolNormal = CP_Vector_Normalize(dPatrolPosition);
 	enemy->position.x += enemy->speed * dPatrolNormal.x*dt;
@@ -114,3 +114,18 @@ void patrol_Enemy(ENEMY* enemy, float dt)
 	}
 }
 
+int check_Collision_Enemy_Object(ENEMY* enemy, CP_Vector position_Object, float radius_Object)
+{
+	return checkCollision_Circle_to_Circle(enemy->position, enemy->radius, position_Object, radius_Object);
+}
+
+void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt)
+{
+	CP_Vector dPosition = CP_Vector_Scale(updateVector, dt * (enemy->speed));
+
+	enemy->position = CP_Vector_Subtract(enemy->position, dPosition);
+
+	CP_Vector dPosition_transpose = CP_Vector_Set(dPosition.y, -1*dPosition.x);
+
+	enemy->position = CP_Vector_Subtract(enemy->position, dPosition_transpose);
+}
