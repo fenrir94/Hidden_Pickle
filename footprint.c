@@ -89,7 +89,7 @@ void print_Footprint(FOOTPRINT* footprint)
 			int alpha = 255 - (int)time_footprint_duration*50;
 			CP_Settings_Fill(CP_Color_Create(0, 0, 0, alpha));
 			//CP_Graphics_DrawRect(footprint->position[i].x, footprint->position[i].y, 50, 50);
-			CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 100, footprint->angle[i], 0);
+			CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 80, footprint->angle[i], 0);
 		}
 	}
 }

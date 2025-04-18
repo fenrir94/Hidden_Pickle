@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 
-CP_Vector getKeyVector(void);
+CP_Vector get_InputVector(void);
 
 /*
 * TO DO LIST

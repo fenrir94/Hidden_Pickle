@@ -113,6 +113,13 @@ void init_Game_Manager(void)
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
+
+	game_Manager.obstacleCount = 1;
+	game_Manager.obstacles = (OBSTACLE*)malloc(sizeof(OBSTACLE) * game_Manager.obstacleCount);
+	CP_Vector position_Wall = CP_Vector_Set(500, 500);
+	init_Obstacle(game_Manager.obstacles, position_Wall, WALL);
+
+
 	initCamera();
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
@@ -122,11 +129,37 @@ void update_Game_Manager(void) {
 
 	check_Player_Win();
 
-	// To Do 
+	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
+	// check input, update simulation, render etc.
+	float dt = CP_System_GetDt();
+
+	// get WASD Vector
+	CP_Vector inputVector = get_InputVector();
+	
+	
+	// Update plyer's position when input WASD
+	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
+
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		update_Enemy(game_Manager.enemies + i, dt);
+	}
+
+	//updateEnemy(game_Manager.enemies + 2, dt);
+
+	
+	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
+	{
+		updateCamera(inputVectorNoraml, dt);
+	}
+	else 	{
+		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
+	}
+
 	// Block Movement of Player when collision
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
 		}
 	}
 
@@ -137,31 +170,11 @@ void update_Game_Manager(void) {
 		}
 	}
 
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
-	// check input, update simulation, render etc.
-	float dt = CP_System_GetDt();
-
-	// TO DO change function name
-	CP_Vector uVector = getKeyVector();
-	
-	
-	// Update plyer's position when input WASD
-	CP_Vector uVectorNoraml = CP_Vector_Normalize(uVector);
-
-	if (checkCameraTrigger(&(game_Manager.player), uVectorNoraml))
-	{
-		updateCamera(uVectorNoraml, dt);
-	}
-	else
-	{
-		update_Player(&(game_Manager.player), uVectorNoraml, dt);
+	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
 	}
 
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		update_Enemy(game_Manager.enemies+i, dt);
-	}
-
-	//update_Enemy(game_Manager.enemies + 2, dt);
+	check_Player_Lose(&(game_Manager.player));
 
 	print_GameObjects(&game_Manager);
 
@@ -175,6 +188,16 @@ int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
 {
 	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
+}
+
+int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int count_Obstacles)
+{
+	for (int i = 0; i < count_Obstacles; i++) {
+		if (checkCollision_Circle_to_Circle(player->position, player->radius, obstacles[i].position, obstacles[i].radius)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place)
@@ -192,18 +215,22 @@ int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Pla
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	print_Exit_Place(&(gameManager->exit_Place));
-
-	for (int i = 0; i < gameManager->itemCount; i++) {
-		print_itemBox(gameManager->item_Boxes+i);
-	}
-
-	print_Player(&(gameManager->player));
+	
+	print_Obstacles(gameManager->obstacles, gameManager->obstacleCount);
 
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		print_Enemy(gameManager->enemies + i);
 	}
 
+	for (int i = 0; i < gameManager->itemCount; i++) {
+		print_itemBox(&(gameManager->item_Boxes[i]));
+	}
+
+	
+
 	printVisionblocker(&visionblockerOff, &visionblockerOn);
+	
+	print_Player(&(gameManager->player));
 }
 
 
@@ -211,14 +238,18 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
+
+	
 	CP_Image_Free(&visionblockerOff);
 	CP_Image_Free(&visionblockerOn);
 
 	free(game_Manager.item_Boxes);
+	free(game_Manager.enemies);
+	free(game_Manager.obstacles);
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
-	free(game_Manager.enemies);
 	free(destinationsEnemies);
+
 	// shut down the gamestate and cleanup any dynamic memory
 }
 
@@ -228,4 +259,11 @@ void check_Player_Win(void)
 		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
 	}
 	
+}
+
+void check_Player_Lose(PLAYER* player)
+{
+	if (player->life <= 0) {
+		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+	}
 }

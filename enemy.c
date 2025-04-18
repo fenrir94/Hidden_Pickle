@@ -83,8 +83,8 @@ void update_Enemy(ENEMY* enemy, float dt)
 
 void print_Enemy(ENEMY* enemy)
 {
-	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
-	CP_Graphics_DrawCircle(enemy->position.x, enemy->position.y, enemy->radius);
+	/*CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
+	CP_Graphics_DrawCircle(enemy->position.x, enemy->position.y, enemy->radius);*/
 	print_Footprint(&(enemy->footprint));
 }
 

@@ -68,6 +68,16 @@ void updateCamera(CP_Vector updateVector, float dt)
 
 	}
 
+	for (int i = 0; i < game_Manager.itemCount; i++) {
+		game_Manager.item_Boxes[i].position = CP_Vector_Add(game_Manager.item_Boxes[i].position, movingVector);
+	}
+
+	for (int i = 0; i < game_Manager.obstacleCount; i++) {
+		game_Manager.obstacles[i].position = CP_Vector_Add(game_Manager.obstacles[i].position, movingVector);
+	}
+
+	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, movingVector);
+
 	/*
 	for (int i = 0; i < (&game_Manager)->....Count; i++) 
 	// .... 위치 변경
