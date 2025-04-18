@@ -1,0 +1,63 @@
+{
+	"mabsize": {"w": 6400, "h": 3200},
+
+	"player":{
+		"startPosition":{"x": 800, "y": 500}
+	},
+
+	"enemies":[
+		{
+			"startPosition":{"x": 200, "y": 200},
+
+			"patrolPoints": 2,
+
+			"destinations":[
+				{"x": 200, "y": 200},
+				{"x": 200, "y": 600}
+			]
+		},
+
+		{
+			"startPosition":{"x": 1600, "y": 200},
+
+			"patrolPoints": 2,
+
+			"destinations":[
+				{"x": 1600, "y": 200},
+				{"x": 400, "y": 200}
+			]
+		},
+
+		{
+			"startPosition":{"x": 600, "y": 200},
+
+			"patrolPoints": 4,
+
+			"destinations":[
+				{"x": 600, "y": 200},
+				{"x": 200, "y": 400},
+				{"x": 600, "y": 600},
+				{"x": 1000, "y": 400}
+			]
+		}
+	],
+
+	"item_boxes":[
+		{
+			"startPosition": {"x": 1200, "y": 400},
+			"item" : 0
+		},
+
+		{
+			"startPosition": {"x": 200, "y": 100},
+			"item" : 1
+		},
+
+		{
+			"startPosition": {"x": 900, "y": 700},
+			"item" : 2
+		}
+	],
+
+	"exit_place": {"x": 700, "y": 200}
+}

@@ -1,64 +1,117 @@
 
-
+#include <stdio.h>
 #include <stdlib.h>
 #include "utility.h"
 #include "gameManager.h"
 #include "camera.h"
+#include "player.h"
+#include "cJSON.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
 
+CP_Image visionblockerOff;
+CP_Image visionblockerOn;
+
+CP_Vector* startPositionEnemies;
+int* patrolPointEnemies;
+CP_Vector* destinationsEnemies;
+
 //to do fix -> to .
-void init_Game_Manager(void )
+void init_Game_Manager(void)
 {
+	//파일 읽어오기
+	FILE* file = fopen("./Assets/Map_data/map_data.JSON", "rb");
+	if (!file) {
+		printf("파일 열기 실패\n");
+		CP_Engine_Terminate();
+	}
+	fseek(file, 0, SEEK_END); 
+	long filesize = ftell(file); // 파일의 끝으로 이동 후 바이트 크기 받아오기 -> str 크기를 알기 위해
+	rewind(file);
+	//파일 string에 집어넣기
 
-	CP_Vector startPositionPlayer = CP_Vector_Set(800, 400);
-	init_Player(&(game_Manager.player), startPositionPlayer);
+	char* buffer = (char*)malloc(filesize+1);
+	fread(buffer, sizeof(char), filesize, file);
+	buffer[filesize] = '\0';
 
-	CP_Vector position_Exit_Place = CP_Vector_Set(1200, 0);
+	fclose(file);	
+
+	//json 객체로 파싱
+
+	cJSON *root = cJSON_Parse(buffer);
+    if (!root) {
+        printf("파싱 실패\n");
+        free(buffer);
+		CP_Engine_Terminate();
+    }
+
+	//json 파일에서 불러온 값 아래 함수에 삽입
+
+
+    //플레이어
+	cJSON* player_cJSON = cJSON_GetObjectItem(root, "player");
+	cJSON* player_start_cJSON = cJSON_GetObjectItem(player_cJSON, "startPosition");
+	game_Manager.player.position = CP_Vector_Set((float)cJSON_GetObjectItem(player_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(player_start_cJSON, "y")->valuedouble);
+	init_Player(&(game_Manager.player), game_Manager.player.position);
+
+	//탈출구
+	cJSON* exitPlace_cJSON = cJSON_GetObjectItem(root, "exit_place");
+	CP_Vector position_Exit_Place = CP_Vector_Set((float)cJSON_GetObjectItem(exitPlace_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(exitPlace_cJSON, "y")->valuedouble);
 	init_Exit_Place(&(game_Manager.exit_Place), position_Exit_Place);
 
-	game_Manager.enemyCount = 3;
-
-	CP_Vector* startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)* game_Manager.enemyCount);
-	startPositionEnemies[0] = CP_Vector_Set(200, 200);
-	startPositionEnemies[1] = CP_Vector_Set(1600, 200);
-	startPositionEnemies[2] = CP_Vector_Set(600 , 200);
-
-
-	// TO DO add comments
-	CP_Vector* patrol1 = (CP_Vector*)malloc(2*sizeof(CP_Vector));
-	patrol1[0] = CP_Vector_Set(200, 200);
-	patrol1[1] = CP_Vector_Set(200, 600);
-
-	CP_Vector* patrol2 = (CP_Vector*)malloc(2 * sizeof(CP_Vector));
-	patrol2[0] = CP_Vector_Set(1600, 200);
-	patrol2[1] = CP_Vector_Set(400, 200);
-
-	CP_Vector* patrol3 = (CP_Vector*)malloc(4 * sizeof(CP_Vector));
-	patrol3[0] = CP_Vector_Set(600, 200);
-	patrol3[1] = CP_Vector_Set(200, 400);
-	patrol3[2] = CP_Vector_Set(600, 600);
-	patrol3[3] = CP_Vector_Set(1000, 400);
-
-
-	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
-	init_Enemy_Patrol(game_Manager.enemies, startPositionEnemies[0], patrol1, 2);
-	init_Enemy_Patrol(game_Manager.enemies + 1, startPositionEnemies[1], patrol2, 2);
-	init_Enemy_Patrol(game_Manager.enemies + 2, startPositionEnemies[2], patrol3, 4);
-
-	//for (int i = 0; i < gameManager->enemyCount; i++) {
-	//	init_Enemy((gameManager->enemies + i), startPositionEnemies[i]);
-	//}
-
-	game_Manager.itemCount = 3;
+	//아이템 박스
+	cJSON* itemBoxes_cJSON = cJSON_GetObjectItem(root, "item_boxes");
+	game_Manager.itemCount = cJSON_GetArraySize(itemBoxes_cJSON);
 	game_Manager.item_Boxes = (ITEM_BOX*)malloc(game_Manager.itemCount * sizeof(ITEM_BOX));
-	CP_Vector itemPosition = CP_Vector_Set(1200, 400);
-	init_itemBox(game_Manager.item_Boxes, KEY_Item, itemPosition);
-	itemPosition = CP_Vector_Set(200, 100);
-	init_itemBox(game_Manager.item_Boxes + 1, BULLET_Item, itemPosition);
-	itemPosition = CP_Vector_Set(900, 700);
-	init_itemBox(game_Manager.item_Boxes + 2, BATTERY_Item, itemPosition);
+
+	for (int i = 0; i < game_Manager.itemCount; i++)
+	{
+		cJSON* itemBox_cJSON = cJSON_GetArrayItem(itemBoxes_cJSON, i);
+		cJSON* itemBox_start_cJSON = cJSON_GetObjectItem(itemBox_cJSON, "startPosition");
+
+		CP_Vector itemPosition = CP_Vector_Set((float)cJSON_GetObjectItem(itemBox_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(itemBox_start_cJSON, "y")->valuedouble);
+		int itemInBox = cJSON_GetObjectItem(itemBox_cJSON, "item")->valueint;
+
+		init_itemBox(game_Manager.item_Boxes + i, itemInBox, itemPosition);
+	}
+
+	//에너미
+	cJSON* enemies_cJSON = cJSON_GetObjectItem(root, "enemies");
+	game_Manager.enemyCount = cJSON_GetArraySize(enemies_cJSON); 
+
+	// JSON의 enemies 배열의 크기로 에너미 수 감지 후, 동적할당
+	startPositionEnemies = (CP_Vector*)malloc(sizeof(CP_Vector)* game_Manager.enemyCount);
+	patrolPointEnemies = (int*)malloc(sizeof(int)* game_Manager.enemyCount);
+	game_Manager.enemies = (ENEMY*)malloc(game_Manager.enemyCount * sizeof(ENEMY));
+
+
+	for (int i = 0; i < game_Manager.enemyCount; i++)
+	{
+		cJSON* enemy_cJSON	= cJSON_GetArrayItem(enemies_cJSON, i);
+
+		cJSON* enemy_start_cJSON = cJSON_GetObjectItem(enemy_cJSON, "startPosition");
+		startPositionEnemies[i] = CP_Vector_Set((float)cJSON_GetObjectItem(enemy_start_cJSON, "x")->valuedouble, (float)cJSON_GetObjectItem(enemy_start_cJSON, "y")->valuedouble);
+
+		init_Enemy(game_Manager.enemies + i, startPositionEnemies[i]);
+
+		// enemies 배열 속 각 에너미의 배열 크기로 패트롤포인츠 감지 후, 동적할당
+		patrolPointEnemies[i] = cJSON_GetObjectItem(enemy_cJSON, "patrolPoints")->valueint;
+
+		destinationsEnemies = (CP_Vector*)malloc(patrolPointEnemies[i]*sizeof(CP_Vector));
+		cJSON* enemy_destination_cJSON = cJSON_GetObjectItem(enemy_cJSON, "destinations");
+
+		for (int j = 0; j < patrolPointEnemies[i]; j++)
+		{	
+			cJSON* enemy_destination_j_cJSON = cJSON_GetArrayItem(enemy_destination_cJSON, j);
+			destinationsEnemies[j] = CP_Vector_Set((float)cJSON_GetObjectItem(enemy_destination_j_cJSON, "x")->valuedouble , (float)cJSON_GetObjectItem(enemy_destination_j_cJSON, "y")->valuedouble);
+		}
+
+		init_Enemy_Patrol(game_Manager.enemies + i, startPositionEnemies[i], destinationsEnemies, patrolPointEnemies[i]);
+	}
+
+	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
+	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
 
 	game_Manager.obstacleCount = 1;
@@ -68,6 +121,7 @@ void init_Game_Manager(void )
 
 
 	initCamera();
+	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
 
 // Update Game Objects
@@ -126,7 +180,6 @@ void update_Game_Manager(void) {
 
 }
 
-
 int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 {
 	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
@@ -149,6 +202,7 @@ int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int co
 
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place)
 {
+
 	if (player->getKey == 1) {
 		return checkCollision_Circle_to_Circle(player->position, player->radius, exit_Place->position, exit_Place->radius);
 	}
@@ -172,8 +226,11 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-	print_Player(&(gameManager->player));
+	
 
+	printVisionblocker(&visionblockerOff, &visionblockerOn);
+	
+	print_Player(&(gameManager->player));
 }
 
 
@@ -181,17 +238,20 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
-	/*for (int i = 0; i < game_Manager.enemyCount; i++) {
 
-		free(game_Manager.enemies[i].destinations);
-	}*/
-	free(game_Manager.enemies);
+	
+	CP_Image_Free(&visionblockerOff);
+	CP_Image_Free(&visionblockerOn);
+
 	free(game_Manager.item_Boxes);
+	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
+	free(startPositionEnemies);
+	free(patrolPointEnemies);
+	free(destinationsEnemies);
+
 	// shut down the gamestate and cleanup any dynamic memory
 }
-
-
 
 void check_Player_Win(void)
 {
