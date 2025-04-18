@@ -1,0 +1,228 @@
+{
+	"mabsize": {
+		"w": 3600,
+		"h": 1800
+	},
+
+	"player": {
+		"startPosition": {
+			"x": 800,
+			"y": 500
+		}
+	},
+
+	"enemies": [
+		{
+			"startPosition": {
+				"x": -200,
+				"y": -200
+			},
+
+			"patrolPoints": 3,
+
+			"destinations": [
+				{
+					"x": -200,
+					"y": -200
+				},
+				{
+					"x": -200,
+					"y": 600
+				},
+				{
+					"x": 600,
+					"y": 400
+				}
+			]
+		},
+
+		{
+			"startPosition": {
+				"x": 1600,
+				"y": 200
+			},
+
+			"patrolPoints": 5,
+
+			"destinations": [
+				{
+					"x": 1600,
+					"y": 200
+				},
+				{
+					"x": 400,
+					"y": 200
+				},
+				{
+					"x": 800,
+					"y": 800
+				},
+				{
+					"x": 600,
+					"y": -200
+				},
+				{
+					"x": 1000,
+					"y": 500
+				}
+			]
+		},
+
+		{
+			"startPosition": {
+				"x": 600,
+				"y": 200
+			},
+
+			"patrolPoints": 4,
+
+			"destinations": [
+				{
+					"x": 600,
+					"y": 200
+				},
+				{
+					"x": 200,
+					"y": 400
+				},
+				{
+					"x": 600,
+					"y": 600
+				},
+				{
+					"x": 1000,
+					"y": 400
+				}
+			]
+		}
+	],
+
+	"item_boxes": [
+		{
+			"startPosition": {
+				"x": 200,
+				"y": 100
+			},
+			"item": 0
+		},
+
+		{
+			"startPosition": {
+				"x": 1200,
+				"y": 400
+			},
+			"item": 1
+		},
+
+		{
+			"startPosition": {
+				"x": 900,
+				"y": 300
+			},
+			"item": 2
+		},
+
+		{
+			"startPosition": {
+				"x": 1200,
+				"y": 800
+			},
+			"item": 2
+		},
+
+		{
+			"startPosition": {
+				"x": 300,
+				"y": 600
+			},
+			"item": 2
+		},
+
+		{
+			"startPosition": {
+				"x": 840,
+				"y": 600
+			},
+			"item": 2
+		}
+
+	],
+
+	"obstacles": [
+		{
+			"startPosition": {
+				"x": 400,
+				"y": 500
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 400,
+				"y": 300
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 400,
+				"y": 700
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 300,
+				"y": 0
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 400,
+				"y": 0
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 250,
+				"y": 500
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 1100,
+				"y": 700
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 1150,
+				"y": 650
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 1100,
+				"y": 400
+			},
+			"type": 0
+		},
+		{
+			"startPosition": {
+				"x": 1050,
+				"y": 350
+			},
+			"type": 0
+		}
+	],
+
+	"exit_place": {
+		"x": 800,
+		"y": 700
+	}
+}

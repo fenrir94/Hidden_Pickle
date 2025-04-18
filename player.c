@@ -9,9 +9,11 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->life = 3;
 	player->radius = 50;
 	player->getKey = 0;
-	player->battery = 30;
+	player->battery = 80;
 	player->isLampOn = 0;
 	player->time_Hit = 0;
+
+	init_Gun(&(player->gun));
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
@@ -57,7 +59,7 @@ void get_Player_Hit(PLAYER* player, int attackPoint) {
 void use_Battery(PLAYER* player) {
 	int useBattery = get_InputSpace();
 	
-	if (useBattery > 0)
+	if (useBattery > 0 && player->battery > 0)
 	{
 		player->isLampOn = 1;
 	}
@@ -85,14 +87,20 @@ void get_Item(PLAYER* player, EItemType item_type) {
 		if (player->gun.bullets + 6 > MAX_BULLET) {
 			player->gun.bullets = MAX_BULLET;
 		}
-		player->gun.bullets += 6;
+		else {
+			player->gun.bullets += 6;
+			printf("Get Bullets! %d\n", player->gun.bullets);
+		}
 	}
 	else if (item_type == BATTERY_Item)
 	{
 		if (player->battery + 50 > MAX_BATTERY) {
 			player->battery = MAX_BATTERY;
 		}
-		player->battery += 40;
+		else {
+			player->battery += 40;
+			printf("Get Battery! %d\n", player->battery);
+		}
 	}
 }
 
@@ -149,7 +157,7 @@ void print_Player_Bulltet(int bullet)
 	int gap = 15;
 
 	for (int i = 0; i < bullet; i++) {
-		CP_Graphics_DrawRect((float)30+i*gap, 150, 10, 50);
+		CP_Graphics_DrawRect((float)35+i*gap, 200, 10, 50);
 	}
 }
 
