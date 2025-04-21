@@ -17,11 +17,14 @@ CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
 CP_Vector* destinationsEnemies;
 
+//const char* map_Name_Test = "./Assets/Map_data/map_data.JSON";
+const char* map_Name_Test0 = "./Assets/Map_data/map_data_TEST0.JSON";
+
 //to do fix -> to .
 void init_Game_Manager(void)
 {
 	//파일 읽어오기
-	FILE* file = fopen("./Assets/Map_data/map_data.JSON", "rb");
+	FILE* file = fopen(map_Name_Test0, "rb");
 	if (!file) {
 		printf("파일 열기 실패\n");
 		CP_Engine_Terminate();
@@ -140,8 +143,6 @@ void init_Game_Manager(void)
 // Update Game Objects
 void update_Game_Manager(void) {
 
-	check_Player_Win();
-
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
@@ -149,6 +150,8 @@ void update_Game_Manager(void) {
 	// get WASD Vector
 	CP_Vector inputVector = get_InputVector();
 	
+	// get Space Bar = BatteryUse
+	use_Battery(&(game_Manager.player));
 	
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
@@ -184,8 +187,10 @@ void update_Game_Manager(void) {
 	}
 
 	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
+		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
 	}
+
+	check_Player_Win(); 
 
 	check_Player_Lose(&(game_Manager.player));
 
@@ -241,7 +246,7 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	
 
-	printVisionblocker(&visionblockerOff, &visionblockerOn);
+	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
 	
 	print_Player(&(gameManager->player));
 }

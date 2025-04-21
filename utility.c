@@ -29,6 +29,7 @@ int checkCollision_Circle_to_Circle(CP_Vector position_Left, float radius_Left, 
 	
 }
 
+
 float clamp(float value, float min, float max)
 {
 	if (value < min)
@@ -43,4 +44,12 @@ float clamp(float value, float min, float max)
 	{
 		return value;
 	}
+
+int get_InputSpace(void)
+{
+	int count_Space = 0;
+	if (CP_Input_KeyDown(KEY_SPACE)) count_Space++;
+	
+	return count_Space;
+
 }
