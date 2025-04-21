@@ -128,4 +128,9 @@ void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt
 	CP_Vector dPosition_transpose = CP_Vector_Set(dPosition.y, -1*dPosition.x);
 
 	enemy->position = CP_Vector_Subtract(enemy->position, dPosition_transpose);
+
+	//enemy->vector_Sight = CP_Vector_Normalize(dPosition_transpose);
+
+	/*changeAngle_Footprint(&(enemy->footprint), CP_Vector_Normalize(dPosition_transpose));*/
+
 }
