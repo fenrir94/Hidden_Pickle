@@ -146,6 +146,6 @@ void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, i
 	}
 	else
 	{
-		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
+		//CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
 	}
 }

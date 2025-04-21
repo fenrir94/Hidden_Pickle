@@ -130,8 +130,9 @@ void init_Game_Manager(void)
 	}
 
 
-	//맵 사이즈
+	//맵 사이즈, 미니맵
     cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
+    initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
 	initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
 	
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
@@ -170,6 +171,8 @@ void update_Game_Manager(void) {
 	else 	{
 		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
 	}
+
+	updateMinimab(inputVectorNoraml, dt);
 
 	// Block Movement of Player when collision
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -249,6 +252,8 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
 	
 	print_Player(&(gameManager->player));
+
+	printMinimab();
 }
 
 
@@ -264,6 +269,8 @@ void exit_Game_Manager(void)
 	free(game_Manager.item_Boxes);
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
+	free(game_Manager.minimab.itemIconPosition);
+	free(game_Manager.minimab.obstacleIconPosition);
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
 	free(destinationsEnemies);
