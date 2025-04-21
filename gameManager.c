@@ -129,10 +129,14 @@ void init_Game_Manager(void)
 		init_Enemy_Patrol(game_Manager.enemies + i, startPositionEnemies[i], destinationsEnemies, patrolPointEnemies[i]);
 	}
 
+
+	//맵 사이즈
+    cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
+	initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
+	
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
-	initCamera();
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
 
