@@ -17,7 +17,9 @@ void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
 
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
-	player->position = CP_Vector_Add(player->position, dPoistion);
+	//player->position = CP_Vector_Add(player->position, dPoistion);
+	player->position.x = clamp(player->position.x + dPoistion.x, 0, (float)CP_System_GetWindowWidth());
+	player->position.y = clamp(player->position.y + dPoistion.y, 0, (float)CP_System_GetWindowHeight());
 }
 
 void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)

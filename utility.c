@@ -28,3 +28,19 @@ int checkCollision_Circle_to_Circle(CP_Vector position_Left, float radius_Left, 
 	}
 	
 }
+
+float clamp(float value, float min, float max)
+{
+	if (value < min)
+	{
+		return min;
+	}
+	else if (max < value)
+	{
+		return max;
+	}
+	else
+	{
+		return value;
+	}
+}
