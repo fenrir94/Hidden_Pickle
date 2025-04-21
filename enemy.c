@@ -3,41 +3,6 @@
 #include "enemy.h"
 #include "player.h"
 
-//CP_Vector_DL* insert_first(CP_Vector_DL* head, CP_Vector vector)
-//{
-//	CP_Vector_DL* node = malloc(sizeof(CP_Vector_DL));
-//	node->preDestination = head;
-//	node->destination = vector;
-//	node->nextDestination = head->nextDestination;
-//
-//	if (head == NULL) {
-//		head = node;
-//		head->nextDestination = head;
-//	}
-//	else {
-//		node->nextDestination = head->nextDestination;
-//		head->nextDestination = node;
-//	}
-//
-//	return head;
-//}
-//
-//CP_Vector_DL* insert_last(CP_Vector_DL* head, CP_Vector vector)
-//{
-//	CP_Vector_DL* node = malloc(sizeof(CP_Vector_DL));
-//	node->destination = vector;
-//
-//	if (head == NULL) {
-//		head = node;
-//		node->nextDestination = head;
-//	}
-//	else {
-//		node->nextDestination = head->nextDestination;
-//		head->nextDestination = node;
-//	}
-//
-//	return head;
-//}
 
 void init_Enemy(ENEMY* enemy, CP_Vector startPosition)
 {
@@ -60,12 +25,24 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	enemy->patrolPoints = patrolPoints;
 	enemy->destinationIndex = 1;
 	enemy->vector_Sight = CP_Vector_Set(1,0); // TO Do need to fix for initialization
+	enemy->radius_Sight = 300;
 	init_Footprint(&(enemy->footprint));
+	enemy->enemyType = PATROL;
 }
 
-void update_Enemy(ENEMY* enemy, float dt)
+void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt)
 {
-	patrol_Enemy(enemy, dt);
+	if (enemy->enemyType == PATROL || enemy->enemyType == PATROL_ONLY) {
+		patrol_Enemy(enemy, dt);
+	}
+	else if (enemy->enemyType == ATTACK_WAIT || enemy->enemyType == ATTACK_PATROL ) {
+		printf("Chase!");
+		chasePlayer_Enemy(enemy, positon_player);
+		move_Enemy(enemy, dt);
+	}
+	else { // WAIT Detecting Rotate
+
+	}
 	
 	// Need to check time to update, add and delete footprint
 	float time_present = CP_System_GetSeconds();
@@ -88,6 +65,11 @@ void print_Enemy(ENEMY* enemy)
 	print_Footprint(&(enemy->footprint));
 }
 
+void move_Enemy(ENEMY* enemy, float dt) {
+	enemy->position.x += enemy->speed * enemy->vector_Sight.x*dt;
+	enemy->position.y += enemy->speed * enemy->vector_Sight.y*dt;
+}
+
 void patrol_Enemy(ENEMY* enemy, float dt)
 {
 	int startPosition = enemy->destinationIndex - 1;
@@ -97,11 +79,9 @@ void patrol_Enemy(ENEMY* enemy, float dt)
 	}
 	CP_Vector dPatrolPosition = CP_Vector_Set(enemy->destinations[enemy->destinationIndex].x - enemy->position.x, enemy->destinations[enemy->destinationIndex].y - enemy->position.y);
 
-	CP_Vector dPatrolNormal = CP_Vector_Normalize(dPatrolPosition);
-	enemy->position.x += enemy->speed * dPatrolNormal.x*dt;
-	enemy->position.y += enemy->speed * dPatrolNormal.y*dt;
-
-	enemy->vector_Sight = dPatrolNormal;
+	enemy->vector_Sight = CP_Vector_Normalize(dPatrolPosition);
+	
+	move_Enemy(enemy, dt);
 
 	// Change Destination
 	if ((dPatrolPosition.x <= 0 && enemy->destinations[enemy->destinationIndex].x >= enemy->position.x) || (dPatrolPosition.x >= 0 && enemy->destinations[enemy->destinationIndex].x <= enemy->position.x)) {
@@ -134,3 +114,27 @@ void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt
 	/*changeAngle_Footprint(&(enemy->footprint), CP_Vector_Normalize(dPosition_transpose));*/
 
 }
+
+void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float radius_Player)
+{
+	if (checkCollision_Circle_to_Circle(enemy->position, enemy->radius_Sight, position_Player, radius_Player)) {
+		printf("Chase Angle! %f\n", CP_Vector_Angle(enemy->vector_Sight, CP_Vector_Subtract(position_Player, enemy->position)));
+		if (CP_Vector_Angle(enemy->vector_Sight, CP_Vector_Subtract(position_Player, enemy->position)) <= 60) {
+			if (enemy->enemyType == WAIT) enemy->enemyType = ATTACK_WAIT;
+			if (enemy->enemyType == PATROL) enemy->enemyType = ATTACK_PATROL;
+		}
+	} 
+	else {
+		if (enemy->enemyType == ATTACK_WAIT) enemy->enemyType = WAIT;
+		if (enemy->enemyType == ATTACK_PATROL) enemy->enemyType = PATROL;
+	}
+}
+
+void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player)
+{
+	CP_Vector chaseVector = CP_Vector_Subtract(position_Player, enemy->position);
+
+	enemy->vector_Sight = CP_Vector_Normalize(chaseVector);
+
+}
+

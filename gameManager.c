@@ -152,19 +152,17 @@ void update_Game_Manager(void) {
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		update_Enemy(game_Manager.enemies + i, dt);
-	}
-
-	//updateEnemy(game_Manager.enemies + 2, dt);
-
-	
 	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
 	{
 		updateCamera(inputVectorNoraml, dt);
 	}
-	else 	{
+	else {
 		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
+	}
+
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
+		update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
 	}
 
 	// Block Movement of Player when collision
