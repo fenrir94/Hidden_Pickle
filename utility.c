@@ -44,6 +44,7 @@ float clamp(float value, float min, float max)
 	{
 		return value;
 	}
+}
 
 int get_InputSpace(void)
 {
