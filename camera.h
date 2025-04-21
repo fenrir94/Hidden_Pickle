@@ -1,6 +1,14 @@
 #pragma once
 
-void initCamera(void);
+typedef struct mab {
+	float minX;
+    float maxX;
+    float minY;
+    float maxY;
+    CP_Vector cameraPos;
+} MAB;
+
+void initCamera(MAB* mab, CP_Vector mab_size);
 
 void updateCamera(CP_Vector updateVector, float dt);
 

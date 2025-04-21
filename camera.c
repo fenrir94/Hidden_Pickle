@@ -2,19 +2,25 @@
 #include "gameManager.h"
 #include "camera.h"
 #include "footprint.h"
+#include "utility.h"
 
 #define visionblockerWidth 2400
 #define visionblockerHeight 1500
 
 extern GAME_MANAGER game_Manager;
 
-void initCamera()
+void initCamera(MAB* mab, CP_Vector mab_size)
 {
 
 	// 플레이어의 시작 위치가 중심이 되도록 모든 오브젝트의 위치를 초기화
 	CP_Vector center_xy = CP_Vector_Set((float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2);
 	CP_Vector initVector = CP_Vector_Subtract(center_xy, (&game_Manager)->player.position);
 
+	mab->minX = center_xy.x - mab_size.x / 2;
+    mab->maxX = center_xy.x + mab_size.x / 2;
+    mab->minY = center_xy.y - mab_size.y / 2;
+    mab->maxY = center_xy.y + mab_size.y / 2;
+	mab->cameraPos = (&game_Manager)->player.position;
 
 	(&game_Manager)->player.position = CP_Vector_Add((&game_Manager)->player.position, initVector); // 플레이어 위치 초기화
 
@@ -44,6 +50,16 @@ void updateCamera(CP_Vector updateVector, float dt)
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (&game_Manager)->player.speed);
 
 	CP_Vector movingVector = CP_Vector_Negate(dPoistion);
+
+	
+	
+
+game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.map_Bounds.cameraPos.y = clamp(game_Manager.map_Bounds.cameraPos.y - movingVector.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+	
+
+	//float centerX = (float)CP_System_GetWindowWidth() / 2;
+	//float centerY = (float)CP_System_GetWindowHeight() / 2;
 
 	for (int i = 0; i < (&game_Manager)->enemyCount; i++) 
 	// 에너미 위치 변경
@@ -78,6 +94,8 @@ void updateCamera(CP_Vector updateVector, float dt)
 
 	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, movingVector);
 
+	
+
 	/*
 	for (int i = 0; i < (&game_Manager)->....Count; i++) 
 	// .... 위치 변경
@@ -93,36 +111,32 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 
 	float centerX = (float)CP_System_GetWindowWidth() / 2;
 	float centerY = (float)CP_System_GetWindowHeight() / 2;
+
 	float dx = player->position.x - centerX;
 	float dy = player->position.y - centerY;
 
-	/* 맵 경계에서 2d 카메라 동작 중지 시키는 코드 -> 맵 경계값들을 배열에 저장해서 플레이어나 카메라 이동할때 좌표 변동시키는 방식으로 동작시켜야할듯함.
-	if (player->position.x < centerX * 2 - mapWidth / 2 || centerX * 2 < player->position.x || 
-		player->position.y < centerY * 2 - mapHeight / 2 || centerY * 2 < player->position.y)
-	{
-		return 0;
-	}
-	*/
-
 	if (dx * dx + dy * dy < 300 * 300)
+		return 0;
+
+	// 카메라가 이동하려는 방향이 없다면 굳이 갱신 안함
+	if (CP_Vector_DotProduct(CP_Vector_Set(dx, dy), updateVector) <= 0)
+		return 0;
+
+	// 경계 충돌 검사
+	float halfW = (float)CP_System_GetWindowWidth() / 2;
+	float halfH = (float)CP_System_GetWindowHeight() / 2;
+	float camX = game_Manager.map_Bounds.cameraPos.x;
+	float camY = game_Manager.map_Bounds.cameraPos.y;
+
+	if ((camX - halfW <= game_Manager.map_Bounds.minX && updateVector.x < 0) ||
+		(camX + halfW >= game_Manager.map_Bounds.maxX && updateVector.x > 0) ||
+		(camY - halfH <= game_Manager.map_Bounds.minY && updateVector.y < 0) ||
+		(camY + halfH >= game_Manager.map_Bounds.maxY && updateVector.y > 0))
 	{
 		return 0;
 	}
-	else
-	{
-		CP_Vector player_xy = CP_Vector_Set(player->position.x, player->position.y);
-		CP_Vector center_xy = CP_Vector_Set(centerX, centerY);
-		CP_Vector player_vector = CP_Vector_Subtract(player_xy, center_xy);
 
-		if (CP_Vector_DotProduct(player_vector, updateVector) <= 0)
-		{
-			return 0;
-		}
-		else
-		{	
-			return 1;
-		}
-	}
+	return 1;
 }
 
 
@@ -135,6 +149,6 @@ void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, i
 	}
 	else
 	{
-		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
+		//CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, visionblockerWidth, visionblockerHeight, 255);
 	}
 }
