@@ -24,7 +24,7 @@ void add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Si
 		footprint->position[footprint->rear] = CP_Vector_Set(position.x, position.y);
 		footprint->generatedTime[footprint->rear] = CP_System_GetSeconds();
 		
-		changeAngle_Footprint(footprint, vector_Sight);
+		footprint->angle[footprint->rear] = getAngle_Vector_AxisX(vector_Sight);
 		
 		printf("Queue Added in [%d] at %.2f\n", footprint->rear, footprint->generatedTime[footprint->rear]);
 	}
@@ -52,18 +52,6 @@ void update_Footprint(FOOTPRINT* footprint, float dt)
 	}
 }
 
-void changeAngle_Footprint(FOOTPRINT* footprint, CP_Vector vector_Sight)
-{
-	CP_Vector vector_X_Norm = CP_Vector_Set(1, 0);
-	footprint->angle[footprint->rear] = CP_Vector_Angle(vector_Sight, vector_X_Norm);
-	//printf("Angle! %f\n", footprint->angle[footprint->rear]);
-
-	// TO DO Need to Change if Change Coordinate 
-	if (vector_Sight.y > 0) footprint->angle[footprint->rear] -= 90;
-	else {
-		footprint->angle[footprint->rear] = 90 - footprint->angle[footprint->rear];
-	}
-}
 
 void checkDuration_Footprint(FOOTPRINT* footprint, float time_present)
 {

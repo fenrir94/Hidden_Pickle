@@ -12,6 +12,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->battery = 80;
 	player->isLampOn = 0;
 	player->time_Hit = 0;
+	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
 
 	init_Gun(&(player->gun));
 }
@@ -48,8 +49,14 @@ int isInvincibility(PLAYER* player, float dt)
 	}
 }
 
+void rotate_Player(PLAYER* player)
+{
+	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
+	//printf("Shooting Vector X: %f,  Y: %f\n", player->shooting_Vector.x, player->shooting_Vector.y);
+	//printf("Shooting Vector Angle %f\n", getAngle_Vector_AxisX(player->shooting_Vector));
+}
 
-void get_Player_Hit(PLAYER* player, int attackPoint) {
+void getDamage_Player(PLAYER* player, int attackPoint) {
 	float time_Present = CP_System_GetSeconds();
 	if (isInvincibility(player, time_Present) == 0) {
 		player->life -= attackPoint;
@@ -77,6 +84,32 @@ void use_Battery(PLAYER* player) {
 	}
 }
 
+void checkAiming_Player(PLAYER* player, CP_KEY key, CP_KEY mouse)
+{
+	if (CP_Input_KeyTriggered(key) || CP_Input_MouseTriggered(mouse)) {
+		if (player->isAiming == 0) {
+			player->isAiming = 1;
+		}
+		else  {
+			player->isAiming = 0;
+		}
+	}
+
+	//printf("is Aiming? %d\n", player->gun.isAiming);
+}
+
+void shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse)
+{
+	if (CP_Input_KeyTriggered(key) || CP_Input_MouseTriggered(mouse)) {
+		int bulletIndex = getIndexEmptyBullet(&(player->gun));
+		if (player->gun.count_Bullet > 0 && bulletIndex != -1) {			
+			addBullet_Gun(&(player->gun), player->position, player->shooting_Vector, bulletIndex);
+			player->gun.count_Bullet--;
+			printf("Bullet Index! %d\n", bulletIndex);
+		}
+	}
+}
+
 void get_Item(PLAYER* player, EItemType item_type) {
 	printf("Get Item! %d\n", item_type);
 	if (item_type == KEY_Item)
@@ -86,12 +119,12 @@ void get_Item(PLAYER* player, EItemType item_type) {
 	}
 	else if (item_type == BULLET_Item)
 	{
-		if (player->gun.bullets + 6 > MAX_BULLET) {
-			player->gun.bullets = MAX_BULLET;
+		if (player->gun.count_Bullet + 6 > MAX_BULLET) {
+			player->gun.count_Bullet = MAX_BULLET;
 		}
 		else {
-			player->gun.bullets += 6;
-			printf("Get Bullets! %d\n", player->gun.bullets);
+			player->gun.count_Bullet += 6;
+			printf("Get Bullets! %d\n", player->gun.count_Bullet);
 		}
 	}
 	else if (item_type == BATTERY_Item)
@@ -107,6 +140,11 @@ void get_Item(PLAYER* player, EItemType item_type) {
 }
 
 void print_Player(PLAYER* player) {
+	
+	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 150));
+	float angle_player = getAngle_Vector_AxisX(player->shooting_Vector);
+	CP_Graphics_DrawRectAdvanced(player->position.x + player->shooting_Vector.x*10,player->position.y + player->shooting_Vector.y*10, 10, 100, angle_player,0);
+
 	float time_present = CP_System_GetSeconds();
 	if ((int)((time_present - player->time_Hit) * 10) % 2 != 1 && time_present - player->time_Hit <= TIME_INVINCIBILITY) {
 		CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
@@ -115,16 +153,14 @@ void print_Player(PLAYER* player) {
 		CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
 	}
 	
-	
 	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
-
+	
 	print_Player_Life(player->life);
 	print_Player_Battery(player->battery);
-	print_Player_Bulltet(player->gun.bullets);
+	print_Player_Bulltet_UI(player->gun.count_Bullet);
+	
+	print_Player_Aiming(player);
 }
-
-
-
 
 
 void print_Player_Life(int life) {
@@ -153,14 +189,24 @@ void print_Player_Battery(int battery)
 
 }
 
-void print_Player_Bulltet(int bullet)
+void print_Player_Bulltet_UI(int count_Bullet)
 {
 	CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
 	int gap = 15;
 
-	for (int i = 0; i < bullet; i++) {
+	for (int i = 0; i < count_Bullet; i++) {
 		CP_Graphics_DrawRect((float)35+i*gap, 200, 10, 50);
 	}
 }
 
 
+void print_Player_Aiming(PLAYER* player)
+{
+	// print Aiming
+	if (player->isAiming) {
+		CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
+		for (int i = 0; i < 8; i++) {
+			CP_Graphics_DrawRectAdvanced(player->position.x + i * player->shooting_Vector.x * 40, player->position.y + i * player->shooting_Vector.y * 40, 4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
+		}
+	}
+}

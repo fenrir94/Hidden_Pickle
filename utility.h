@@ -29,3 +29,8 @@ float clamp(float value, float min, float max);
 
 int get_InputSpace(void);
 
+float getAngle_Vector_AxisX(CP_Vector vector);
+
+CP_Vector getMousePosition(void);
+
+

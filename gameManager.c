@@ -158,6 +158,7 @@ void update_Game_Manager(void) {
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
+
 	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
 	{
 		updateCamera(inputVectorNoraml, dt);
@@ -166,9 +167,17 @@ void update_Game_Manager(void) {
 		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
 	}
 
+	rotate_Player(&(game_Manager.player));
+
+	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
+
+	shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
+
+	update_Gun(&(game_Manager.player.gun), dt);
 
 	updateMinimab(inputVectorNoraml, dt);
 
+	// Check Enemy Detected Player
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
 		update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
@@ -178,7 +187,7 @@ void update_Game_Manager(void) {
 	// Block Movement of Player when collision
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
-			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
 			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
 			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
 		}
@@ -208,6 +217,9 @@ void update_Game_Manager(void) {
 		}
 	}
 
+	check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
+	check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
+
 	check_Player_Win(); 
 
 	check_Player_Lose(&(game_Manager.player));
@@ -218,7 +230,12 @@ void update_Game_Manager(void) {
 
 int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 {
-	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+	if (enemy->life > 0) {
+		return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+	}
+	else {
+		return 0;
+	}
 }
 
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
@@ -274,6 +291,36 @@ int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count
 	return 0;
 }
 
+void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy)
+{
+	for (int i = 0; i < MAX_BULLET;i++) {
+		if (isBulletShooting(gun->time_Shooting[i])) {
+			for (int j = 0; j < count_Enemy; j++) {
+				if (enemy[j].life > 0) {
+					if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, enemy[j].position, enemy[j].radius)) {
+						endBullet(gun, i);
+						getDamage_Enemy(&(enemy[j]), gun->attackPoint);
+					}
+				}
+			}
+		}
+	}
+}
+
+void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Obstacles)
+{
+	for (int i = 0; i < MAX_BULLET;i++) {
+		if (isBulletShooting(gun->time_Shooting[i])) {
+			for (int j = 0; j < count_Obstacles; j++) {
+				if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, obstacles[j].position, obstacles[j].radius)) {
+					endBullet(gun, i);
+				}
+				
+			}
+		}
+	}
+}
+
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	print_Exit_Place(&(gameManager->exit_Place));
@@ -288,10 +335,12 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-	
+	printBullet(&(gameManager->player.gun));
+
+	print_Player(&(gameManager->player));
 
 	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
-	
+
 	print_Player(&(gameManager->player));
 
 	printMinimab();

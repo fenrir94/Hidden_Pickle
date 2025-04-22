@@ -50,3 +50,5 @@ void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt
 void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float radius_Player);
 
 void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player);
+
+void getDamage_Enemy(ENEMY* enemy, int attackPoint);
