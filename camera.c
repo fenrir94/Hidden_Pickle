@@ -155,7 +155,7 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, int checkLampOn)
 {
 
-	if (checkLampOn == 0) // to do 랜턴 추가하고 수정
+	if (checkLampOn == 1) // to do 랜턴 추가하고 수정
 	{
 		//CP_Image_Draw(*visionblockerOn , (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
 	}

@@ -58,14 +58,14 @@ int get_InputSpace(void)
 float getAngle_Vector_AxisX(CP_Vector vector)
 {
 	CP_Vector vector_X_Norm = CP_Vector_Set(1, 0);
-	float angle = CP_Vector_Angle(vector, vector_X_Norm);
+	float angle = CP_Vector_AngleCCW(vector, vector_X_Norm);
 	//printf("Angle! %f\n", footprint->angle[footprint->rear]);
-
-	// TO DO Need to Change if Change Coordinate 
-	if (vector.y > 0) angle -= 90;
+	angle = 90 - angle;
+	 //TO DO Need to Change if Change Coordinate 
+	/*if (vector.y > 0) angle -= 90;
 	else {
 		angle = 90 - angle;
-	}
+	}*/
 	return angle;
 }
 
