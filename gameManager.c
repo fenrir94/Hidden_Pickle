@@ -132,7 +132,7 @@ void init_Game_Manager(void)
 
 	//맵 사이즈, 미니맵
     cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
-	CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
+    CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
     initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
 	
 	
@@ -158,22 +158,22 @@ void update_Game_Manager(void) {
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		update_Enemy(game_Manager.enemies + i, dt);
-	}
-
-	//updateEnemy(game_Manager.enemies + 2, dt);
-
-	
 	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
 	{
 		updateCamera(inputVectorNoraml, dt);
 	}
-	else 	{
+	else {
 		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
 	}
 
+
 	updateMinimab(inputVectorNoraml, dt);
+
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
+		update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
+	}
+
 
 	// Block Movement of Player when collision
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -200,6 +200,12 @@ void update_Game_Manager(void) {
 	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
 		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
 		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
+	}
+
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		if (check_Collision_Enemy_Obstacles(game_Manager.enemies+i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Move_Enemy_Position(game_Manager.enemies+i, game_Manager.enemies[i].vector_Sight, dt* 3);
+		}
 	}
 
 	check_Player_Win(); 
@@ -256,6 +262,16 @@ int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Pla
 		return 0;
 	}
 	
+}
+
+int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count_Obstacles)
+{
+	for (int i = 0; i < count_Obstacles; i++) {
+		if (check_Collision_Enemy_Object(enemy, obstacles[i].position, obstacles[i].radius)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void print_GameObjects(GAME_MANAGER* gameManager)

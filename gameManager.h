@@ -64,6 +64,8 @@ int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int co
 
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place);
 
+int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count_Obstacles);
+
 void check_Player_Win(void);
 
 void check_Player_Lose(PLAYER* player);
