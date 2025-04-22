@@ -25,7 +25,7 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	enemy->patrolPoints = patrolPoints;
 	enemy->destinationIndex = 1;
 	enemy->vector_Sight = CP_Vector_Set(1,0); // TO Do need to fix for initialization
-	enemy->radius_Sight = 300;
+	enemy->radius_Sight = 600;
 	init_Footprint(&(enemy->footprint));
 	enemy->enemyType = PATROL;
 }
@@ -118,7 +118,7 @@ void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt
 void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float radius_Player)
 {
 	if (checkCollision_Circle_to_Circle(enemy->position, enemy->radius_Sight, position_Player, radius_Player)) {
-		printf("Chase Angle! %f\n", CP_Vector_Angle(enemy->vector_Sight, CP_Vector_Subtract(position_Player, enemy->position)));
+		//printf("Chase Angle! %f\n", CP_Vector_Angle(enemy->vector_Sight, CP_Vector_Subtract(position_Player, enemy->position)));
 		if (CP_Vector_Angle(enemy->vector_Sight, CP_Vector_Subtract(position_Player, enemy->position)) <= 60) {
 			if (enemy->enemyType == WAIT) enemy->enemyType = ATTACK_WAIT;
 			if (enemy->enemyType == PATROL) enemy->enemyType = ATTACK_PATROL;
@@ -136,5 +136,9 @@ void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player)
 
 	enemy->vector_Sight = CP_Vector_Normalize(chaseVector);
 
+}
+
+void getDamage_Enemy(ENEMY* enemy, int attackPoint)
+{
 }
 

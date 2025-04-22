@@ -156,6 +156,7 @@ void update_Game_Manager(void) {
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
+
 	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
 	{
 		updateCamera(inputVectorNoraml, dt);
@@ -164,6 +165,15 @@ void update_Game_Manager(void) {
 		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
 	}
 
+	rotate_Player(&(game_Manager.player));
+
+	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
+
+	shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
+
+	update_Gun(&(game_Manager.player.gun), dt);
+
+	// Check Enemy Detected Player
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
 		update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
@@ -172,10 +182,15 @@ void update_Game_Manager(void) {
 	// Block Movement of Player when collision
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
-			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
 			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
 		}
 	}
+
+	// Bullet Collision
+	/*for (int i = 0; i < MAX_BULLET; i++) {
+
+	}*/
 
 	for (int i = 0; i < game_Manager.itemCount; i++) {
 		if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
@@ -258,10 +273,10 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-	
-
 	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
 	
+	printBullet(&(gameManager->player.gun));
+
 	print_Player(&(gameManager->player));
 }
 

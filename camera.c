@@ -51,7 +51,7 @@ void updateCamera(CP_Vector updateVector, float dt)
 	
 	
 
-game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
 	game_Manager.map_Bounds.cameraPos.y = clamp(game_Manager.map_Bounds.cameraPos.y - movingVector.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
 	
 
@@ -87,6 +87,10 @@ game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x 
 
 	for (int i = 0; i < game_Manager.obstacleCount; i++) {
 		game_Manager.obstacles[i].position = CP_Vector_Add(game_Manager.obstacles[i].position, movingVector);
+	}
+
+	for (int i = 0; i < MAX_BULLET; i++) {
+		game_Manager.player.gun.position_Bullet[i] = CP_Vector_Add(game_Manager.player.gun.position_Bullet[i], movingVector);
 	}
 
 	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, movingVector);

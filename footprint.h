@@ -27,8 +27,6 @@ void  add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_S
 
 void checkDuration_Footprint(FOOTPRINT* footprint, float time_present);
 
-void changeAngle_Footprint(FOOTPRINT* footprint, CP_Vector vectorSight);
-
 void del_Footprint(FOOTPRINT* footprint);
 
 void init_Footprint(FOOTPRINT* footprint);
