@@ -6,6 +6,7 @@ void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacl
 	obstacle->position = CP_Vector_Set(position.x, position.y);
 	obstacle->radius = 100; // TO DO Need to Change
 	obstacle->obstacle_Type = obstacle_Type;
+	obstacle->isCollided = 0;
 }
 
 void print_Obstacles(OBSTACLE* obstacle, int count_Obstacle)

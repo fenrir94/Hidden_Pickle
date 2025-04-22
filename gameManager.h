@@ -58,6 +58,8 @@ int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy);
 
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box);
 
+int check_Is_Obstacle_In_Players_Sight(PLAYER* player, OBSTACLE* obstacles);
+
 int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int count_Obstacles);
 
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place);

@@ -6,10 +6,12 @@ float mabWidth;
 float mabHeight;
 float minimabWidth;
 float minimabHeight;
+
+   
 CP_Vector centerPosition;
 CP_Vector minimabPosition;
 
-void initMinimab(MINIMAB* minimab, CP_Vector mab_size)
+void initMinimab(MINIMAB* minimab, CP_Vector mab_size, CP_Vector initVector)
 // 플레이어 초기 좌표 오류 수정해야함
 {
 	mabWidth = mab_size.x;
@@ -19,25 +21,27 @@ void initMinimab(MINIMAB* minimab, CP_Vector mab_size)
 	minimabPosition = CP_Vector_Set((float)CP_System_GetWindowWidth() - 250, 125);
 	minimabWidth = 400;
 	minimabHeight = 200;
+	//float widthScale = minimabWidth / mabWidth;
+	//float heightScale = minimabHeight / mabHeight;
 
-	minimab->playerIconPosition.x = minimabPosition.x + (game_Manager.player.position.x - centerPosition.x) * (minimabWidth / mabWidth);
-	minimab->playerIconPosition.y = minimabPosition.y + (game_Manager.player.position.y - centerPosition.y) * (minimabHeight / mabHeight);
+	minimab->playerIconPosition.x = minimabPosition.x + (game_Manager.player.position.x - centerPosition.x - initVector.x) * (minimabWidth / mabWidth);
+	minimab->playerIconPosition.y = minimabPosition.y + (game_Manager.player.position.y - centerPosition.y - initVector.y) * (minimabHeight / mabHeight);
 
-	minimab->exitIconPosition.x = minimabPosition.x + (game_Manager.exit_Place.position.x - centerPosition.x) * (minimabWidth / mabWidth);
-	minimab->exitIconPosition.y = minimabPosition.y + (game_Manager.exit_Place.position.y - centerPosition.y) * (minimabHeight / mabHeight);
+	minimab->exitIconPosition.x = minimabPosition.x + (game_Manager.exit_Place.position.x - centerPosition.x - initVector.x) * (minimabWidth / mabWidth);
+	minimab->exitIconPosition.y = minimabPosition.y + (game_Manager.exit_Place.position.y - centerPosition.y - initVector.y) * (minimabHeight / mabHeight);
 
 	game_Manager.minimab.itemIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.itemCount);
 	for (int i = 0; i < game_Manager.itemCount; i++)
 	{
-		game_Manager.minimab.itemIconPosition[i].x = minimabPosition.x + (game_Manager.item_Boxes[i].position.x - centerPosition.x) * (minimabWidth / mabWidth);
-		game_Manager.minimab.itemIconPosition[i].y = minimabPosition.y + (game_Manager.item_Boxes[i].position.y - centerPosition.y) * (minimabHeight / mabHeight);
+		game_Manager.minimab.itemIconPosition[i].x = minimabPosition.x + (game_Manager.item_Boxes[i].position.x - centerPosition.x - initVector.x) * (minimabWidth / mabWidth);
+		game_Manager.minimab.itemIconPosition[i].y = minimabPosition.y + (game_Manager.item_Boxes[i].position.y - centerPosition.y - initVector.y) * (minimabHeight / mabHeight);
 	}
 
 	game_Manager.minimab.obstacleIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.obstacleCount);
 	for (int i = 0; i < game_Manager.obstacleCount; i++)
 	{
-		game_Manager.minimab.obstacleIconPosition[i].x = minimabPosition.x + (game_Manager.obstacles[i].position.x - centerPosition.x) * (minimabWidth / mabWidth);
-		game_Manager.minimab.obstacleIconPosition[i].y = minimabPosition.y + (game_Manager.obstacles[i].position.y - centerPosition.y) * (minimabHeight / mabHeight);
+		game_Manager.minimab.obstacleIconPosition[i].x = minimabPosition.x + (game_Manager.obstacles[i].position.x - centerPosition.x - initVector.x) * (minimabWidth / mabWidth);
+		game_Manager.minimab.obstacleIconPosition[i].y = minimabPosition.y + (game_Manager.obstacles[i].position.y - centerPosition.y - initVector.y) * (minimabHeight / mabHeight);
 	}
 
 
@@ -70,19 +74,12 @@ void updateMinimab(CP_Vector updateVector, float dt)
 }
 /*
 
-CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (&game_Manager)->player.speed);
-
-CP_Vector movingVector = CP_Vector_Negate(dPoistion);
-
 플레이어가 이동하면 미니맵의 플레이어 아이콘 또한 이동해야함.
 -> 기존 무빙벡터 이용해서 이동 시킴. 미니맵 사이즈에 맞게 벡터 사이즈를 줄여야함.
 -> dx + dy -> dx * (mw / w) + dy * (mh / h)로 변환.
 
 플레이어 아이콘이 미니맵 바깥으로 나가지 않게 해야함
 -> clamp 사용. mx - mw / 2 < x < mx + mw / 2, my - mh / 2 < y < my + mh / 2의 범위를 지키도록 만듬.
-
-플레이어가 아이템을 획득하면 해당 아이템 아이콘이 사라져야함. 
--> 아이템 관련 함수 참조 아이템 구조체에서 isCollided 이용
 
 플레이어와 일정 거리 이상 가까워진 장애물의 아이콘이 나타나야함. 나타난 후론 미니맵에 계속 표시됨.
 장애물과 플레이어의 좌표를 비교해 일정 거리 이상에 한번이라도 들어오면 state 1
@@ -103,7 +100,7 @@ void printMinimab(void)
 
 	for (int i = 0; i < game_Manager.itemCount; i++)
 	{
-		if (game_Manager.item_Boxes->isCollided == 0) {
+		if (game_Manager.item_Boxes[i].isCollided == 0) {
 			if (game_Manager.item_Boxes[i].item_type == KEY_Item)
 			{
 				CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
@@ -128,7 +125,7 @@ void printMinimab(void)
 	CP_Settings_Fill(CP_Color_Create(165, 42, 42, 255));
 	for (int i = 0; i < game_Manager.obstacleCount; i++)
 	{
-		if (1)
+		if (game_Manager.obstacles[i].isCollided == 1)
 		{
 			CP_Graphics_DrawCircle(game_Manager.minimab.obstacleIconPosition[i].x, game_Manager.minimab.obstacleIconPosition[i].y, 10);
 		}
@@ -136,6 +133,13 @@ void printMinimab(void)
 
 
 }
+
+void rollback_Player_Icon_Position(MINIMAB* minimab, CP_Vector updateVector, float dt)
+{
+	CP_Vector dPoistion = CP_Vector_Scale(CP_Vector_Scale(updateVector, dt * (game_Manager.player.speed)), minimabWidth / mabWidth);
+
+	minimab->playerIconPosition = CP_Vector_Subtract(minimab->playerIconPosition, dPoistion);
+} 
 /*
 각 프린트된 오브젝트의 좌표 및 카운트를 사용해 미니맵 이미지를 그려냄.
 장애물의 경우 state가 1일 때만 이미지를 출력시킴

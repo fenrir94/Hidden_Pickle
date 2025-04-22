@@ -132,8 +132,9 @@ void init_Game_Manager(void)
 
 	//맵 사이즈, 미니맵
     cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
-    initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
-	initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
+	CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
+    initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
+	
 	
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
@@ -179,6 +180,7 @@ void update_Game_Manager(void) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 			get_Player_Hit(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
 			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
+			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
 		}
 	}
 
@@ -189,8 +191,15 @@ void update_Game_Manager(void) {
 		}
 	}
 
+	for (int i = 0; i < game_Manager.obstacleCount; i++) {
+		if (check_Is_Obstacle_In_Players_Sight(&(game_Manager.player), game_Manager.obstacles + i)) {
+			game_Manager.obstacles[i].isCollided = 1;
+		}
+	}
+
 	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
 		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
+		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
 	}
 
 	check_Player_Win(); 
@@ -209,6 +218,22 @@ int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
 {
 	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
+}
+
+int check_Is_Obstacle_In_Players_Sight(PLAYER* player, OBSTACLE* obstacles)
+{
+	if (game_Manager.player.isLampOn == 1) {
+		if (CP_Vector_Distance(player->position, obstacles->position) <= 400) {
+			return 1;
+		}
+	}
+	else {
+		if (CP_Vector_Distance(player->position, obstacles->position) <= 200) {
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int count_Obstacles)
