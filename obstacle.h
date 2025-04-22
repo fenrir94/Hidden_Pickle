@@ -10,6 +10,7 @@ typedef struct obstacle {
 	CP_Vector position;
 	float radius;
 	EObstacleType obstacle_Type;
+	int isCollided;
 } OBSTACLE;
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type);
