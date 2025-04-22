@@ -16,6 +16,7 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include "mainmenu.h"
 #include "obstacle.h"
 #include "gun.h"
+#include "minimab.h"
 
 
 #define WINDOW_WIDTH 1800
@@ -33,6 +34,7 @@ typedef struct gameManager {
 	OBSTACLE* obstacles;
 	int obstacleCount;
 	MAB map_Bounds;
+	MINIMAB minimab;
 
 	/*
 	*
@@ -56,6 +58,8 @@ void exit_Game_Manager(void);
 int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy); 
 
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box);
+
+int check_Is_Obstacle_In_Players_Sight(PLAYER* player, OBSTACLE* obstacles);
 
 int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int count_Obstacles);
 

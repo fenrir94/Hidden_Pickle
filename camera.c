@@ -6,7 +6,7 @@
 
 extern GAME_MANAGER game_Manager;
 
-void initCamera(MAB* mab, CP_Vector mab_size)
+CP_Vector initCamera(MAB* mab, CP_Vector mab_size)
 {
 
 	// 플레이어의 시작 위치가 중심이 되도록 모든 오브젝트의 위치를 초기화
@@ -14,10 +14,10 @@ void initCamera(MAB* mab, CP_Vector mab_size)
 	CP_Vector initVector = CP_Vector_Subtract(center_xy, (&game_Manager)->player.position);
 
 	mab->minX = center_xy.x - mab_size.x / 2;
-    mab->maxX = center_xy.x + mab_size.x / 2;
+	mab->maxX = center_xy.x + mab_size.x / 2;
     mab->minY = center_xy.y - mab_size.y / 2;
     mab->maxY = center_xy.y + mab_size.y / 2;
-	mab->cameraPos = (&game_Manager)->player.position;
+	mab->cameraPos = (&game_Manager)->player.position;  
 
 	(&game_Manager)->player.position = CP_Vector_Add((&game_Manager)->player.position, initVector); // 플레이어 위치 초기화
 
@@ -32,6 +32,18 @@ void initCamera(MAB* mab, CP_Vector mab_size)
 		}
 	}
 
+	for (int i = 0; i < game_Manager.itemCount; i++) {
+		game_Manager.item_Boxes[i].position = CP_Vector_Add(game_Manager.item_Boxes[i].position, initVector);
+	}
+
+	for (int i = 0; i < game_Manager.obstacleCount; i++) {
+		game_Manager.obstacles[i].position = CP_Vector_Add(game_Manager.obstacles[i].position, initVector);
+	}
+
+	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, initVector);
+
+	return initVector;
+
 	/*
 	for (int i = 0; i < (&game_Manager)->....Count; i++) 
 	// .... 위치 초기화
@@ -39,7 +51,6 @@ void initCamera(MAB* mab, CP_Vector mab_size)
 		(&game_Manager)->....[i].position = CP_Vector_Add((&game_Manager)->....[i].position, initVector);
 	}
 	*/
-
 }
 
 void updateCamera(CP_Vector updateVector, float dt)
@@ -150,6 +161,6 @@ void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, i
 	}
 	else
 	{
-		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
+		//CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
 	}
 }
