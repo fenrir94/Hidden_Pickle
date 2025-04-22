@@ -15,6 +15,7 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include "exitPlace.h"
 #include "mainmenu.h"
 #include "obstacle.h"
+#include "gun.h"
 
 
 #define WINDOW_WIDTH 1800
@@ -61,6 +62,10 @@ int check_Collision_Player_Obstacles(PLAYER* player, OBSTACLE* obstacles, int co
 int check_Collision_Player_Enter_Exit_Place(PLAYER* player, EXIT_PLACE* exit_Place);
 
 int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count_Obstacles);
+
+void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy);
+
+void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Obstacles);
 
 void check_Player_Win(void);
 

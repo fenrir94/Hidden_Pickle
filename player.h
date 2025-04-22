@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include "itemBox.h"
+#include "gun.h"
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1

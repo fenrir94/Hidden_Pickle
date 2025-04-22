@@ -187,11 +187,6 @@ void update_Game_Manager(void) {
 		}
 	}
 
-	// Bullet Collision
-	/*for (int i = 0; i < MAX_BULLET; i++) {
-
-	}*/
-
 	for (int i = 0; i < game_Manager.itemCount; i++) {
 		if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
 			collide_itemBox(game_Manager.item_Boxes + i);
@@ -209,6 +204,9 @@ void update_Game_Manager(void) {
 		}
 	}
 
+	check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
+	check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
+
 	check_Player_Win(); 
 
 	check_Player_Lose(&(game_Manager.player));
@@ -219,7 +217,12 @@ void update_Game_Manager(void) {
 
 int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 {
-	return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+	if (enemy->life > 0) {
+		return checkCollision_Circle_to_Circle(player->position, player->radius, enemy->position, enemy->radius);
+	}
+	else {
+		return 0;
+	}
 }
 
 int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
@@ -259,6 +262,36 @@ int check_Collision_Enemy_Obstacles(ENEMY* enemy, OBSTACLE* obstacles, int count
 	return 0;
 }
 
+void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy)
+{
+	for (int i = 0; i < MAX_BULLET;i++) {
+		if (isBulletShooting(gun->time_Shooting[i])) {
+			for (int j = 0; j < count_Enemy; j++) {
+				if (enemy[j].life > 0) {
+					if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, enemy[j].position, enemy[j].radius)) {
+						endBullet(gun, i);
+						getDamage_Enemy(&(enemy[j]), gun->attackPoint);
+					}
+				}
+			}
+		}
+	}
+}
+
+void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Obstacles)
+{
+	for (int i = 0; i < MAX_BULLET;i++) {
+		if (isBulletShooting(gun->time_Shooting[i])) {
+			for (int j = 0; j < count_Obstacles; j++) {
+				if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, obstacles[j].position, obstacles[j].radius)) {
+					endBullet(gun, i);
+				}
+				
+			}
+		}
+	}
+}
+
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	print_Exit_Place(&(gameManager->exit_Place));
@@ -273,11 +306,11 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
-	
 	printBullet(&(gameManager->player.gun));
 
 	print_Player(&(gameManager->player));
+
+	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
 }
 
 

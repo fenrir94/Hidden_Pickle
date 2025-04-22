@@ -32,28 +32,31 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 
 void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt)
 {
-	if (enemy->enemyType == PATROL || enemy->enemyType == PATROL_ONLY) {
-		patrol_Enemy(enemy, dt);
-	}
-	else if (enemy->enemyType == ATTACK_WAIT || enemy->enemyType == ATTACK_PATROL ) {
-		printf("Chase!");
-		chasePlayer_Enemy(enemy, positon_player);
-		move_Enemy(enemy, dt);
-	}
-	else { // WAIT Detecting Rotate
-
-	}
-	
 	// Need to check time to update, add and delete footprint
 	float time_present = CP_System_GetSeconds();
 
-	//update_Footprint(&(enemy->footprint), dt);
+	if (enemy->life > 0) {
+		if (enemy->enemyType == PATROL || enemy->enemyType == PATROL_ONLY) {
+			patrol_Enemy(enemy, dt);
+		}
+		else if (enemy->enemyType == ATTACK_WAIT || enemy->enemyType == ATTACK_PATROL) {
+			printf("Chase!");
+			chasePlayer_Enemy(enemy, positon_player);
+			move_Enemy(enemy, dt);
+		}
+		else { // WAIT Detecting Rotate
 
-	// To Do need to fix
-	if ( is_Empty(&(enemy->footprint)) ||  (time_present - enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT ) {
-		add_Footprint(&(enemy->footprint), enemy->position, enemy->vector_Sight);
+		}
+
+		//update_Footprint(&(enemy->footprint), dt);
+
+		// To Do need to fix
+		if (is_Empty(&(enemy->footprint)) || (time_present - enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT) {
+			add_Footprint(&(enemy->footprint), enemy->position, enemy->vector_Sight);
+		}
+
+
 	}
-
 	//add_Footprint(&(enemy->footprint), enemy->position);
 	checkDuration_Footprint(&(enemy->footprint), time_present);
 }
@@ -140,5 +143,6 @@ void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player)
 
 void getDamage_Enemy(ENEMY* enemy, int attackPoint)
 {
+	enemy->life -= attackPoint;
 }
 
