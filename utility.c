@@ -1,4 +1,5 @@
 #include "utility.h"
+#include <math.h>
 
 CP_Vector get_InputVector(void)
 {
@@ -72,4 +73,38 @@ float getAngle_Vector_AxisX(CP_Vector vector)
 CP_Vector getMousePosition(void)
 {
 	return CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
+}
+
+int isMouseInsideRect(float area_center_x, float area_center_y, float area_width, float area_height, float click_x, float click_y)
+// 사각형 범위 감지 함수
+{
+	if (area_center_x - area_width / 2 < click_x && click_x < area_center_x + area_width / 2 &&
+		area_center_y - area_height / 2 < click_y && click_y < area_center_y + area_height / 2)
+	{
+		return 1;
+
+	}
+
+	return 0;
+}
+
+int isMouseInsideCircle(float circle_center_x, float circle_center_y, float diameter, float click_x, float click_y)
+// 원형 범위 감지 함수
+{
+	if (pow(click_x - circle_center_x, 2.0) + pow(click_y - circle_center_y, 2.0) <= pow(diameter / 2, 2.0))
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+void centeredCoordinate(float* x, float* y)
+// 좌표 이동 함수 (0,0)이 중심이 되도록
+{
+	*x += (float)CP_System_GetWindowWidth() / 2;
+
+	*y *= -1;
+
+	*y += (float)CP_System_GetWindowHeight() / 2;
 }
