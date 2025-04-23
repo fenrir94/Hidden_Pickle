@@ -15,6 +15,11 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
 
 	init_Gun(&(player->gun));
+
+	for (int i = 0; i < COUNT_ANIMATIONS_PLAYER; i++) {
+		init_Animation(&(player->animation[i]));
+	}
+
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {

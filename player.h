@@ -4,9 +4,11 @@
 #include "cprocessing.h"
 #include "itemBox.h"
 #include "gun.h"
+#include "animation.h"
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
+#define COUNT_ANIMATIONS_PLAYER 3
 
 typedef struct player {
 	CP_Vector position;
@@ -20,6 +22,7 @@ typedef struct player {
 	float time_Hit;
 	CP_Vector shooting_Vector;
 	int isAiming;
+	ANIMATION animation[COUNT_ANIMATIONS_PLAYER];
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
