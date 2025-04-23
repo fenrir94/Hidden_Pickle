@@ -136,6 +136,10 @@ void init_Game_Manager(void)
     initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
 	
 	
+	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
+	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
+	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.minY);
+	
 	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
 
@@ -145,7 +149,7 @@ void init_Game_Manager(void)
 // Update Game Objects
 void update_Game_Manager(void) {
 
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 0));
+	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
 
@@ -323,6 +327,8 @@ void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Ob
 
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
+	print_Background(&(game_Manager.background));
+
 	print_Exit_Place(&(gameManager->exit_Place));
 	
 	print_Obstacles(gameManager->obstacles, gameManager->obstacleCount);
