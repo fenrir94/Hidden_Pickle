@@ -11,6 +11,8 @@ int is_Full(FOOTPRINT* footprint) {
 }
 
 void init_Footprint(FOOTPRINT* footprint) {
+	footprint->imageFootLeft = CP_Image_Load("./Assets/Footprint/footLeft_Cat.png");
+	footprint->imageFootRight = CP_Image_Load("./Assets/Footprint/footRight_Cat.png");
 	footprint->rear = footprint->front = -1;
 }
 
@@ -79,9 +81,15 @@ void print_Footprint(FOOTPRINT* footprint)
 		float time_footprint_duration = time_present - footprint->generatedTime[i];
 		if (time_footprint_duration < ENDTIME_FOOTPRINT) {
 			int alpha = 255 - (int)time_footprint_duration*50; 
-			CP_Settings_Fill(CP_Color_Create(0, 0, 0, alpha));
+			//CP_Settings_Fill(CP_Color_Create(0, 0, 0, alpha));
 			//CP_Graphics_DrawRect(footprint->position[i].x, footprint->position[i].y, 50, 50);
-			CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 80, footprint->angle[i], 0);
+			//CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 80, footprint->angle[i], 0);
+			if (i % 2 == 0) {
+				CP_Image_DrawAdvanced(footprint->imageFootLeft, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootLeft), (float)CP_Image_GetHeight(footprint->imageFootLeft), alpha, footprint->angle[i]);
+			} 
+			else {
+				CP_Image_DrawAdvanced(footprint->imageFootRight, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootRight), (float)CP_Image_GetHeight(footprint->imageFootRight), alpha, footprint->angle[i]);
+			}
 		}
 	}
 }

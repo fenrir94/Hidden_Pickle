@@ -104,6 +104,8 @@ void updateCamera(CP_Vector updateVector, float dt)
 		game_Manager.player.gun.position_Bullet[i] = CP_Vector_Add(game_Manager.player.gun.position_Bullet[i], movingVector);
 	}
 
+	game_Manager.background.startPosition = CP_Vector_Add(game_Manager.background.startPosition, movingVector);
+
 	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, movingVector);
 
 	
@@ -161,6 +163,6 @@ void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, i
 	}
 	else
 	{
-		//CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
+		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
 	}
 }

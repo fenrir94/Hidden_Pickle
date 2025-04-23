@@ -148,12 +148,14 @@ void print_Player(PLAYER* player) {
 	float time_present = CP_System_GetSeconds();
 	if ((int)((time_present - player->time_Hit) * 10) % 2 != 1 && time_present - player->time_Hit <= TIME_INVINCIBILITY) {
 		CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+		CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
 	}
 	else {
-		CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+		//CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
 	}
-	
-	CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
+
+	CP_Image imagePlayer = CP_Image_Load("./Assets/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_0.png");
+	CP_Image_DrawAdvanced(imagePlayer, player->position.x, player->position.y, (float)CP_Image_GetWidth(imagePlayer)*3/5, (float)CP_Image_GetHeight(imagePlayer)*3/5, 255, angle_player-90);
 	
 	print_Player_Life(player->life);
 	print_Player_Battery(player->battery);

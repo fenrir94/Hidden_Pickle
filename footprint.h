@@ -11,6 +11,8 @@
 // Footprint is an element of Enemy. 
 
 typedef struct footprint {
+	CP_Image imageFootLeft;
+	CP_Image imageFootRight;
 	CP_Vector position[COUNT_FOOTPRINT];
 	float generatedTime[COUNT_FOOTPRINT];
 	float angle[COUNT_FOOTPRINT];
