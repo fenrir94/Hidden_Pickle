@@ -2,6 +2,7 @@
 #include "mainmenu.h"
 #include "gameManager.h"
 #include "utility.h"
+#include "stageSelectMenu.h"
 
 //제목
 char Title[15] = "Hidden Pickle";
@@ -14,16 +15,6 @@ CP_Image title_Logo_Image_File;// 타이틀 이미지 파일
 CP_Image title_Background_Image_File;// 타이틀 배경 파일
 
 CP_Image* button_Image_List; // 버튼 이미지 리스트 0: Normal, 1: Hover, 2: Pressed
-
-//이미지 구조체
-typedef struct Image{
-    float x;
-    float y;
-    float width;
-    float height;
-    int alpha;
-    float timeForAlpha; // 인트로 투명도 조절용
-} IMAGE;
 
 #define Config_width 700
 #define Config_height 800
@@ -38,10 +29,11 @@ Config_Exit_Image = { (Config_width - Config_Exit_width) / 2, (Config_height - C
 //사운드
 CP_Sound DigiPen_SFX_File, click_SFX_File;	// 인트로 사운드 파일
 
-typedef enum state{
+typedef enum state {
 	false,
 	true
 }State;
+
 
 //메인메뉴 상태
 State isIntroStateOn = true;
@@ -59,7 +51,7 @@ CP_Font button_Font;
 
 int is_Moved = 0;
 
-void mainmenu_init(void)
+void Init_Main_Menu(void)
 {
 	CP_System_SetWindowTitle(Title);
 
@@ -68,26 +60,13 @@ void mainmenu_init(void)
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE); // 폰트 수직, 수평 가운데 정렬
 	CP_Settings_TextSize(72.f); // 폰트 사이즈 설정
 
-	digiPen_Image_File = CP_Image_Load("Assets/DigiPen_WHITE.png"); // 이미지 불러오기
+	digiPen_Image_File = CP_Image_Load("Assets/Image/DigiPen_WHITE.png"); // 이미지 불러오기
 
-	title_Logo_Image_File = CP_Image_Load("Assets/Hidden_Pickle_Title.png");
+	title_Logo_Image_File = CP_Image_Load("Assets/Image/Hidden_Pickle_Title.png");
 
-	title_Background_Image_File = CP_Image_Load("Assets/Title_Background.png");
+	title_Background_Image_File = CP_Image_Load("Assets/Image/Title_Background.png");
 
-	// 다수의 이미지를 읽을 때 사용할 수 있음. 추후 함수로 분리
-
-	button_Image_List = (CP_Image*)malloc(3 * sizeof(CP_Image));
-
-	for (int i = 0; i < 3; i++)
-	{
-		char buffer[50];
-
-		sprintf_s(buffer, 50, "Assets/button%d.png", i);
-
-		button_Image_List[i] = CP_Image_Load(buffer);
-	}
-	
-	//
+	button_Image_List = LoadImagesFromAssets(3, "Assets/UI/menu_button%d.png");
 
 	if (!is_Moved)
 	{
@@ -101,26 +80,26 @@ void mainmenu_init(void)
 		is_Moved = 1;
 	}
 
-	DigiPen_SFX_File = CP_Sound_Load("Assets/Clap.wav"); // 사운드 불러오기
-	click_SFX_File = CP_Sound_Load("Assets/click.ogg");
+	DigiPen_SFX_File = CP_Sound_Load("Assets/SFX/Clap.wav"); // 사운드 불러오기
+	click_SFX_File = CP_Sound_Load("Assets/SFX/click.ogg");
 
 }
 
-void mainmenu_update(void)
+void Update_Main_Menu(void)
 {
 	if(isIntroStateOn == true)
 	{
-		print_Intro();
+		Print_Main_Menu_Intro();
 	}
 
 	if (isIntroStateOn == false)
 	{
-		print_Mainmenu();
+		Print_Main_Menu();
 	}
 
 }
 
-void print_Intro(void)
+void Print_Main_Menu_Intro(void)
 {
 	if (isSoundStateOn == true)
 	{
@@ -151,11 +130,9 @@ void print_Intro(void)
 	}
 }
 
-void print_Mainmenu(void)
+void Print_Main_Menu(void)
 {
 	CP_Graphics_ClearBackground(CP_Color_Create(128, 128, 128, 255));
-
-	//타이틀 배경 이미지 출력 추가
 
 	CP_Image_Draw(title_Background_Image_File, background_Image.x, background_Image.y, background_Image.width, background_Image.height, background_Image.alpha);
 
@@ -227,6 +204,7 @@ void print_Mainmenu(void)
 				{
 					isButtonPressed = false;
 					CP_Engine_SetNextGameState(init_Game_Manager, update_Game_Manager, exit_Game_Manager);
+					CP_Engine_SetNextGameState(Init_Stage_Select_Menu, Update_Stage_Select_Menu, Exit_Stage_Select_Menu);
 				}
 			}
 		}
@@ -265,11 +243,21 @@ void print_Mainmenu(void)
 
 }
 
-void mainmenu_exit(void)
+void Exit_Main_Menu(void)
 {
 	CP_Image_Free(&digiPen_Image_File); // 이미지 해제
 	CP_Image_Free(&title_Logo_Image_File);
-	CP_Image_Free(button_Image_List);
+
+	if (button_Image_List != NULL)
+	{
+		for (int i = 0; i < 3; i++) // 버튼 이미지 개수에 맞게 반복
+		{
+			CP_Image_Free(&button_Image_List[i]);
+		}
+		free(button_Image_List); // 배열 자체도 해제
+		button_Image_List = NULL;
+	}
+
 	CP_Image_Free(&title_Background_Image_File);
 	CP_Sound_Free(&DigiPen_SFX_File);
 }

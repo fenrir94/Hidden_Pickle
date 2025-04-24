@@ -1,0 +1,81 @@
+{
+		"mabsize": {
+			"w": 3600,
+			"h": 1800
+		},
+
+		"player": {
+			"startPosition": {
+				"x": 800,
+				"y": 500
+			}
+		},
+
+		"enemies": [
+			{
+				"startPosition": {
+					"x": -200,
+					"y": -200
+				},
+
+				"patrolPoints": 3,
+
+				"destinations": [
+					{
+						"x": -200,
+						"y": -200
+					},
+					{
+						"x": -200,
+						"y": 600
+					},
+					{
+						"x": 600,
+						"y": 400
+					}
+				]
+			}
+		],
+
+		"item_boxes": [
+			{
+				"startPosition": {
+					"x": 300,
+					"y": 600
+				},
+				"item": 2
+			},
+
+			{
+				"startPosition": {
+					"x": 840,
+					"y": 600
+				},
+				"item": 2
+			}
+
+		],
+
+		"obstacles": [
+			{
+				"startPosition": {
+					"x": 1150,
+					"y": 650
+				},
+				"type": 0
+			},
+			{
+				"startPosition": {
+					"x": 1100,
+					"y": 100
+				},
+				"type": 0
+			}
+		],
+
+		"exit_place": {
+			"x": 800,
+			"y": 700
+		}
+	}
+}

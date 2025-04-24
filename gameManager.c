@@ -5,7 +5,9 @@
 #include "gameManager.h"
 #include "camera.h"
 #include "player.h"
+#include "gun.h"
 #include "cJSON.h"
+#include "stageSelectMenu.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -13,18 +15,27 @@ GAME_MANAGER game_Manager;
 CP_Image visionblockerOff;
 CP_Image visionblockerOn;
 
+extern CP_Sound gunshot_SFX_File;
+
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
 CP_Vector* destinationsEnemies;
+char* buffer;
+
+extern int stage_Number;
 
 //const char* map_Name_Test = "./Assets/Map_data/map_data.JSON";
-const char* map_Name_Test0 = "./Assets/Map_data/map_data_TEST0.JSON";
+//const char* map_Name_Test0 = "./Assets/Map_data/map_data_Test0.JSON"; // stage_Number에 따라 변동 그 다음 stage_Number 0으로 초기화
 
 //to do fix -> to .
 void init_Game_Manager(void)
 {
+	char map_Name_Buffer[100];
+
+	sprintf_s(map_Name_Buffer, sizeof(map_Name_Buffer), "./Assets/Map_data/map_data_Test%d.JSON", stage_Number);
+
 	//파일 읽어오기
-	FILE* file = fopen(map_Name_Test0, "rb");
+	FILE* file = fopen(map_Name_Buffer, "rb");
 	if (!file) {
 		printf("파일 열기 실패\n");
 		CP_Engine_Terminate();
@@ -33,8 +44,8 @@ void init_Game_Manager(void)
 	long filesize = ftell(file); // 파일의 끝으로 이동 후 바이트 크기 받아오기 -> str 크기를 알기 위해
 	rewind(file);
 	//파일 string에 집어넣기
-
-	char* buffer = (char*)malloc(filesize+1);
+	
+	buffer = (char*)malloc(filesize+1);
 	fread(buffer, sizeof(char), filesize, file);
 	buffer[filesize] = '\0';
 
@@ -140,8 +151,8 @@ void init_Game_Manager(void)
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.minY);
 	
-	visionblockerOff = CP_Image_Load("./Assets/transparent_center_200.png");
-	visionblockerOn = CP_Image_Load("./Assets/transparent_center_400.png");
+	visionblockerOff = CP_Image_Load("./Assets/Image/transparent_center_200.png");
+	visionblockerOn = CP_Image_Load("./Assets/Image/transparent_center_400.png");
 
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
@@ -361,7 +372,9 @@ void exit_Game_Manager(void)
 	
 	CP_Image_Free(&visionblockerOff);
 	CP_Image_Free(&visionblockerOn);
+	CP_Sound_Free(&gunshot_SFX_File);
 
+	free(buffer);
 	free(game_Manager.item_Boxes);
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
@@ -377,7 +390,7 @@ void exit_Game_Manager(void)
 void check_Player_Win(void)
 {
 	if (check_Collision_Player_Enter_Exit_Place(&(game_Manager.player), &(game_Manager.exit_Place))) {
-		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+		CP_Engine_SetNextGameState(Init_Main_Menu, Update_Main_Menu, Exit_Main_Menu);
 	}
 	
 }
@@ -385,6 +398,6 @@ void check_Player_Win(void)
 void check_Player_Lose(PLAYER* player)
 {
 	if (player->life <= 0) {
-		CP_Engine_SetNextGameState(mainmenu_init, mainmenu_update, mainmenu_exit);
+		CP_Engine_SetNextGameState(Init_Main_Menu, Update_Main_Menu, Exit_Main_Menu);
 	}
 }

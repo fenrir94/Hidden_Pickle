@@ -47,3 +47,6 @@ y = [-(float)CP_System_GetWindowHeight() / 2, (float)CP_System_GetWindowHeight()
 -450 ~ 450
 */
 
+CP_Image* LoadImagesFromAssets(int count, const char* pathFormat);
+
+void FreeAllocatedImages(CP_Image* imageList);
