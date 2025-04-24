@@ -1,81 +1,665 @@
 {
-		"mabsize": {
-			"w": 3600,
-			"h": 1800
-		},
-
-		"player": {
-			"startPosition": {
-				"x": 800,
-				"y": 500
-			}
-		},
-
-		"enemies": [
-			{
-				"startPosition": {
-					"x": -200,
-					"y": -200
-				},
-
-				"patrolPoints": 3,
-
-				"destinations": [
-					{
-						"x": -200,
-						"y": -200
-					},
-					{
-						"x": -200,
-						"y": 600
-					},
-					{
-						"x": 600,
-						"y": 400
-					}
-				]
-			}
-		],
-
-		"item_boxes": [
-			{
-				"startPosition": {
-					"x": 300,
-					"y": 600
-				},
-				"item": 2
-			},
-
-			{
-				"startPosition": {
-					"x": 840,
-					"y": 600
-				},
-				"item": 2
-			}
-
-		],
-
-		"obstacles": [
-			{
-				"startPosition": {
-					"x": 1150,
-					"y": 650
-				},
-				"type": 0
-			},
-			{
-				"startPosition": {
-					"x": 1100,
-					"y": 100
-				},
-				"type": 0
-			}
-		],
-
-		"exit_place": {
-			"x": 800,
-			"y": 700
-		}
-	}
+  "mabsize": {
+    "w": 3600,
+    "h": 1800
+  },
+  "player": {
+    "startPosition": {
+      "x": 1819,
+      "y": -72
+    }
+  },
+  "enemies": [
+    {
+      "startPosition": {
+        "x": -104,
+        "y": 27
+      },
+      "patrolPoints": 2,
+      "destinations": [
+        {
+          "x": -104,
+          "y": 27
+        },
+        {
+          "x": 63,
+          "y": 87
+        }
+      ]
+    },
+    {
+      "startPosition": {
+        "x": -243,
+        "y": 873
+      },
+      "patrolPoints": 3,
+      "destinations": [
+        {
+          "x": -243,
+          "y": 873
+        },
+        {
+          "x": -411,
+          "y": 977
+        },
+        {
+          "x": -229,
+          "y": 1075
+        }
+      ]
+    },
+    {
+      "startPosition": {
+        "x": 756,
+        "y": 495
+      },
+      "patrolPoints": 3,
+      "destinations": [
+        {
+          "x": 756,
+          "y": 495
+        },
+        {
+          "x": 1012,
+          "y": 611
+        },
+        {
+          "x": 889,
+          "y": 780
+        }
+      ]
+    },
+    {
+      "startPosition": {
+        "x": 1414,
+        "y": -303
+      },
+      "patrolPoints": 2,
+      "destinations": [
+        {
+          "x": 1414,
+          "y": -303
+        },
+        {
+          "x": 1614,
+          "y": 202
+        }
+      ]
+    },
+    {
+      "startPosition": {
+        "x": 1932,
+        "y": 1033
+      },
+      "patrolPoints": 3,
+      "destinations": [
+        {
+          "x": 1932,
+          "y": 1033
+        },
+        {
+          "x": 2115,
+          "y": 1183
+        },
+        {
+          "x": 2308,
+          "y": 1033
+        }
+      ]
+    }
+  ],
+  "item_boxes": [
+    {
+      "startPosition": {
+        "x": 1513,
+        "y": 946
+      },
+      "item": 2
+    },
+    {
+      "startPosition": {
+        "x": -47,
+        "y": 665
+      },
+      "item": 2
+    },
+    {
+      "startPosition": {
+        "x": 1830,
+        "y": 511
+      },
+      "item": 2
+    },
+    {
+      "startPosition": {
+        "x": 1014,
+        "y": 363
+      },
+      "item": 2
+    },
+    {
+      "startPosition": {
+        "x": 907,
+        "y": -262
+      },
+      "item": 2
+    },
+    {
+      "startPosition": {
+        "x": 2310,
+        "y": 1038
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 998,
+        "y": 946
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 548,
+        "y": 97
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": -279,
+        "y": -336
+      },
+      "item": 0
+    }
+  ],
+  "obstacles": [
+    {
+      "startPosition": {
+        "x": -183,
+        "y": 1326
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1383,
+        "y": 1304
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -186,
+        "y": 1236
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1371,
+        "y": 1192
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2132,
+        "y": 1113
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -188,
+        "y": 1106
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 779,
+        "y": 1066
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1376,
+        "y": 1051
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -186,
+        "y": 996
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2187,
+        "y": 967
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 863,
+        "y": 967
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1385,
+        "y": 935
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2368,
+        "y": 928
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2507,
+        "y": 900
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -188,
+        "y": 883
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -439,
+        "y": 883
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -671,
+        "y": 883
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -550,
+        "y": 881
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -315,
+        "y": 874
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 870,
+        "y": 827
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1262,
+        "y": 825
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1148,
+        "y": 824
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1000,
+        "y": 818
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1637,
+        "y": 815
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1501,
+        "y": 811
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 104,
+        "y": 796
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -193,
+        "y": 769
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1986,
+        "y": 661
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 97,
+        "y": 660
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -188,
+        "y": 660
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -766,
+        "y": 583
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 95,
+        "y": 536
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -47,
+        "y": 534
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1985,
+        "y": 504
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1688,
+        "y": 504
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -650,
+        "y": 501
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -550,
+        "y": 422
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 708,
+        "y": 396
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -450,
+        "y": 345
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1833,
+        "y": 335
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1702,
+        "y": 335
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1979,
+        "y": 330
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 554,
+        "y": 288
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 809,
+        "y": 251
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1199,
+        "y": 223
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 445,
+        "y": 216
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -120,
+        "y": 216
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 895,
+        "y": 127
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1078,
+        "y": 96
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -130,
+        "y": 78
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 425,
+        "y": 75
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1990,
+        "y": 57
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 819,
+        "y": 10
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 977,
+        "y": -11
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1981,
+        "y": -82
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2570,
+        "y": -93
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 744,
+        "y": -103
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2463,
+        "y": -208
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 666,
+        "y": -212
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -413,
+        "y": -213
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1969,
+        "y": -215
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -116,
+        "y": -217
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1804,
+        "y": -220
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1682,
+        "y": -224
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 603,
+        "y": -313
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 2371,
+        "y": -327
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -415,
+        "y": -334
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": -116,
+        "y": -336
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 543,
+        "y": -407
+      },
+      "type": 0
+    }
+  ],
+  "exit_place": {
+    "x": -515,
+    "y": 1159
+  }
 }

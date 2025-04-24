@@ -149,7 +149,7 @@ void init_Game_Manager(void)
 	
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
-	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.minY);
+	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
 	
 	visionblockerOff = CP_Image_Load("./Assets/Image/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/Image/transparent_center_400.png");
