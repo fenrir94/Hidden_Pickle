@@ -149,7 +149,9 @@ void init_Game_Manager(void)
 	
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
+
 	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
+
 	
 	visionblockerOff = CP_Image_Load("./Assets/Image/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/Image/transparent_center_400.png");
@@ -183,6 +185,13 @@ void update_Game_Manager(void) {
 	}
 
 	rotate_Player(&(game_Manager.player));
+
+	float df = CP_System_GetFrameRate();
+
+	if (CP_Vector_Length(inputVectorNoraml) > 0) {
+		update_BodyPart(&(game_Manager.player.body), MOVE, df);
+		update_BodyPart(&(game_Manager.player.feet), MOVE, df);
+	}
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 

@@ -82,3 +82,8 @@
 ### 플레이 영상
  - [1주차 영상](https://drive.google.com/file/d/1BqVm4FLjJSyTmXvmstXeTHG4rbAm1HtL/view?usp=sharing)
 
+---
+
+### Asset Reference 
+
+- [Animated Top Down Survivor Player](https://opengameart.org/content/animated-top-down-survivor-player) by Riley Gombart, [CC BY](https://creativecommons.org/licenses/by/3.0/) 3.0

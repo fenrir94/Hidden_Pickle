@@ -13,8 +13,11 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->isLampOn = 0;
 	player->time_Hit = 0;
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
-
+	
 	init_Gun(&(player->gun));
+
+	init_Body_BodyPart(&(player->body), 3);
+	init_Feet_BodyPart(&(player->feet), 2);
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
@@ -24,6 +27,12 @@ void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
 	//player->position = CP_Vector_Add(player->position, dPoistion);
 	player->position.x = clamp(player->position.x + dPoistion.x, 0, (float)CP_System_GetWindowWidth());
 	player->position.y = clamp(player->position.y + dPoistion.y, 0, (float)CP_System_GetWindowHeight());
+
+	//if (CP_Vector_Length(updateVector) >= 1) {
+	//	update_BodyPart(&(player->body), MOVE, dt);
+	//	update_BodyPart(&(player->feet), MOVE, dt);
+	//}
+
 }
 
 void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
@@ -143,7 +152,7 @@ void print_Player(PLAYER* player) {
 	
 	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 150));
 	float angle_player = getAngle_Vector_AxisX(player->shooting_Vector);
-	CP_Graphics_DrawRectAdvanced(player->position.x + player->shooting_Vector.x*10,player->position.y + player->shooting_Vector.y*10, 10, 100, angle_player,0);
+	//CP_Graphics_DrawRectAdvanced(player->position.x + player->shooting_Vector.x*10,player->position.y + player->shooting_Vector.y*10, 10, 100, angle_player,0);
 
 	float time_present = CP_System_GetSeconds();
 	if ((int)((time_present - player->time_Hit) * 10) % 2 != 1 && time_present - player->time_Hit <= TIME_INVINCIBILITY) {
@@ -154,9 +163,17 @@ void print_Player(PLAYER* player) {
 		//CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
 	}
 
-	CP_Image imagePlayer = CP_Image_Load("./Assets/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_0.png");
-	CP_Image_DrawAdvanced(imagePlayer, player->position.x, player->position.y, (float)CP_Image_GetWidth(imagePlayer)*3/5, (float)CP_Image_GetHeight(imagePlayer)*3/5, 255, angle_player-90);
-	
+	/*CP_Image_DrawAdvanced(player->imageFeet_Player, player->position.x, player->position.y, 
+		(float)CP_Image_GetWidth(player->imageFeet_Player) * 3 / 5, (float)CP_Image_GetHeight(player->imageFeet_Player) * 3 / 5, 
+		255, angle_player - 90);
+	CP_Image_DrawAdvanced(player->imageBody_Player, player->position.x, player->position.y, 
+		(float)CP_Image_GetWidth(player->imageBody_Player)*3/5, (float)CP_Image_GetHeight(player->imageBody_Player)*3/5,
+		255, angle_player-90);*/
+
+	print_Feet_BodyPart(&(player->feet), player->position, angle_player - 90);
+	print_Body_BodyPart(&(player->body), player->position, angle_player - 90);
+
+
 	print_Player_Life(player->life);
 	print_Player_Battery(player->battery);
 	print_Player_Bulltet_UI(player->gun.count_Bullet);

@@ -112,6 +112,20 @@ void centeredCoordinate(float* x, float* y)
 	*y += (float)CP_System_GetWindowHeight() / 2;
 }
 
+
+void intToCharArray(int num, char* buffer) {
+	if (num < 10) {
+		buffer[0] = '0' + (char)(num % 10);
+		buffer[1] = '\0';
+	}
+	else {
+		buffer[0] = '0' + (char)(num / 10);
+		buffer[1] = '0' + (char)(num % 10);
+		buffer[2] = '\0';
+	}
+}
+
+
 CP_Image* LoadImagesFromAssets(int count, const char* pathFormat)
 {
 	CP_Image* imageList = (CP_Image*)malloc(count * sizeof(CP_Image));
@@ -133,4 +147,5 @@ void FreeAllocatedImages(CP_Image* imageList)
 	{
 		free(imageList);  // 메모리 해제
 	}
+
 }

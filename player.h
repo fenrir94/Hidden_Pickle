@@ -4,9 +4,12 @@
 #include "cprocessing.h"
 #include "itemBox.h"
 #include "gun.h"
+#include "animation.h"
+#include "bodyPart.h"
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
+#define COUNT_PARTS_PLAYER 2
 
 typedef struct player {
 	CP_Vector position;
@@ -20,6 +23,8 @@ typedef struct player {
 	float time_Hit;
 	CP_Vector shooting_Vector;
 	int isAiming;
+	BODY_PART feet;
+	BODY_PART body;
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
