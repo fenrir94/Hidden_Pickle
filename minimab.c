@@ -100,7 +100,14 @@ void printMinimab(void)
 
 	for (int i = 0; i < game_Manager.itemCount; i++)
 	{
+		
 		if (game_Manager.item_Boxes[i].isCollided == 0) {
+
+
+			CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
+			CP_Graphics_DrawCircle(game_Manager.minimab.itemIconPosition[i].x, game_Manager.minimab.itemIconPosition[i].y, 5);
+
+			/*
 			if (game_Manager.item_Boxes[i].item_type == KEY_Item)
 			{
 				CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
@@ -117,7 +124,9 @@ void printMinimab(void)
 			{
 				CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
 				CP_Graphics_DrawCircle(game_Manager.minimab.itemIconPosition[i].x, game_Manager.minimab.itemIconPosition[i].y, 5);
-			}	
+			}
+			*/
+		
 		}
 		
 }
