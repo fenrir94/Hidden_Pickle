@@ -1,8 +1,12 @@
 
 #include "gun.h"
 
+CP_Sound gunshot_SFX_File;
+
 void init_Gun(GUN* gun)
 {
+	gunshot_SFX_File = CP_Sound_Load("Assets/SFX/gun_Shot.wav");
+
 	gun->count_Bullet = 2;
 	gun->attackPoint = 1;
 	gun->radius_Bullet = 10;
@@ -29,6 +33,7 @@ void addBullet_Gun(GUN* gun, CP_Vector startPosition, CP_Vector vectorShooting, 
 	gun->vector_Shooting[indexEmpty] = vectorShooting;
 	gun->time_Shooting[indexEmpty] = CP_System_GetSeconds();
 
+	CP_Sound_Play(gunshot_SFX_File);
 	printf("Shoot! %f %f\n", vectorShooting.x, vectorShooting.y);
 }
 

@@ -1,5 +1,8 @@
 #include "utility.h"
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "cprocessing.h"
 
 CP_Vector get_InputVector(void)
 {
@@ -109,6 +112,7 @@ void centeredCoordinate(float* x, float* y)
 	*y += (float)CP_System_GetWindowHeight() / 2;
 }
 
+
 void intToCharArray(int num, char* buffer) {
 	if (num < 10) {
 		buffer[0] = '0' + (char)(num % 10);
@@ -118,6 +122,30 @@ void intToCharArray(int num, char* buffer) {
 		buffer[0] = '0' + (char)(num / 10);
 		buffer[1] = '0' + (char)(num % 10);
 		buffer[2] = '\0';
+	}
+}
+
+
+CP_Image* LoadImagesFromAssets(int count, const char* pathFormat)
+{
+	CP_Image* imageList = (CP_Image*)malloc(count * sizeof(CP_Image));
+
+	char buffer[100];
+	for (int i = 0; i < count; i++)
+	{
+		sprintf_s(buffer, sizeof(buffer), pathFormat, i);
+		imageList[i] = CP_Image_Load(buffer);
+	}
+
+	return imageList;
+}
+
+// 동적 할당된 메모리를 해제하는 함수
+void FreeAllocatedImages(CP_Image* imageList)
+{
+	if (imageList != NULL)
+	{
+		free(imageList);  // 메모리 해제
 	}
 
 }
