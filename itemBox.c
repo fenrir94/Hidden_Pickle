@@ -1,6 +1,8 @@
 
 #include "itemBox.h"
 
+CP_Sound chest_Open_SFX_File;
+
 void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_itemBox)
 {
 	item_box->item_type = itemType;
@@ -8,6 +10,7 @@ void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_ite
 	item_box->radius = 50;
 	item_box->isCollided = 0;
 
+	chest_Open_SFX_File = CP_Sound_Load("Assets/SFX/chest_Open.ogg");
 }
 
 // To DO with Collision
@@ -17,6 +20,8 @@ void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_ite
 // Check not to display item box
 void collide_itemBox(ITEM_BOX* item_box)
 {
+	CP_Sound_Play(chest_Open_SFX_File);
+		
 	item_box->isCollided = 1;
 }
 

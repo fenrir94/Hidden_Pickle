@@ -2,6 +2,8 @@
 #include "player.h"
 #include "utility.h"
 
+CP_Sound player_Hit_SFX_File;
+
 void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->position.x = startPosition.x;
 	player->position.y = startPosition.y;
@@ -13,6 +15,8 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->isLampOn = 0;
 	player->time_Hit = 0;
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
+
+	player_Hit_SFX_File = CP_Sound_Load("Assets/SFX/hit_Sound.wav");
 	
 	init_Gun(&(player->gun));
 
@@ -68,6 +72,8 @@ void rotate_Player(PLAYER* player)
 void getDamage_Player(PLAYER* player, int attackPoint) {
 	float time_Present = CP_System_GetSeconds();
 	if (isInvincibility(player, time_Present) == 0) {
+		CP_Sound_Play(player_Hit_SFX_File);
+
 		player->life -= attackPoint;
 		player->time_Hit = time_Present;
 	}
