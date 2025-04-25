@@ -75,6 +75,9 @@ void getDamage_Player(PLAYER* player, int attackPoint) {
 }
 
 void use_Battery(PLAYER* player) {
+	if (CP_Input_KeyTriggered(KEY_SPACE)) {
+		player->battery -= 10;
+	}
 	int useBattery = get_InputSpace();
 	
 	if (useBattery > 0 && player->battery > 0)
@@ -107,16 +110,20 @@ void checkAiming_Player(PLAYER* player, CP_KEY key, CP_KEY mouse)
 	//printf("is Aiming? %d\n", player->gun.isAiming);
 }
 
-void shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse)
-{
+int shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse)
+{	
+	int checkShooting = 0;
 	if (CP_Input_KeyTriggered(key) || CP_Input_MouseTriggered(mouse)) {
 		int bulletIndex = getIndexEmptyBullet(&(player->gun));
 		if (player->gun.count_Bullet > 0 && bulletIndex != -1) {			
 			addBullet_Gun(&(player->gun), player->position, player->shooting_Vector, bulletIndex);
 			player->gun.count_Bullet--;
-			printf("Bullet Index! %d\n", bulletIndex);
+			//printf("Bullet Index! %d\n", bulletIndex);
+			
+			checkShooting = 1;
 		}
 	}
+	return checkShooting;
 }
 
 void get_Item(PLAYER* player, EItemType item_type) {

@@ -43,7 +43,7 @@ void use_Battery(PLAYER* player);
 
 void checkAiming_Player(PLAYER* player, CP_KEY key, CP_KEY mouse);
 
-void shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse);
+int shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse);
 
 void print_Player_Life(int life);
 

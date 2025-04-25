@@ -186,16 +186,36 @@ void update_Game_Manager(void) {
 
 	rotate_Player(&(game_Manager.player));
 
+	
+	// TO DO Fix Shoot Animation
+	if (shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT)) {
+		changeAnimation_BodyPart(&(game_Manager.player.body), SHOOT);
+		if (CP_Vector_Length(inputVectorNoraml) > 0) {
+			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+		}
+		else {
+			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+		}
+	}
+	else{
+		if (CP_Vector_Length(inputVectorNoraml) > 0) {
+		changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
+		changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+		}
+		else {
+			changeAnimation_BodyPart(&(game_Manager.player.body), IDLE);
+			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+		}
+	}
+
 	float df = CP_System_GetFrameRate();
 
-	if (CP_Vector_Length(inputVectorNoraml) > 0) {
-		update_BodyPart(&(game_Manager.player.body), MOVE, df);
-		update_BodyPart(&(game_Manager.player.feet), MOVE, df);
-	}
+	update_BodyPart(&(game_Manager.player.body), df);
+	update_BodyPart(&(game_Manager.player.feet), df);
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
-	shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
+	
 
 	update_Gun(&(game_Manager.player.gun), dt);
 
@@ -384,6 +404,8 @@ void exit_Game_Manager(void)
 	CP_Sound_Free(&gunshot_SFX_File);
 
 	free(buffer);
+	free(game_Manager.player.body.animation);
+	free(game_Manager.player.feet.animation);
 	free(game_Manager.item_Boxes);
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
