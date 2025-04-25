@@ -1,5 +1,6 @@
 
 #include "player.h"
+#include "gameManager.h"
 #include "utility.h"
 
 CP_Sound player_Hit_SFX_File;
@@ -25,12 +26,35 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
+	float centerX = (float)CP_System_GetWindowWidth() / 2;
+	float centerY = (float)CP_System_GetWindowHeight() / 2;
+	float halfW = (float)CP_System_GetWindowWidth() / 2;
+	float halfH = (float)CP_System_GetWindowHeight() / 2;
+	float camX = game_Manager.map_Bounds.cameraPos.x;
+	float camY = game_Manager.map_Bounds.cameraPos.y;
 
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
-	//player->position = CP_Vector_Add(player->position, dPoistion);
-	player->position.x = clamp(player->position.x + dPoistion.x, 0, (float)CP_System_GetWindowWidth());
-	player->position.y = clamp(player->position.y + dPoistion.y, 0, (float)CP_System_GetWindowHeight());
+	if (camX - halfW <= game_Manager.map_Bounds.minX - centerX && updateVector.x < 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (camX + halfW >= game_Manager.map_Bounds.maxX + centerX && updateVector.x > 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (camY - halfH <= game_Manager.map_Bounds.minY - centerY && updateVector.y < 0)
+	{
+		dPoistion.y = 0;
+	}
+	if (camY + halfH >= game_Manager.map_Bounds.maxY + centerY && updateVector.y > 0)
+	{
+		dPoistion.y = 0;
+	}
+
+
+	player->position.x += dPoistion.x;
+	player->position.y += dPoistion.y;
 
 	//if (CP_Vector_Length(updateVector) >= 1) {
 	//	update_BodyPart(&(player->body), MOVE, dt);

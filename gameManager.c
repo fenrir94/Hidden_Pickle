@@ -18,6 +18,9 @@ CP_Image visionblockerOn;
 extern CP_Sound gunshot_SFX_File;
 extern CP_Sound player_Hit_SFX_File;
 extern CP_Sound chest_Open_SFX_File;
+CP_Sound game_Manager_BGM_File;
+
+int isMusicPlayed = 1;
 
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
@@ -157,12 +160,18 @@ void init_Game_Manager(void)
 	
 	visionblockerOff = CP_Image_Load("./Assets/Image/transparent_center_200.png");
 	visionblockerOn = CP_Image_Load("./Assets/Image/transparent_center_400.png");
+	game_Manager_BGM_File = CP_Sound_LoadMusic("./Assets/BGM/gamemanager_BGM.wav");
 
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
 
 // Update Game Objects
 void update_Game_Manager(void) {
+	if (isMusicPlayed)
+	{
+		CP_Sound_PlayMusic(game_Manager_BGM_File);
+		isMusicPlayed = 0;
+	}
 
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
 	// check input, update simulation, render etc.
@@ -386,6 +395,7 @@ void exit_Game_Manager(void)
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
+	CP_Sound_Free(&game_Manager_BGM_File);
 
 	free(buffer);
 	free(game_Manager.item_Boxes);

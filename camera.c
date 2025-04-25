@@ -59,11 +59,11 @@ void updateCamera(CP_Vector updateVector, float dt)
 
 	CP_Vector movingVector = CP_Vector_Negate(dPoistion);
 
-	
-	
+	float centerX = (float)CP_System_GetWindowWidth() / 2;
+	float centerY = (float)CP_System_GetWindowHeight() / 2;
 
-	game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
-	game_Manager.map_Bounds.cameraPos.y = clamp(game_Manager.map_Bounds.cameraPos.y - movingVector.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+	game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX - centerX, game_Manager.map_Bounds.maxX + centerX);
+	game_Manager.map_Bounds.cameraPos.y = clamp(game_Manager.map_Bounds.cameraPos.y - movingVector.y, game_Manager.map_Bounds.minY - centerY, game_Manager.map_Bounds.maxY + centerY);
 	
 
 	//float centerX = (float)CP_System_GetWindowWidth() / 2;
@@ -142,10 +142,10 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 	float camX = game_Manager.map_Bounds.cameraPos.x;
 	float camY = game_Manager.map_Bounds.cameraPos.y;
 
-	if ((camX - halfW <= game_Manager.map_Bounds.minX && updateVector.x < 0) ||
-		(camX + halfW >= game_Manager.map_Bounds.maxX && updateVector.x > 0) ||
-		(camY - halfH <= game_Manager.map_Bounds.minY && updateVector.y < 0) ||
-		(camY + halfH >= game_Manager.map_Bounds.maxY && updateVector.y > 0))
+	if ((camX - halfW <= game_Manager.map_Bounds.minX - centerX && updateVector.x < 0) ||
+		(camX + halfW >= game_Manager.map_Bounds.maxX + centerX && updateVector.x > 0) ||
+		(camY - halfH <= game_Manager.map_Bounds.minY - centerY && updateVector.y < 0) ||
+		(camY + halfH >= game_Manager.map_Bounds.maxY + centerY && updateVector.y > 0))
 	{
 		return 0;
 	}
