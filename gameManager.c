@@ -16,6 +16,8 @@ CP_Image visionblockerOff;
 CP_Image visionblockerOn;
 
 extern CP_Sound gunshot_SFX_File;
+extern CP_Sound player_Hit_SFX_File;
+extern CP_Sound chest_Open_SFX_File;
 
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
@@ -382,6 +384,8 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&visionblockerOff);
 	CP_Image_Free(&visionblockerOn);
 	CP_Sound_Free(&gunshot_SFX_File);
+	CP_Sound_Free(&player_Hit_SFX_File);
+	CP_Sound_Free(&chest_Open_SFX_File);
 
 	free(buffer);
 	free(game_Manager.item_Boxes);
