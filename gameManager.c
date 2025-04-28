@@ -217,7 +217,7 @@ void update_Game_Manager(void) {
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
-	update_Gun(&(game_Manager.player.gun), dt);
+	update_Gun(&(game_Manager.player.gun), game_Manager.player.position, game_Manager.player.shooting_Vector, dt);
 
 	updateMinimab(inputVectorNoraml, dt);
 
@@ -408,6 +408,10 @@ void exit_Game_Manager(void)
 	free(game_Manager.player.body.animation);
 	free(game_Manager.player.feet.animation);
 	free(game_Manager.item_Boxes);
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootLeft);
+		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
+	}
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
 	free(game_Manager.minimab.itemIconPosition);
