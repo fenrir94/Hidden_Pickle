@@ -5,7 +5,6 @@ typedef struct mab {
     float maxX;
     float minY;
     float maxY;
-    CP_Vector cameraPos;
 } MAB;
 
 CP_Vector initCamera(MAB* mab, CP_Vector mab_size);
