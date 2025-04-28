@@ -6,6 +6,7 @@
 #include "gun.h"
 #include "animation.h"
 #include "bodyPart.h"
+#include "utility.h"
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
@@ -45,11 +46,11 @@ void checkAiming_Player(PLAYER* player, CP_KEY key, CP_KEY mouse);
 
 int shootingBullet_Player(PLAYER* player, CP_KEY key, CP_KEY mouse);
 
-void print_Player_Life(int life);
+void print_Player_Life(PLAYER* player, int life);
 
-void print_Player_Battery(int battery);
+void print_Player_Battery(PLAYER* player, int battery);
 
-void print_Player_Bulltet_UI(int bullet);
+void print_Player_Bulltet_UI(PLAYER* player, int bullet);
 
 void print_Player(PLAYER* player);
 
@@ -57,4 +58,4 @@ int isInvincibility(PLAYER* player, float dt);
 
 void rotate_Player(PLAYER* player);
 
-void print_Player_Aiming(PLAYER* player);
+void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun);

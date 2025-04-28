@@ -217,8 +217,6 @@ void update_Game_Manager(void) {
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
-	
-
 	update_Gun(&(game_Manager.player.gun), dt);
 
 	updateMinimab(inputVectorNoraml, dt);
@@ -234,8 +232,8 @@ void update_Game_Manager(void) {
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*3);
+			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt*3);
 		}
 	}
 
@@ -253,8 +251,8 @@ void update_Game_Manager(void) {
 	}
 
 	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
-		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
+		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
+		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt);
 	}
 
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -288,6 +286,7 @@ int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
 {
 	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
 }
+
 
 int check_Is_Obstacle_In_Players_Sight(PLAYER* player, OBSTACLE* obstacles)
 {
@@ -382,8 +381,6 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	for (int i = 0; i < gameManager->itemCount; i++) {
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
-
-	printBullet(&(gameManager->player.gun));
 
 	print_Player(&(gameManager->player));
 

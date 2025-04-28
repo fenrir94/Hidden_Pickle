@@ -7,9 +7,10 @@ void init_Gun(GUN* gun)
 {
 	gunshot_SFX_File = CP_Sound_Load("Assets/SFX/gun_Shot.wav");
 
+	gun->position_Gun = CP_Vector_Set(40, 30);
 	gun->count_Bullet = 2;
 	gun->attackPoint = 1;
-	gun->radius_Bullet = 10;
+	gun->radius_Bullet = 20;
 	gun->speed_Bullet = 800;
 	for (int i = 0; i < MAX_BULLET; i++) {
 		gun->position_Bullet[i] = CP_Vector_Set(0, 0);
@@ -29,7 +30,7 @@ int getIndexEmptyBullet(GUN* gun) {
 }
 
 void addBullet_Gun(GUN* gun, CP_Vector startPosition, CP_Vector vectorShooting, int indexEmpty) {
-	gun->position_Bullet[indexEmpty] = CP_Vector_Add(startPosition, CP_Vector_Scale(vectorShooting, 100));
+	gun->position_Bullet[indexEmpty] = CP_Vector_Add(startPosition, CP_Vector_Scale(vectorShooting, 50));
 	gun->vector_Shooting[indexEmpty] = vectorShooting;
 	gun->time_Shooting[indexEmpty] = CP_System_GetSeconds();
 
@@ -39,6 +40,7 @@ void addBullet_Gun(GUN* gun, CP_Vector startPosition, CP_Vector vectorShooting, 
 
 void update_Gun(GUN* gun, float dt)
 {
+
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (isBulletShooting(gun->time_Shooting[i])) {
 			gun->position_Bullet[i].x += gun->vector_Shooting[i].x * dt * gun->speed_Bullet;
@@ -66,10 +68,14 @@ int isBulletShooting(float time_Shooting)
 	return CP_System_GetSeconds() - time_Shooting < TIME_BULLLET;
 }
 
-void printBullet(GUN* gun)
+void printBullet(GUN* gun, CP_Vector position_Player, float angle)
 {
 	// print bullet
-	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 150));
+	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
+	//CP_Graphics_DrawCircle(gun->position_Gun.x, gun->position_Gun.y , 200);
+	//CP_Graphics_DrawCircle(position_Player.x + CP_Vector_Length(gun->position_Gun)* (float)cos(deg_to_rad(angle)), position_Player.y + CP_Vector_Length(gun->position_Gun) * (float)sin(deg_to_rad(angle)), 10);
+
+
 
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (isBulletShooting(gun->time_Shooting[i])) {

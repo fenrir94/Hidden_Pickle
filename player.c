@@ -162,83 +162,88 @@ void get_Item(PLAYER* player, EItemType item_type) {
 }
 
 void print_Player(PLAYER* player) {
-	
-	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 150));
 	float angle_player = getAngle_Vector_AxisX(player->shooting_Vector);
-	//CP_Graphics_DrawRectAdvanced(player->position.x + player->shooting_Vector.x*10,player->position.y + player->shooting_Vector.y*10, 10, 100, angle_player,0);
-
-	float time_present = CP_System_GetSeconds();
-	if ((int)((time_present - player->time_Hit) * 10) % 2 != 1 && time_present - player->time_Hit <= TIME_INVINCIBILITY) {
-		CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-		CP_Graphics_DrawCircle(player->position.x, player->position.y, player->radius);
-	}
-	else {
-		//CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
-	}
-
-	/*CP_Image_DrawAdvanced(player->imageFeet_Player, player->position.x, player->position.y, 
-		(float)CP_Image_GetWidth(player->imageFeet_Player) * 3 / 5, (float)CP_Image_GetHeight(player->imageFeet_Player) * 3 / 5, 
-		255, angle_player - 90);
-	CP_Image_DrawAdvanced(player->imageBody_Player, player->position.x, player->position.y, 
-		(float)CP_Image_GetWidth(player->imageBody_Player)*3/5, (float)CP_Image_GetHeight(player->imageBody_Player)*3/5,
-		255, angle_player-90);*/
 
 	print_Feet_BodyPart(&(player->feet), player->position, angle_player - 90);
 	print_Body_BodyPart(&(player->body), player->position, angle_player - 90);
 
 
-	print_Player_Life(player->life);
-	print_Player_Battery(player->battery);
-	print_Player_Bulltet_UI(player->gun.count_Bullet);
-	
-	print_Player_Aiming(player);
-}
-
-
-void print_Player_Life(int life) {
-	CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
-	int gap = 100;
-
-	for (int i = 0; i < life; i++) {
-		CP_Graphics_DrawCircle(50+(float)i*gap, 50, 80);
-	}
-}
-
-void print_Player_Battery(int battery)
-{
 	CP_Settings_RectMode(CP_POSITION_CORNER);
 
+	print_Player_Life(player, player->life);
+	print_Player_Battery(player, player->battery);
+	print_Player_Bulltet_UI(player, player->gun.count_Bullet);
+	
+	CP_Settings_RectMode(CP_POSITION_CENTER);
+	printBullet(&(player->gun), player->position, angle_player - 90);
+
+	print_Player_Aiming(player, player->gun.position_Gun);
+}
+
+
+void print_Player_Life(PLAYER* player, int life) {
+
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	CP_Graphics_DrawRect(30,100,202,32);
+	CP_Graphics_DrawRect(player->position.x - 100, player->position.y - 90, 200, 20);
+
+	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+	float gap = (float)200 / BASIC_LIFE;
+
+	for (int i = 0; i < life; i++) {
+		//CP_Graphics_DrawCircle(50+(float)i*gap, 50, 80);
+		//CP_Graphics_DrawCircle(player->position.x+(float)i*gap-50, player->position.y - 100, 40);
+		CP_Graphics_DrawRect(player->position.x + (float)i * gap - 100, player->position.y -90, gap, 10);
+
+	}
+
+	
+}
+
+void print_Player_Battery(PLAYER* player, int battery)
+{
+	
+
+	/*CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Graphics_DrawRect(player->position.x - 100, player->position.y - 80,200,6);*/
 
 	//CP_Settings_Fill(CP_Color_Create(255, 0, 255, 0));
 	//CP_Graphics_DrawRect(31, 101, 200, 30);
 
 	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
-	CP_Graphics_DrawRect(31, 101, (float)battery*2, 30);
-
-	CP_Settings_RectMode(CP_POSITION_CENTER);
+	CP_Graphics_DrawRect(player->position.x - 100, player->position.y - 80, (float)battery*2, 5);
 
 }
 
-void print_Player_Bulltet_UI(int count_Bullet)
+void print_Player_Bulltet_UI(PLAYER* player, int count_Bullet)
 {
-	CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
-	int gap = 15;
+	CP_Settings_Fill(CP_Color_Create(200, 200, 200, 255));
+	float gap = (float)200 / MAX_BULLET;
+	
+	//TO DO 
+	//CP_Image imageBullet = CP_Image_Load("./Assets/Image/Bullet_2.png");
 
+	
 	for (int i = 0; i < count_Bullet; i++) {
-		CP_Graphics_DrawRect((float)35+i*gap, 200, 10, 50);
+		CP_Graphics_DrawRect(player->position.x - 100 + i * gap, player->position.y - 75, gap, 5);
+		//CP_Image_Draw(imageBullet, player->position.x - 95 + i*gap , player->position.y - 60, 30, 30, 255);
 	}
+
+	
 }
 
-
-void print_Player_Aiming(PLAYER* player)
+void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
 {
 	// print Aiming
 	if (player->isAiming) {
 		CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
 		for (int i = 0; i < 8; i++) {
-			CP_Graphics_DrawRectAdvanced(player->position.x + i * player->shooting_Vector.x * 40, player->position.y + i * player->shooting_Vector.y * 40, 4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
+			CP_Graphics_DrawRectAdvanced(player->position.x + i * player->shooting_Vector.x * 40,
+				player->position.y + i * player->shooting_Vector.y * 40, 
+				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
+			//CP_Graphics_DrawRectAdvanced(player->position.x + CP_Vector_Length(vector_Gun) * (float)cos(deg_to_rad(90-getAngle_Vector_AxisX(player->shooting_Vector))) + i * player->shooting_Vector.x * 40,
+			//	player->position.y + CP_Vector_Length(vector_Gun) * (float)cos(deg_to_rad(90-getAngle_Vector_AxisX(player->shooting_Vector))) + i * player->shooting_Vector.y * 40, 
+			//	4, 20, getAngle_Vector_AxisX(player->shooting_Vector)-90, 0);
+
 		}
 	}
 }

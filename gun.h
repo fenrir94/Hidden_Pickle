@@ -1,12 +1,15 @@
 #pragma once
 
 #include <stdio.h>
+#include <math.h>
 #include "cprocessing.h"
 #include "itemBox.h"
+
 
 #define TIME_BULLLET 2
 
 typedef struct gun {
+	CP_Vector position_Gun;
 	CP_Vector position_Bullet[MAX_BULLET];
 	CP_Vector vector_Shooting[MAX_BULLET];
 	float time_Shooting[MAX_BULLET];
@@ -27,7 +30,7 @@ void update_Gun(GUN* gun, float dt);
 
 int checkCollision_Bullet_Object(GUN* gun, CP_Vector positionObject, float radius);
 
-void printBullet(GUN* gun);
+void printBullet(GUN* gun, CP_Vector position_Player, float angle);
 
 void endBullet(GUN* gun, int indexBullet);
 
