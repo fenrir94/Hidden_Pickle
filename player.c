@@ -1,4 +1,4 @@
-
+﻿
 #include "player.h"
 #include "gameManager.h"
 #include "utility.h"
@@ -26,28 +26,25 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 }
 
 void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
-	float centerX = (float)CP_System_GetWindowWidth() / 2;
-	float centerY = (float)CP_System_GetWindowHeight() / 2;
-	float halfW = (float)CP_System_GetWindowWidth() / 2;
-	float halfH = (float)CP_System_GetWindowHeight() / 2;
-	float camX = game_Manager.map_Bounds.cameraPos.x;
-	float camY = game_Manager.map_Bounds.cameraPos.y;
 
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
-	if (camX - halfW <= game_Manager.map_Bounds.minX - centerX && updateVector.x < 0)
+	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x + dPoistion.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y + dPoistion.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+
+	if (game_Manager.player.worldPos.x <= game_Manager.map_Bounds.minX && updateVector.x < 0)
 	{
 		dPoistion.x = 0;
 	}
-	if (camX + halfW >= game_Manager.map_Bounds.maxX + centerX && updateVector.x > 0)
+	if (game_Manager.player.worldPos.x >= game_Manager.map_Bounds.maxX && updateVector.x > 0)
 	{
 		dPoistion.x = 0;
 	}
-	if (camY - halfH <= game_Manager.map_Bounds.minY - centerY && updateVector.y < 0)
+	if (game_Manager.player.worldPos.y <= game_Manager.map_Bounds.minY && updateVector.y < 0)
 	{
 		dPoistion.y = 0;
 	}
-	if (camY + halfH >= game_Manager.map_Bounds.maxY + centerY && updateVector.y > 0)
+	if (game_Manager.player.worldPos.y >= game_Manager.map_Bounds.maxY && updateVector.y > 0)
 	{
 		dPoistion.y = 0;
 	}

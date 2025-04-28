@@ -18,6 +18,7 @@ CP_Vector initCamera(MAB* mab, CP_Vector mab_size)
     mab->minY = center_xy.y - mab_size.y / 2;
     mab->maxY = center_xy.y + mab_size.y / 2;
 	mab->cameraPos = (&game_Manager)->player.position;  
+	(&game_Manager)->player.worldPos = mab->cameraPos;
 
 	(&game_Manager)->player.position = CP_Vector_Add((&game_Manager)->player.position, initVector); // 플레이어 위치 초기화
 
@@ -57,10 +58,14 @@ void updateCamera(CP_Vector updateVector, float dt)
 {
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (&game_Manager)->player.speed);
 
+	
+
 	CP_Vector movingVector = CP_Vector_Negate(dPoistion);
 
 	float centerX = (float)CP_System_GetWindowWidth() / 2;
 	float centerY = (float)CP_System_GetWindowHeight() / 2;
+	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y - movingVector.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
 
 	game_Manager.map_Bounds.cameraPos.x = clamp(game_Manager.map_Bounds.cameraPos.x - movingVector.x, game_Manager.map_Bounds.minX - centerX, game_Manager.map_Bounds.maxX + centerX);
 	game_Manager.map_Bounds.cameraPos.y = clamp(game_Manager.map_Bounds.cameraPos.y - movingVector.y, game_Manager.map_Bounds.minY - centerY, game_Manager.map_Bounds.maxY + centerY);
@@ -128,27 +133,29 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 
 	float dx = player->position.x - centerX;
 	float dy = player->position.y - centerY;
-
+	/*
 	if (dx * dx + dy * dy < 300 * 300)
 		return 0;
+		*/
+
+
+	float camX = game_Manager.map_Bounds.cameraPos.x;
+	float camY = game_Manager.map_Bounds.cameraPos.y;
+
+	if ((camX <= game_Manager.map_Bounds.minX && updateVector.x < 0) ||
+		(camX >= game_Manager.map_Bounds.maxX && updateVector.x > 0) ||
+		(camY <= game_Manager.map_Bounds.minY && updateVector.y < 0) ||
+		(camY >= game_Manager.map_Bounds.maxY && updateVector.y > 0))
+	{
+		return 0;
+	}
 
 	// 카메라가 이동하려는 방향이 없다면 굳이 갱신 안함
 	if (CP_Vector_DotProduct(CP_Vector_Set(dx, dy), updateVector) <= 0)
 		return 0;
 
 	// 경계 충돌 검사
-	float halfW = (float)CP_System_GetWindowWidth() / 2;
-	float halfH = (float)CP_System_GetWindowHeight() / 2;
-	float camX = game_Manager.map_Bounds.cameraPos.x;
-	float camY = game_Manager.map_Bounds.cameraPos.y;
-
-	if ((camX - halfW <= game_Manager.map_Bounds.minX - centerX && updateVector.x < 0) ||
-		(camX + halfW >= game_Manager.map_Bounds.maxX + centerX && updateVector.x > 0) ||
-		(camY - halfH <= game_Manager.map_Bounds.minY - centerY && updateVector.y < 0) ||
-		(camY + halfH >= game_Manager.map_Bounds.maxY + centerY && updateVector.y > 0))
-	{
-		return 0;
-	}
+	
 
 	return 1;
 }
