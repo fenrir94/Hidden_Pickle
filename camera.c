@@ -15,8 +15,8 @@ CP_Vector initCamera(MAB* mab, CP_Vector mab_size)
 
 	mab->minX = center_xy.x - mab_size.x / 2;
 	mab->maxX = center_xy.x + mab_size.x / 2;
-  mab->minY = center_xy.y - mab_size.y / 2;
-  mab->maxY = center_xy.y + mab_size.y / 2;
+	mab->minY = center_xy.y - mab_size.y / 2;
+	mab->maxY = center_xy.y + mab_size.y / 2;
 	(&game_Manager)->player.worldPos = (&game_Manager)->player.position;
 
 

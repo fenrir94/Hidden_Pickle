@@ -1,5 +1,6 @@
 
 #include "player.h"
+#include "gameManager.h"
 #include "utility.h"
 
 CP_Sound player_Hit_SFX_File;
@@ -28,9 +29,29 @@ void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
 
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
-	//player->position = CP_Vector_Add(player->position, dPoistion);
-	player->position.x = clamp(player->position.x + dPoistion.x, 0, (float)CP_System_GetWindowWidth());
-	player->position.y = clamp(player->position.y + dPoistion.y, 0, (float)CP_System_GetWindowHeight());
+
+	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x + dPoistion.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y + dPoistion.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+
+	if (game_Manager.player.worldPos.x <= game_Manager.map_Bounds.minX && updateVector.x < 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.x >= game_Manager.map_Bounds.maxX && updateVector.x > 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.y <= game_Manager.map_Bounds.minY && updateVector.y < 0)
+	{
+		dPoistion.y = 0;
+	}
+	if (game_Manager.player.worldPos.y >= game_Manager.map_Bounds.maxY && updateVector.y > 0)
+	{
+		dPoistion.y = 0;
+	}
+	
+	player->position.x += dPoistion.x;
+	player->position.y += dPoistion.y;
 
 	//if (CP_Vector_Length(updateVector) >= 1) {
 	//	update_BodyPart(&(player->body), MOVE, dt);
