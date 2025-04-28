@@ -6,14 +6,13 @@
 #include "camera.h"
 #include "player.h"
 #include "gun.h"
+#include "light.h"
 #include "cJSON.h"
 #include "stageSelectMenu.h"
+#include "resultScreen.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
-
-CP_Image visionblockerOff;
-CP_Image visionblockerOn;
 
 extern CP_Sound gunshot_SFX_File;
 extern CP_Sound player_Hit_SFX_File;
@@ -25,9 +24,6 @@ CP_Vector* destinationsEnemies;
 char* buffer;
 
 extern int stage_Number;
-
-//const char* map_Name_Test = "./Assets/Map_data/map_data.JSON";
-//const char* map_Name_Test0 = "./Assets/Map_data/map_data_Test0.JSON"; // stage_Number에 따라 변동 그 다음 stage_Number 0으로 초기화
 
 //to do fix -> to .
 void init_Game_Manager(void)
@@ -148,15 +144,14 @@ void init_Game_Manager(void)
     CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
     initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
 	
-	
+	init_Result_Screen(&(game_Manager.result_Screen));
+
+	init_Light(&(game_Manager.light));
+
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
 	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
-
-	
-	visionblockerOff = CP_Image_Load("./Assets/Image/transparent_center_200.png");
-	visionblockerOn = CP_Image_Load("./Assets/Image/transparent_center_400.png");
 
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
@@ -164,91 +159,98 @@ void init_Game_Manager(void)
 // Update Game Objects
 void update_Game_Manager(void) {
 
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
-	// check input, update simulation, render etc.
-	float dt = CP_System_GetDt();
+	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_OFF) {
 
-	// get WASD Vector
-	CP_Vector inputVector = get_InputVector();
-	
-	// get Space Bar = BatteryUse
-	use_Battery(&(game_Manager.player));
-	
-	// Update plyer's position when input WASD
-	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
+		CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
+		// check input, update simulation, render etc.
+		float dt = CP_System_GetDt();
 
+		// get WASD Vector
+		CP_Vector inputVector = get_InputVector();
 
-	if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
-	{
-		updateCamera(inputVectorNoraml, dt);
-	}
-	else {
-		update_Player(&(game_Manager.player), inputVectorNoraml, dt);
-	}
+		// get Space Bar = BatteryUse
+		use_Battery(&(game_Manager.player));
 
-	rotate_Player(&(game_Manager.player));
-
-	float df = CP_System_GetFrameRate();
-
-	if (CP_Vector_Length(inputVectorNoraml) > 0) {
-		update_BodyPart(&(game_Manager.player.body), MOVE, df);
-		update_BodyPart(&(game_Manager.player.feet), MOVE, df);
-	}
-
-	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
-
-	shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
-
-	update_Gun(&(game_Manager.player.gun), dt);
-
-	updateMinimab(inputVectorNoraml, dt);
-
-	// Check Enemy Detected Player
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
-		update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
-	}
+		// Update plyer's position when input WASD
+		CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
 
-	// Block Movement of Player when collision
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
-			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
+		if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
+		{
+			updateCamera(inputVectorNoraml, dt);
+		}
+		else {
+			update_Player(&(game_Manager.player), inputVectorNoraml, dt);
+		}
+
+		rotate_Player(&(game_Manager.player));
+
+		float df = CP_System_GetFrameRate();
+
+		if (CP_Vector_Length(inputVectorNoraml) > 0) {
+			update_BodyPart(&(game_Manager.player.body), MOVE, df);
+			update_BodyPart(&(game_Manager.player.feet), MOVE, df);
+		}
+
+		checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
+
+		shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
+
+		update_Gun(&(game_Manager.player.gun), dt);
+
+		updateMinimab(inputVectorNoraml, dt);
+
+		// Check Enemy Detected Player
+		for (int i = 0; i < game_Manager.enemyCount; i++) {
+			check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
+			update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
+		}
+
+
+		// Block Movement of Player when collision
+		for (int i = 0; i < game_Manager.enemyCount; i++) {
+			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
+				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+				rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 4);
+				rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
+			}
+		}
+
+		for (int i = 0; i < game_Manager.itemCount; i++) {
+			if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
+				collide_itemBox(game_Manager.item_Boxes + i);
+				get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
+			}
+		}
+
+		for (int i = 0; i < game_Manager.obstacleCount; i++) {
+			if (check_Is_Obstacle_In_Players_Sight(&(game_Manager.player), game_Manager.obstacles + i)) {
+				game_Manager.obstacles[i].isCollided = 1;
+			}
+		}
+
+		if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 2);
+			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
+		}
+
+		for (int i = 0; i < game_Manager.enemyCount; i++) {
+			if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+				rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
+			}
+		}
+
+		check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
+		check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
+
+		if (check_Player_Win()) {
+			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_WIN);
+		}
+
+		if (check_Player_Lose(&(game_Manager.player))) {
+			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_LOSE);
 		}
 	}
-
-	for (int i = 0; i < game_Manager.itemCount; i++) {
-		if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
-			collide_itemBox(game_Manager.item_Boxes + i);
-			get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
-		}
-	}
-
-	for (int i = 0; i < game_Manager.obstacleCount; i++) {
-		if (check_Is_Obstacle_In_Players_Sight(&(game_Manager.player), game_Manager.obstacles + i)) {
-			game_Manager.obstacles[i].isCollided = 1;
-		}
-	}
-
-	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
-		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
-	}
-
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Enemy_Obstacles(game_Manager.enemies+i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-			rollback_Move_Enemy_Position(game_Manager.enemies+i, game_Manager.enemies[i].vector_Sight, dt* 3);
-		}
-	}
-
-	check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
-	check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
-
-	check_Player_Win(); 
-
-	check_Player_Lose(&(game_Manager.player));
 
 	print_GameObjects(&game_Manager);
 
@@ -367,7 +369,7 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	print_Player(&(gameManager->player));
 
-	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
+	printVisionblocker(&(game_Manager.light), game_Manager.player.isLampOn);
 
 	print_Player(&(gameManager->player));
 
@@ -380,9 +382,7 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 void exit_Game_Manager(void)
 {
 
-	
-	CP_Image_Free(&visionblockerOff);
-	CP_Image_Free(&visionblockerOn);
+	CP_Image_Free(&game_Manager.light.lightImage);
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
@@ -400,17 +400,21 @@ void exit_Game_Manager(void)
 	// shut down the gamestate and cleanup any dynamic memory
 }
 
-void check_Player_Win(void)
+// to do 해당 함수들 int 형으로, 조건 만족시 true 리턴 -> 각 조건 만족시 win, lose 값 입력으로 보내서 result_screen에 반영.
+int check_Player_Win(void)
 {
 	if (check_Collision_Player_Enter_Exit_Place(&(game_Manager.player), &(game_Manager.exit_Place))) {
-		CP_Engine_SetNextGameState(Init_Main_Menu, Update_Main_Menu, Exit_Main_Menu);
+		return 1;
 	}
 	
+	return 0;
 }
 
-void check_Player_Lose(PLAYER* player)
+int check_Player_Lose(PLAYER* player)
 {
 	if (player->life <= 0) {
-		CP_Engine_SetNextGameState(Init_Main_Menu, Update_Main_Menu, Exit_Main_Menu);
+		return 1;
 	}
+
+	return 0;
 }
