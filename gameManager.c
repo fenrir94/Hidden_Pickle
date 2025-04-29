@@ -210,10 +210,8 @@ void update_Game_Manager(void) {
 		}
 	}
 
-	float df = CP_System_GetFrameRate();
-
-	update_BodyPart(&(game_Manager.player.body), df);
-	update_BodyPart(&(game_Manager.player.feet), df);
+	update_BodyPart(&(game_Manager.player.body), dt*100);
+	update_BodyPart(&(game_Manager.player.feet), dt*100);
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
@@ -385,8 +383,6 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	print_Player(&(gameManager->player));
 
 	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
-
-	print_Player(&(gameManager->player));
 
 	printMinimab();
 }
