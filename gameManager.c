@@ -7,16 +7,28 @@
 #include "player.h"
 #include "gun.h"
 #include "light.h"
+#include "minimap.h"
 #include "cJSON.h"
 #include "stageSelectMenu.h"
 #include "resultScreen.h"
 
-// GLOBAL
-GAME_MANAGER game_Manager;
-
 extern CP_Sound gunshot_SFX_File;
 extern CP_Sound player_Hit_SFX_File;
 extern CP_Sound chest_Open_SFX_File;
+extern CP_Sound result_Click_SFX_File;
+
+extern CP_Image menu_Ui_Image_File;
+extern CP_Image round_Button_Image_File;
+extern CP_Image round_Button_Pressed_Image_File;
+extern CP_Image next_Icon_Image_File;
+extern CP_Image repeat_Icon_Image_File;
+extern CP_Image select_Icon_Image_File;
+extern CP_Image screen_Black_Image_File;
+
+extern int stage_Number_State;
+
+// GLOBAL
+GAME_MANAGER game_Manager;
 
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
@@ -140,9 +152,9 @@ void init_Game_Manager(void)
 
 
 	//맵 사이즈, 미니맵
-    cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
-    CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
-    initMinimap(&(game_Manager.minimap), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
+    cJSON* mapSize_cJSON = cJSON_GetObjectItem(root, "mapsize");
+    CP_Vector initVector = init_Camera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble));
+    init_Minimap(&(game_Manager.minimap), CP_Vector_Set((float)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble), initVector);
 	
 	init_Result_Screen(&(game_Manager.result_Screen));
 
@@ -151,7 +163,7 @@ void init_Game_Manager(void)
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
-	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
+	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
 
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
@@ -159,11 +171,11 @@ void init_Game_Manager(void)
 // Update Game Objects
 void update_Game_Manager(void) {
 
-	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_OFF) {
+	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
+	// check input, update simulation, render etc.
+	float dt = CP_System_GetDt();
 
-		CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
-		// check input, update simulation, render etc.
-		float dt = CP_System_GetDt();
+	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_OFF) {
 
 		// get WASD Vector
 		CP_Vector inputVector = get_InputVector();
@@ -177,7 +189,7 @@ void update_Game_Manager(void) {
 
 		if (checkCameraTrigger(&(game_Manager.player), inputVectorNoraml))
 		{
-			updateCamera(inputVectorNoraml, dt);
+			update_Camera(&(game_Manager.map_Bounds), inputVectorNoraml, dt);
 		}
 		else {
 			update_Player(&(game_Manager.player), inputVectorNoraml, dt);
@@ -198,7 +210,11 @@ void update_Game_Manager(void) {
 
 		update_Gun(&(game_Manager.player.gun), dt);
 
-		updateMinimap(inputVectorNoraml, dt);
+		turn_On_Light(&(game_Manager.light), game_Manager.player.isLampOn);
+
+		update_Light(&(game_Manager.light), dt);
+
+		update_Minimap(&(game_Manager.minimap), inputVectorNoraml, dt);
 
 		// Check Enemy Detected Player
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -253,14 +269,42 @@ void update_Game_Manager(void) {
 	}
 
 	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
-	
+		
+		float animationTotalTime = 1;
+		static float elapsedTime = 0;
 	/*
-		if (game_Manager.result_Screen.gameState == GAME_STATE_LOSE) {
+		if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
+			elapsedTime += dt;
+			
 			//사망시 애니메이션 재생
+
+			if (elapsedTime > animationTotalTime)
+			{
+				game_Manager.result_Screen.animationState = ANIMATION_GAME_OVER;
+				elapsedTime = 0;
+			}
+			
 		}
 	*/
-	
 		
+		if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
+			elapsedTime += dt;
+			change_Minimap_Alpha(&(game_Manager.minimap), dt);
+			game_Manager.light.lightState = end;
+			update_Light(&(game_Manager.light), dt);
+
+			if (elapsedTime > animationTotalTime)
+			{
+				game_Manager.result_Screen.animationState = ANIMATION_NONE;
+				elapsedTime = 0;
+			}
+		}
+		
+		if (game_Manager.result_Screen.animationState == ANIMATION_NONE)
+		{
+			update_Result_Screen_Button(&(game_Manager.result_Screen));
+			
+		}
 
 	
 	
@@ -381,18 +425,14 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	printBullet(&(gameManager->player.gun));
 
-	print_Player(&(gameManager->player));
-
-	printVisionblocker(&(game_Manager.light), game_Manager.player.isLampOn);
+	printVisionblocker(&(game_Manager.light));
 
 	print_Player(&(gameManager->player));
 
-	printMinimap(); // 게임 종료시 미니맵 알파 낮춰서 0으로
+	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 
-	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON)
-	{
-		print_Result_Screen(&(gameManager->result_Screen)); //if 문 함수 안으로 옮기기
-	}
+	print_Result_Screen(&(gameManager->result_Screen));
+
 }
 
 
@@ -400,11 +440,20 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 // this function will be called once just before leaving the current gamestate
 void exit_Game_Manager(void)
 {
+	CP_Image_Free(&menu_Ui_Image_File);
+	CP_Image_Free(&round_Button_Image_File);
+	CP_Image_Free(&round_Button_Pressed_Image_File);
+	CP_Image_Free(&next_Icon_Image_File);
+	CP_Image_Free(&repeat_Icon_Image_File);
+	CP_Image_Free(&select_Icon_Image_File);
+	CP_Image_Free(&screen_Black_Image_File);
 
 	CP_Image_Free(&game_Manager.light.lightImage);
+	
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
+	CP_Sound_Free(&result_Click_SFX_File);
 
 	free(buffer);
 	free(game_Manager.item_Boxes);
@@ -415,6 +464,9 @@ void exit_Game_Manager(void)
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
 	free(destinationsEnemies);
+
+
+	stage_Number_State = 1;
 
 	// shut down the gamestate and cleanup any dynamic memory
 }

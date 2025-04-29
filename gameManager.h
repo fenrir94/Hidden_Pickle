@@ -36,7 +36,7 @@ typedef struct gameManager {
 	EXIT_PLACE exit_Place;
 	OBSTACLE* obstacles;
 	int obstacleCount;
-	MAB map_Bounds;
+	MAP map_Bounds;
 	MINIMAP minimap;
 	BACKGROUND background;
 	LIGHT light;
@@ -73,3 +73,4 @@ void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Ob
 int check_Player_Win(void);
 
 int check_Player_Lose(PLAYER* player);
+

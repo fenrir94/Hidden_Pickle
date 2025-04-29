@@ -14,6 +14,8 @@ typedef struct light {
 
 void init_Light(LIGHT* light);
 
-void update_Light(int lightState);
+void update_Light(LIGHT* light, float dt);
 
-void printVisionblocker(LIGHT* light, int checkLampOn);
+void turn_On_Light(LIGHT* light, int checkLampOn);
+
+void printVisionblocker(LIGHT* light);

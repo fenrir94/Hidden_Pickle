@@ -16,39 +16,39 @@ void init_Light(LIGHT* light)
 	light->lightState = off;
 }
 
-void update_Light(int lightState)
+void update_Light(LIGHT* light, float dt)
 {
- 	if (lightState == off)
+	
+ 	if (light->lightState == off)
 	{
-		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x - 300, light_Width, (light_Width * 2));
-		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y - 150, light_Height, (light_Height * 2));
+		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x - light_Width * (dt * 10), light_Width, (light_Width * 2));
+		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y - light_Height * (dt * 10), light_Height, (light_Height * 2));
 	}
-	else if (lightState == on)
+	else if (light->lightState == on)
 	{
-		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + 300, light_Width, (light_Width * 2));
-		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + 150, light_Height, (light_Height * 2));
+		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + light_Width * (dt * 10), light_Width, (light_Width * 2));
+		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + light_Height * (dt * 10), light_Height, (light_Height * 2));
 	}
-	else if (lightState == end)
+	else if (light->lightState == end)
 	{
-		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + 300, light_Width, (light_Width * 9));
-		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + 150, light_Height, (light_Height * 9));
+		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + (light_Width * 6) * dt, light_Width, (light_Width * 7));
+		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + (light_Height * 6) * dt, light_Height, (light_Height * 7));
 	}
 }
 
-void printVisionblocker(LIGHT* light, int checkLampOn)
+void turn_On_Light(LIGHT* light, int checkLampOn)
 {
-
-	if (checkLampOn == 1) 
+	if (checkLampOn == 1)
 	{
 		light->lightState = on;
-		update_Light(light->lightState);
 	}
 	else
 	{
 		light->lightState = off;
-		update_Light(light->lightState);
 	}
+}
 
-
+void printVisionblocker(LIGHT* light)
+{
 	CP_Image_Draw(light->lightImage, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, light->lightSize.x, light->lightSize.y, 255);
 }

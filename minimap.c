@@ -12,11 +12,11 @@ float minimapHeight;
 CP_Vector centerPosition;
 CP_Vector minimapPosition;
 
-void initMinimap(MINIMAP* minimap, CP_Vector mab_size, CP_Vector initVector)
+void init_Minimap(MINIMAP* minimap, CP_Vector map_size, CP_Vector initVector)
 // 플레이어 초기 좌표 오류 수정해야함
 {
-	mapWidth = mab_size.x;
-	mapHeight = mab_size.y;
+	mapWidth = map_size.x;
+	mapHeight = map_size.y;
 
 	centerPosition = CP_Vector_Set((float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2);
 	minimapPosition = CP_Vector_Set((float)CP_System_GetWindowWidth() - 250, 125);
@@ -31,21 +31,21 @@ void initMinimap(MINIMAP* minimap, CP_Vector mab_size, CP_Vector initVector)
 	minimap->exitIconPosition.x = minimapPosition.x + (game_Manager.exit_Place.position.x - centerPosition.x - initVector.x) * (minimapWidth / mapWidth);
 	minimap->exitIconPosition.y = minimapPosition.y + (game_Manager.exit_Place.position.y - centerPosition.y - initVector.y) * (minimapHeight / mapHeight);
 
-	game_Manager.minimap.itemIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.itemCount);
+	minimap->itemIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.itemCount);
 	for (int i = 0; i < game_Manager.itemCount; i++)
 	{
-		game_Manager.minimap.itemIconPosition[i].x = minimapPosition.x + (game_Manager.item_Boxes[i].position.x - centerPosition.x - initVector.x) * (minimapWidth / mapWidth);
-		game_Manager.minimap.itemIconPosition[i].y = minimapPosition.y + (game_Manager.item_Boxes[i].position.y - centerPosition.y - initVector.y) * (minimapHeight / mapHeight);
+		minimap->itemIconPosition[i].x = minimapPosition.x + (game_Manager.item_Boxes[i].position.x - centerPosition.x - initVector.x) * (minimapWidth / mapWidth);
+		minimap->itemIconPosition[i].y = minimapPosition.y + (game_Manager.item_Boxes[i].position.y - centerPosition.y - initVector.y) * (minimapHeight / mapHeight);
 	}
 
-	game_Manager.minimap.obstacleIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.obstacleCount);
+	minimap->obstacleIconPosition = (CP_Vector*)malloc(sizeof(CP_Vector) * game_Manager.obstacleCount);
 	for (int i = 0; i < game_Manager.obstacleCount; i++)
 	{
-		game_Manager.minimap.obstacleIconPosition[i].x = minimapPosition.x + (game_Manager.obstacles[i].position.x - centerPosition.x - initVector.x) * (minimapWidth / mapWidth);
-		game_Manager.minimap.obstacleIconPosition[i].y = minimapPosition.y + (game_Manager.obstacles[i].position.y - centerPosition.y - initVector.y) * (minimapHeight / mapHeight);
+		minimap->obstacleIconPosition[i].x = minimapPosition.x + (game_Manager.obstacles[i].position.x - centerPosition.x - initVector.x) * (minimapWidth / mapWidth);
+		minimap->obstacleIconPosition[i].y = minimapPosition.y + (game_Manager.obstacles[i].position.y - centerPosition.y - initVector.y) * (minimapHeight / mapHeight);
 	}
 
-
+	minimap->alpha = 255;
 	
 }
 /*
@@ -63,15 +63,16 @@ void initMinimap(MINIMAP* minimap, CP_Vector mab_size, CP_Vector initVector)
 -> 오브젝트의 아이콘 좌표는 (mx,my) + (ox- GWW * (mw / w) , oy - GWH * (mh / h))
 */
 
-void updateMinimap(CP_Vector updateVector, float dt)
+void update_Minimap(MINIMAP* minimap, CP_Vector updateVector, float dt)
 // 충돌 시 움직이지 않아야함.
 {
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (game_Manager.player.speed));
 	dPoistion.x = dPoistion.x * (minimapWidth / mapWidth);
 	dPoistion.y = dPoistion.y * (minimapHeight / mapHeight);
 
-	game_Manager.minimap.playerIconPosition.x = clamp(game_Manager.minimap.playerIconPosition.x + dPoistion.x, minimapPosition.x - minimapWidth / 2, minimapPosition.x + minimapWidth / 2);
-	game_Manager.minimap.playerIconPosition.y = clamp(game_Manager.minimap.playerIconPosition.y + dPoistion.y, minimapPosition.y - minimapHeight / 2, minimapPosition.y + minimapHeight / 2);
+	minimap->playerIconPosition.x = clamp(minimap->playerIconPosition.x + dPoistion.x, minimapPosition.x - minimapWidth / 2, minimapPosition.x + minimapWidth / 2);
+	minimap->playerIconPosition.y = clamp(minimap->playerIconPosition.y + dPoistion.y, minimapPosition.y - minimapHeight / 2, minimapPosition.y + minimapHeight / 2);
+
 }
 /*
 
@@ -87,17 +88,22 @@ void updateMinimap(CP_Vector updateVector, float dt)
 -> checkCollision_Circle_to_Circle 함수 사용
 */
 
-void printMinimap(void)
+void change_Minimap_Alpha(MINIMAP* minimap, float dt)
+{
+	minimap->alpha -= 255 * (int)(dt * 1000) / 1000;
+}
+
+void print_Minimap(MINIMAP* minimap)
 {
 
-	CP_Settings_Fill(CP_Color_Create(80, 80, 80, 255));
+	CP_Settings_Fill(CP_Color_Create(80, 80, 80, minimap->alpha));
 	CP_Graphics_DrawRect(minimapPosition.x, minimapPosition.y, minimapWidth, minimapHeight);
 
-	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
-	CP_Graphics_DrawCircle(game_Manager.minimap.playerIconPosition.x, game_Manager.minimap.playerIconPosition.y, 5);	
+	CP_Settings_Fill(CP_Color_Create(0, 255, 0, minimap->alpha));
+	CP_Graphics_DrawCircle(minimap->playerIconPosition.x, minimap->playerIconPosition.y, 5);	
 
-	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
-	CP_Graphics_DrawCircle(game_Manager.minimap.exitIconPosition.x, game_Manager.minimap.exitIconPosition.y, 10);	
+	CP_Settings_Fill(CP_Color_Create(255, 255, 0, minimap->alpha));
+	CP_Graphics_DrawCircle(minimap->exitIconPosition.x, minimap->exitIconPosition.y, 10);	
 
 	for (int i = 0; i < game_Manager.itemCount; i++)
 	{
@@ -105,26 +111,26 @@ void printMinimap(void)
 		if (game_Manager.item_Boxes[i].isCollided == 0) {
 
 
-			CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
-			CP_Graphics_DrawCircle(game_Manager.minimap.itemIconPosition[i].x, game_Manager.minimap.itemIconPosition[i].y, 5);
+			CP_Settings_Fill(CP_Color_Create(255, 255, 0, minimap->alpha));
+			CP_Graphics_DrawCircle(minimap->itemIconPosition[i].x, minimap->itemIconPosition[i].y, 5);
 
 			/*
 			if (game_Manager.item_Boxes[i].item_type == KEY_Item)
 			{
 				CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
-				CP_Graphics_DrawCircle(game_Manager.minimap.itemIconPosition[i].x, game_Manager.minimap.itemIconPosition[i].y, 5);
+				CP_Graphics_DrawCircle(minimap->itemIconPosition[i].x, minimap->itemIconPosition[i].y, 5);
 
 			}
 			else if (game_Manager.item_Boxes[i].item_type == BULLET_Item)
 			{
 				CP_Settings_Fill(CP_Color_Create(255, 0, 255, 255));
-				CP_Graphics_DrawCircle(game_Manager.minimap.itemIconPosition[i].x, game_Manager.minimap.itemIconPosition[i].y, 5);
+				CP_Graphics_DrawCircle(minimap->itemIconPosition[i].x, minimap->itemIconPosition[i].y, 5);
 
 			}
 			else if (game_Manager.item_Boxes[i].item_type == BATTERY_Item)
 			{
 				CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
-				CP_Graphics_DrawCircle(game_Manager.minimap.itemIconPosition[i].x, game_Manager.minimap.itemIconPosition[i].y, 5);
+				CP_Graphics_DrawCircle(minimap->itemIconPosition[i].x, minimap->itemIconPosition[i].y, 5);
 			}
 			*/
 		
@@ -132,12 +138,12 @@ void printMinimap(void)
 		
 }
 
-	CP_Settings_Fill(CP_Color_Create(165, 42, 42, 255));
+	CP_Settings_Fill(CP_Color_Create(165, 42, 42, minimap->alpha));
 	for (int i = 0; i < game_Manager.obstacleCount; i++)
 	{
 		if (game_Manager.obstacles[i].isCollided == 1)
 		{
-			CP_Graphics_DrawCircle(game_Manager.minimap.obstacleIconPosition[i].x, game_Manager.minimap.obstacleIconPosition[i].y, 10);
+			CP_Graphics_DrawCircle(minimap->obstacleIconPosition[i].x, minimap->obstacleIconPosition[i].y, 10);
 		}
 	}
 

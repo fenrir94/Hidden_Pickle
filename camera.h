@@ -1,14 +1,14 @@
 #pragma once
 
-typedef struct mab {
+typedef struct map {
 	float minX;
     float maxX;
     float minY;
     float maxY;
-} MAB;
+} MAP;
 
-CP_Vector initCamera(MAB* mab, CP_Vector mab_size);
+CP_Vector init_Camera(MAP* map, CP_Vector map_size);
 
-void updateCamera(CP_Vector updateVector, float dt);
+void update_Camera(MAP* map, CP_Vector updateVector, float dt);
 
 int checkCameraTrigger(PLAYER* player, CP_Vector updateVector);

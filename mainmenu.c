@@ -14,6 +14,11 @@ CP_Image title_Logo_Image_File;// 타이틀 이미지 파일
 
 CP_Image title_Background_Image_File;// 타이틀 배경 파일
 
+CP_Image config_Image_File;
+
+CP_Image config_Exit_Button_File;
+CP_Image config_Exit_Button_Cross_File;
+
 CP_Image* button_Image_List; // 버튼 이미지 리스트 0: Normal, 1: Hover, 2: Pressed
 
 #define Config_width 700
@@ -66,7 +71,13 @@ void Init_Main_Menu(void)
 
 	title_Background_Image_File = CP_Image_Load("Assets/Image/Title_Background.png");
 
+	config_Image_File = CP_Image_Load("Assets/UI/menu_ui.png");
+
 	button_Image_List = LoadImagesFromAssets(3, "Assets/UI/menu_button%d.png");
+
+	config_Exit_Button_File = CP_Image_Load("Assets/UI/exit_button.png");
+
+	config_Exit_Button_Cross_File = CP_Image_Load("Assets/UI/icon_cross.png");
 
 	if (!is_Moved)
 	{
@@ -203,7 +214,7 @@ void Print_Main_Menu(void)
 				if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
 				{
 					isButtonPressed = false;
-					CP_Engine_SetNextGameState(init_Game_Manager, update_Game_Manager, exit_Game_Manager);
+		
 					CP_Engine_SetNextGameState(Init_Stage_Select_Menu, Update_Stage_Select_Menu, Exit_Stage_Select_Menu);
 				}
 			}
@@ -226,10 +237,10 @@ void Print_Main_Menu(void)
 
 	if (isConfigStateOn == true)
 	{
-		CP_Image_Draw(button_Image_List[0], Config_Image.x, Config_Image.y, Config_Image.width, Config_Image.height, Config_Image.alpha);
+		CP_Image_Draw(config_Image_File, Config_Image.x, Config_Image.y, Config_Image.width, Config_Image.height, Config_Image.alpha);
 
-		CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
-		CP_Graphics_DrawRect(Config_Exit_Image.x, Config_Exit_Image.y, Config_Exit_width, Config_Exit_width);
+		CP_Image_Draw(config_Exit_Button_File, Config_Exit_Image.x, Config_Exit_Image.y, Config_Exit_Image.width, Config_Exit_Image.height, Config_Exit_Image.alpha);
+		CP_Image_Draw(config_Exit_Button_Cross_File, Config_Exit_Image.x, Config_Exit_Image.y, 18, 18, Config_Exit_Image.alpha);
 
 		if (isMouseInsideRect(Config_Exit_Image.x, Config_Exit_Image.y, Config_Exit_width, Config_Exit_width, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
@@ -247,6 +258,9 @@ void Exit_Main_Menu(void)
 {
 	CP_Image_Free(&digiPen_Image_File); // 이미지 해제
 	CP_Image_Free(&title_Logo_Image_File);
+	CP_Image_Free(&config_Image_File);
+	CP_Image_Free(&config_Exit_Button_File);
+	CP_Image_Free(&config_Exit_Button_Cross_File);
 
 	if (button_Image_List != NULL)
 	{

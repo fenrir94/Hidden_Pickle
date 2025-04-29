@@ -5,12 +5,15 @@ typedef struct minimap {
 	CP_Vector exitIconPosition;
 	CP_Vector* itemIconPosition;
 	CP_Vector* obstacleIconPosition;
+	int alpha;
 } MINIMAP;
 
-void initMinimap(MINIMAP* minimap, CP_Vector mab_size, CP_Vector initVector);
+void init_Minimap(MINIMAP* minimap, CP_Vector map_size, CP_Vector initVector);
 
-void updateMinimap(CP_Vector updateVector, float dt);
+void update_Minimap(MINIMAP* minimap, CP_Vector updateVector, float dt);
 
-void printMinimap(void);
+void change_Minimap_Alpha(MINIMAP* minimap, float dt);
+
+void print_Minimap(MINIMAP* minimap);
 
 void rollback_Player_Icon_Position(MINIMAP* minimap, CP_Vector updateVector, float dt);
