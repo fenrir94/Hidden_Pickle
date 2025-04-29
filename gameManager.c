@@ -8,6 +8,7 @@
 #include "gun.h"
 #include "cJSON.h"
 #include "stageSelectMenu.h"
+#include "bloodpool.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -170,10 +171,10 @@ void update_Game_Manager(void) {
 
 	// get WASD Vector
 	CP_Vector inputVector = get_InputVector();
-	
+
 	// get Space Bar = BatteryUse
 	use_Battery(&(game_Manager.player));
-	
+
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
@@ -188,18 +189,34 @@ void update_Game_Manager(void) {
 
 	rotate_Player(&(game_Manager.player));
 
-	float df = CP_System_GetFrameRate();
 
-	if (CP_Vector_Length(inputVectorNoraml) > 0) {
-		update_BodyPart(&(game_Manager.player.body), MOVE, df);
-		update_BodyPart(&(game_Manager.player.feet), MOVE, df);
+	// TO DO Fix Shoot Animation
+	if (shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT)) {
+		changeAnimation_BodyPart(&(game_Manager.player.body), SHOOT);
+		if (CP_Vector_Length(inputVectorNoraml) > 0) {
+			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+		}
+		else {
+			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+		}
 	}
+	else {
+		if (CP_Vector_Length(inputVectorNoraml) > 0) {
+			changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
+			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+		}
+		else {
+			changeAnimation_BodyPart(&(game_Manager.player.body), IDLE);
+			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+		}
+	}
+
+	update_BodyPart(&(game_Manager.player.body), dt * 100);
+	update_BodyPart(&(game_Manager.player.feet), dt * 100);
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
-	shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
-
-	update_Gun(&(game_Manager.player.gun), dt);
+	update_Gun(&(game_Manager.player.gun), game_Manager.player.position, game_Manager.player.shooting_Vector, dt);
 
 	updateMinimab(inputVectorNoraml, dt);
 
@@ -214,8 +231,8 @@ void update_Game_Manager(void) {
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*4);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
+			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 3);
 		}
 	}
 
@@ -233,22 +250,28 @@ void update_Game_Manager(void) {
 	}
 
 	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*2);
-		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
+		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
+		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt);
 	}
 
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Enemy_Obstacles(game_Manager.enemies+i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-			rollback_Move_Enemy_Position(game_Manager.enemies+i, game_Manager.enemies[i].vector_Sight, dt* 3);
+		if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
 		}
 	}
 
 	check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
 	check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
 
-	check_Player_Win(); 
+	check_Player_Win();
 
-	check_Player_Lose(&(game_Manager.player));
+	//check_Player_Lose(&(game_Manager.player));
+	
+	// check Animation End
+	if (game_Manager.player.life <= 0) {
+		printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
+	}
+
 
 	print_GameObjects(&game_Manager);
 
@@ -268,6 +291,7 @@ int check_Collision_Player_Item(PLAYER* player, ITEM_BOX* item_box)
 {
 	return checkCollision_Circle_to_Circle(player->position, player->radius, item_box->position, item_box->radius);
 }
+
 
 int check_Is_Obstacle_In_Players_Sight(PLAYER* player, OBSTACLE* obstacles)
 {
@@ -326,6 +350,10 @@ void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy)
 					if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, enemy[j].position, enemy[j].radius)) {
 						endBullet(gun, i);
 						getDamage_Enemy(&(enemy[j]), gun->attackPoint);
+						if (enemy[j].life <= 0) {
+							init_Bloodpool(&enemy[j].bloodpool, enemy[j].position, 10);
+						}
+						
 					}
 				}
 			}
@@ -363,13 +391,9 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-	printBullet(&(gameManager->player.gun));
-
 	print_Player(&(gameManager->player));
 
 	printVisionblocker(&visionblockerOff, &visionblockerOn, game_Manager.player.isLampOn);
-
-	print_Player(&(gameManager->player));
 
 	printMinimab();
 }
@@ -388,7 +412,13 @@ void exit_Game_Manager(void)
 	CP_Sound_Free(&chest_Open_SFX_File);
 
 	free(buffer);
+	free(game_Manager.player.body.animation);
+	free(game_Manager.player.feet.animation);
 	free(game_Manager.item_Boxes);
+	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootLeft);
+		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
+	}
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
 	free(game_Manager.minimab.itemIconPosition);

@@ -57,15 +57,29 @@ void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt)
 
 
 	}
+	else {
+		update_Bloodpool(&enemy->bloodpool);
+	}
 	//add_Footprint(&(enemy->footprint), enemy->position);
 	checkDuration_Footprint(&(enemy->footprint), time_present);
 }
+
+void updatePosition_Bloodpool_Enemy(ENEMY* enemy, CP_Vector moveVector) {
+	if (enemy->life <= 0) {
+		enemy->bloodpool.position = CP_Vector_Add(enemy->bloodpool.position, moveVector);
+	}
+}
+
+
 
 void print_Enemy(ENEMY* enemy)
 {
 	/*CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
 	CP_Graphics_DrawCircle(enemy->position.x, enemy->position.y, enemy->radius);*/
 	print_Footprint(&(enemy->footprint));
+	if (enemy->life <= 0) {
+		print_Bloodpool(&enemy->bloodpool);
+	}
 }
 
 void move_Enemy(ENEMY* enemy, float dt) {

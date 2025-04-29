@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include "footprint.h"
+#include "bloodpool.h"
 
 
 typedef enum enemy_Type{
@@ -27,8 +28,7 @@ typedef struct enemy {
 	int patrolPoints;
 	int destinationIndex;
 	ENEMY_TYPE enemyType;
-	//CP_Vector_DL* destinations;
-
+	BLOODPOOL bloodpool;
 } ENEMY;
 
 void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
@@ -36,6 +36,8 @@ void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
 void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destination, int patrolPoints);
 
 void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt);
+
+void updatePosition_Bloodpool_Enemy(ENEMY* enemy, CP_Vector moveVector);
 
 void print_Enemy(ENEMY* enemy);
 

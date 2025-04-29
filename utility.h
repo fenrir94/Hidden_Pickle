@@ -6,6 +6,8 @@
 */
 
 #include <stdio.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "cprocessing.h"
 
 CP_Vector get_InputVector(void);
@@ -53,3 +55,5 @@ CP_Image* LoadImagesFromAssets(int count, const char* pathFormat);
 void FreeAllocatedImages(CP_Image* imageList);
 
 void intToCharArray(int num, char* buffer);
+
+double deg_to_rad(float degree);

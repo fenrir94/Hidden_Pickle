@@ -149,3 +149,8 @@ void FreeAllocatedImages(CP_Image* imageList)
 	}
 
 }
+
+double deg_to_rad(float degree)
+{
+	return degree*(M_PI/180.0f);
+}

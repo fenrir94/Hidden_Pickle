@@ -5,9 +5,9 @@ void init_Background(BACKGROUND* background, char* directory_Image, int width_Ma
 	background->image_Background = CP_Image_Load(directory_Image);
 	background->width_Tile = CP_Image_GetWidth(background->image_Background);
 	background->height_Tile = CP_Image_GetHeight(background->image_Background);
-	background->count_Width = width_Map / background->width_Tile + 1;
-	background->count_Height = height_Map / background->height_Tile + 2;
-	background->startPosition = CP_Vector_Set(minMapX, minMapY);
+	background->count_Width = width_Map / background->width_Tile + 2;
+	background->count_Height = height_Map / background->height_Tile + 3;
+	background->startPosition = CP_Vector_Set(minMapX - background->width_Tile, minMapY - background->height_Tile);
 }
 
 //void move_Background(BACKGROUND* background, CP_Vector moveCamera)
