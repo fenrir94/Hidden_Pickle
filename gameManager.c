@@ -8,6 +8,7 @@
 #include "gun.h"
 #include "cJSON.h"
 #include "stageSelectMenu.h"
+#include "bloodpool.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -170,10 +171,10 @@ void update_Game_Manager(void) {
 
 	// get WASD Vector
 	CP_Vector inputVector = get_InputVector();
-	
+
 	// get Space Bar = BatteryUse
 	use_Battery(&(game_Manager.player));
-	
+
 	// Update plyer's position when input WASD
 	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
 
@@ -188,7 +189,7 @@ void update_Game_Manager(void) {
 
 	rotate_Player(&(game_Manager.player));
 
-	
+
 	// TO DO Fix Shoot Animation
 	if (shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT)) {
 		changeAnimation_BodyPart(&(game_Manager.player.body), SHOOT);
@@ -199,10 +200,10 @@ void update_Game_Manager(void) {
 			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
 		}
 	}
-	else{
+	else {
 		if (CP_Vector_Length(inputVectorNoraml) > 0) {
-		changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
-		changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+			changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
+			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
 		}
 		else {
 			changeAnimation_BodyPart(&(game_Manager.player.body), IDLE);
@@ -210,8 +211,8 @@ void update_Game_Manager(void) {
 		}
 	}
 
-	update_BodyPart(&(game_Manager.player.body), dt*100);
-	update_BodyPart(&(game_Manager.player.feet), dt*100);
+	update_BodyPart(&(game_Manager.player.body), dt * 100);
+	update_BodyPart(&(game_Manager.player.feet), dt * 100);
 
 	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
@@ -230,8 +231,8 @@ void update_Game_Manager(void) {
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*3);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt*3);
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
+			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 3);
 		}
 	}
 
@@ -254,17 +255,23 @@ void update_Game_Manager(void) {
 	}
 
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Enemy_Obstacles(game_Manager.enemies+i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-			rollback_Move_Enemy_Position(game_Manager.enemies+i, game_Manager.enemies[i].vector_Sight, dt* 3);
+		if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
 		}
 	}
 
 	check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
 	check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
 
-	check_Player_Win(); 
+	check_Player_Win();
 
-	check_Player_Lose(&(game_Manager.player));
+	//check_Player_Lose(&(game_Manager.player));
+	
+	// check Animation End
+	if (game_Manager.player.life <= 0) {
+		printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
+	}
+
 
 	print_GameObjects(&game_Manager);
 
@@ -343,6 +350,10 @@ void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy)
 					if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, enemy[j].position, enemy[j].radius)) {
 						endBullet(gun, i);
 						getDamage_Enemy(&(enemy[j]), gun->attackPoint);
+						if (enemy[j].life <= 0) {
+							init_Bloodpool(&enemy[j].bloodpool, enemy[j].position, 10);
+						}
+						
 					}
 				}
 			}

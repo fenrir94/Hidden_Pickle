@@ -57,7 +57,9 @@ void update_Player(PLAYER* player, CP_Vector updateVector, float dt) {
 	//	update_BodyPart(&(player->body), MOVE, dt);
 	//	update_BodyPart(&(player->feet), MOVE, dt);
 	//}
-
+	if (player->life <= 0) {
+		update_Bloodpool(&player->bloodpool);
+	}
 }
 
 void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
@@ -92,13 +94,18 @@ void rotate_Player(PLAYER* player)
 
 void getDamage_Player(PLAYER* player, int attackPoint) {
 	float time_Present = CP_System_GetSeconds();
-	if (isInvincibility(player, time_Present) == 0) {
-		CP_Sound_Play(player_Hit_SFX_File);
+	if (isInvincibility(player, time_Present) == 0 ) {
+		if (player->life > 0) {
+			CP_Sound_Play(player_Hit_SFX_File);
+		}
 
 		player->life -= attackPoint;
 		player->time_Hit = time_Present;
 	}
 	
+	if (player->life == 0) {
+		init_Bloodpool(&player->bloodpool, player->position, 5);
+	}
 }
 
 void use_Battery(PLAYER* player) {
@@ -185,8 +192,14 @@ void get_Item(PLAYER* player, EItemType item_type) {
 void print_Player(PLAYER* player) {
 	float angle_player = getAngle_Vector_AxisX(player->shooting_Vector);
 
-	print_Feet_BodyPart(&(player->feet), player->position, angle_player - 90);
-	print_Body_BodyPart(&(player->body), player->position, angle_player - 90);
+	if (player->life > 0) {
+		print_Feet_BodyPart(&(player->feet), player->position, angle_player - 90);
+		print_Body_BodyPart(&(player->body), player->position, angle_player - 90);
+	}
+	else {
+		print_Bloodpool(&player->bloodpool);
+	}
+
 
 
 	CP_Settings_RectMode(CP_POSITION_CORNER);

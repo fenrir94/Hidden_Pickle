@@ -68,7 +68,7 @@ void updateCamera(CP_Vector updateVector, float dt)
 	// 에너미 위치 변경
 	{
 		(&game_Manager)->enemies[i].position = CP_Vector_Add((&game_Manager)->enemies[i].position, movingVector);
-
+		updatePosition_Bloodpool_Enemy(&game_Manager.enemies[i], movingVector);
 		for (int j = 0; j < (&game_Manager)->enemies[i].patrolPoints ; j++)
 		{
 			(&game_Manager)->enemies[i].destinations[j] = CP_Vector_Add((&game_Manager)->enemies[i].destinations[j], movingVector);
