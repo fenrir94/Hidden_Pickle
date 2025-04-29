@@ -7,6 +7,7 @@
 #include "animation.h"
 #include "bodyPart.h"
 #include "utility.h"
+#include "bloodpool.h"	
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
@@ -27,6 +28,7 @@ typedef struct player {
 	int isAiming;
 	BODY_PART feet;
 	BODY_PART body;
+	BLOODPOOL bloodpool;
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);

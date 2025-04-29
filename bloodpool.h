@@ -17,6 +17,6 @@ void init_Bloodpool(BLOODPOOL* bloodpool, CP_Vector position, float timeDuration
 
 void update_Bloodpool(BLOODPOOL* bloodpool);
 
-int getAnimationEnded(BLOODPOOL* bloodpool);
+int getAnimationEnded_Bloodpool(BLOODPOOL* bloodpool);
 
 void print_Bloodpool(BLOODPOOL* bloodpool);

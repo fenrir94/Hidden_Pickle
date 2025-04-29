@@ -17,18 +17,20 @@ void update_Bloodpool(BLOODPOOL* bloodpool)
 	// To Do change data
 	if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration/2) {
 		if(bloodpool->size < 200) bloodpool->size++;
+		//printf("Blood Size %d\n", bloodpool->size);
+
 	}
 	else if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration && CP_System_GetSeconds() - bloodpool->timeGenerated > bloodpool->timeDuration / 2) {
 		if (bloodpool->hue > 59) {
 			bloodpool->hue -= 1;
-			printf("Hue %d\n", bloodpool->hue);
+			//printf("Hue %d\n", bloodpool->hue);
 		}
 	}
 }
 
 
 // get return value when animation ended
-int getAnimationEnded(BLOODPOOL* bloodpool)
+int getAnimationEnded_Bloodpool(BLOODPOOL* bloodpool)
 {
 	return CP_System_GetSeconds() - bloodpool->timeGenerated > bloodpool->timeDuration;
 }
