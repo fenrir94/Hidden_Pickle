@@ -198,6 +198,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   <ItemGroup>
     <ClCompile Include="animation.c" />
     <ClCompile Include="backrground.c" />
+    <ClCompile Include="bloodpool.c" />
     <ClCompile Include="bodyPart.c" />
     <ClCompile Include="camera.c" />
     <ClCompile Include="cJSON.c" />
@@ -218,6 +219,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="background.h" />
+    <ClInclude Include="bloodpool.h" />
     <ClInclude Include="bodyPart.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="cJSON.h" />

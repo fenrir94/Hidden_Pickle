@@ -6,6 +6,8 @@
 typedef struct bloodpool {
 	CP_Vector position;
 	float time_Generated;
+	int size;
+	int alpha;
 } BLOODPOOL;
 
 
