@@ -8,6 +8,7 @@
 #include "gun.h"
 #include "cJSON.h"
 #include "stageSelectMenu.h"
+#include "bloodpool.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -343,6 +344,10 @@ void check_Collsion_Bullet_Enemy(GUN* gun, ENEMY* enemy, int count_Enemy)
 					if (checkCollision_Circle_to_Circle(gun->position_Bullet[i], gun->radius_Bullet, enemy[j].position, enemy[j].radius)) {
 						endBullet(gun, i);
 						getDamage_Enemy(&(enemy[j]), gun->attackPoint);
+						if (enemy[j].life <= 0) {
+							init_Bloodpool(&enemy[j].bloodpool, enemy[j].position, 10);
+						}
+						
 					}
 				}
 			}
