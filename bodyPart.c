@@ -28,15 +28,17 @@ void init_Feet_BodyPart(BODY_PART* body_Part, int count_Animation)
 	body_Part->animation_Type = IDLE;
 }
 
-void update_BodyPart(BODY_PART* body_Part, EAnimationType animation_Type, float df)
+void changeAnimation_BodyPart(BODY_PART* body_Part, EAnimationType animation_Type)
 {
 	if (body_Part->animation_Type != animation_Type) {
 		body_Part->animation[body_Part->animation_Type].currentFrame = 0;
 		body_Part->animation[body_Part->animation_Type].frameTimer = 0;
 		body_Part->animation_Type = animation_Type;
 	}
-		
-	
+}
+
+void update_BodyPart(BODY_PART* body_Part, float df)
+{
 	update_Animation(&(body_Part->animation[body_Part->animation_Type]), df);
 }
 

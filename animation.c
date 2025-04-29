@@ -29,17 +29,10 @@ void init_Animation(ANIMATION* animation, char* filename, int count_FrameAnimati
 		animation->imageFrame[i] = CP_Image_Load(imagePath);
 	}
 
-	animation->frameDelay = 5;
+	animation->frameDelay = 1;
 	animation->frameTimer = 0;
 }
 
-//void init_MOVEAnimation(ANIMATION* animation, char* filename, int count_FrameAnimation) {
-//
-//}
-//
-//void init_SHOOTAnimation(ANIMATION* animation, char* filename, int count_FrameAnimation) {
-//
-//}
 
 void update_Animation(ANIMATION* animation, float df)
 {
