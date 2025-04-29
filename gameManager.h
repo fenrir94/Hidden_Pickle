@@ -16,7 +16,7 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include "mainmenu.h"
 #include "obstacle.h"
 #include "gun.h"
-#include "minimab.h"
+#include "minimap.h"
 #include "background.h"
 #include "light.h"
 #include "resultScreen.h"
@@ -37,7 +37,7 @@ typedef struct gameManager {
 	OBSTACLE* obstacles;
 	int obstacleCount;
 	MAB map_Bounds;
-	MINIMAB minimab;
+	MINIMAP minimap;
 	BACKGROUND background;
 	LIGHT light;
 	RESULT_SCREEN result_Screen;

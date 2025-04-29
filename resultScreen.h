@@ -19,3 +19,5 @@ typedef struct result_Screen {
 void init_Result_Screen(RESULT_SCREEN* result_screen);
 
 void update_Result_Screen(RESULT_SCREEN* result_screen, int gameResult);
+
+void print_Result_Screen(RESULT_SCREEN* result_screen);

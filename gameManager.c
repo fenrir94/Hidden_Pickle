@@ -142,7 +142,7 @@ void init_Game_Manager(void)
 	//맵 사이즈, 미니맵
     cJSON* mabSize_cJSON = cJSON_GetObjectItem(root, "mabsize");
     CP_Vector initVector = initCamera(&(game_Manager.map_Bounds), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble));
-    initMinimab(&(game_Manager.minimab), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
+    initMinimap(&(game_Manager.minimap), CP_Vector_Set((float)cJSON_GetObjectItem(mabSize_cJSON, "w")->valuedouble, (float)cJSON_GetObjectItem(mabSize_cJSON, "h")->valuedouble), initVector);
 	
 	init_Result_Screen(&(game_Manager.result_Screen));
 
@@ -198,7 +198,7 @@ void update_Game_Manager(void) {
 
 		update_Gun(&(game_Manager.player.gun), dt);
 
-		updateMinimab(inputVectorNoraml, dt);
+		updateMinimap(inputVectorNoraml, dt);
 
 		// Check Enemy Detected Player
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -212,7 +212,7 @@ void update_Game_Manager(void) {
 			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
 				rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 4);
-				rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 4);
+				rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 4);
 			}
 		}
 
@@ -231,7 +231,7 @@ void update_Game_Manager(void) {
 
 		if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
 			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 2);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 2);
+			rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 2);
 		}
 
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -250,6 +250,20 @@ void update_Game_Manager(void) {
 		if (check_Player_Lose(&(game_Manager.player))) {
 			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_LOSE);
 		}
+	}
+
+	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
+	
+	/*
+		if (game_Manager.result_Screen.gameState == GAME_STATE_LOSE) {
+			//사망시 애니메이션 재생
+		}
+	*/
+	
+		
+
+	
+	
 	}
 
 	print_GameObjects(&game_Manager);
@@ -373,7 +387,12 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	print_Player(&(gameManager->player));
 
-	printMinimab();
+	printMinimap(); // 게임 종료시 미니맵 알파 낮춰서 0으로
+
+	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON)
+	{
+		print_Result_Screen(&(gameManager->result_Screen)); //if 문 함수 안으로 옮기기
+	}
 }
 
 
@@ -391,8 +410,8 @@ void exit_Game_Manager(void)
 	free(game_Manager.item_Boxes);
 	free(game_Manager.enemies);
 	free(game_Manager.obstacles);
-	free(game_Manager.minimab.itemIconPosition);
-	free(game_Manager.minimab.obstacleIconPosition);
+	free(game_Manager.minimap.itemIconPosition);
+	free(game_Manager.minimap.obstacleIconPosition);
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
 	free(destinationsEnemies);
