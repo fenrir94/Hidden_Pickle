@@ -14,6 +14,7 @@
 
 typedef struct player {
 	CP_Vector position;
+	CP_Vector worldPos;
 	int speed;
 	int life;
 	float radius;
