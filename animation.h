@@ -11,7 +11,8 @@
 
 typedef enum animationType {
 	IDLE,
-	MOVE
+	MOVE, 
+	SHOOT
 } EAnimationType;
 
 typedef struct animation {

@@ -16,8 +16,10 @@ void init_Body_BodyPart(BODY_PART* body_Part, int count_Animation);
 
 void init_Feet_BodyPart(BODY_PART* body_Part, int count_Animation);
 
-void update_BodyPart(BODY_PART* body_Part, EAnimationType animation_Type, float dt);
+void changeAnimation_BodyPart(BODY_PART* body_Part, EAnimationType animation_Type);
 
-void  print_Body_BodyPart(BODY_PART* body_Part, CP_Vector position, float angle);
+void update_BodyPart(BODY_PART* body_Part, float dt);
+
+void print_Body_BodyPart(BODY_PART* body_Part, CP_Vector position, float angle);
 
 void print_Feet_BodyPart(BODY_PART* body_Part, CP_Vector position, float angle);
