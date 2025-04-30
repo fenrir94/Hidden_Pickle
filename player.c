@@ -65,6 +65,10 @@ void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
 	player->position = CP_Vector_Subtract(player->position, dPoistion);
+
+	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - dPoistion.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
+	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y - dPoistion.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+
 }
 
 int check_Collision_Player_Object(PLAYER* player, CP_Vector position_Object, float radius_Object)

@@ -71,10 +71,10 @@ void update_Result_Screen_Button(RESULT_SCREEN* result_screen)
 	{
 		if (isMouseInsideCircle(result_screen->button_Image[i].x, result_screen->button_Image[i].y, result_screen->button_Image[i].size, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
-			//if ((result_screen->gameState == GAME_STATE_LOSE || (result_screen->gameState == GAME_STATE_WIN && stage_Number == max_Stage_Number)) && i == 1)
-			//{
-			//	continue;
-			//}
+			if ((result_screen->gameState == GAME_STATE_LOSE || (result_screen->gameState == GAME_STATE_WIN && stage_Number == max_Stage_Number)) && i == 1)
+			{
+				continue;
+			}
 
 
 			if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
