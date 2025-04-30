@@ -29,11 +29,14 @@ typedef struct enemy {
 	int destinationIndex;
 	ENEMY_TYPE enemyType;
 	BLOODPOOL bloodpool;
+	CP_Sound soundFootprint;
 } ENEMY;
 
 void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
 
 void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destination, int patrolPoints);
+
+void update_Enemies(ENEMY* enemy, CP_Vector positon_player, float dt);;
 
 void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt);
 
