@@ -174,24 +174,11 @@ void init_Game_Manager(void)
 
 // Update Game Objects
 void update_Game_Manager(void) {
-
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
 
-
 	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_OFF) {
-
-	// get WASD Vector
-	CP_Vector inputVector = get_InputVector();
-
-	// get Space Bar = BatteryUse
-	use_Battery(&(game_Manager.player));
-
-	// Update plyer's position when input WASD
-	CP_Vector inputVectorNoraml = CP_Vector_Normalize(inputVector);
-
-
 		// get WASD Vector
 		CP_Vector inputVector = get_InputVector();
 
@@ -213,47 +200,34 @@ void update_Game_Manager(void) {
 
 		rotate_Player(&(game_Manager.player));
 
-		float df = CP_System_GetFrameRate();
-
-		if (CP_Vector_Length(inputVectorNoraml) > 0) {
-			update_BodyPart(&(game_Manager.player.body), MOVE, df);
-			update_BodyPart(&(game_Manager.player.feet), MOVE, df);
-		}
-
-	// TO DO Fix Shoot Animation
-	if (shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT)) {
-		changeAnimation_BodyPart(&(game_Manager.player.body), SHOOT);
-		if (CP_Vector_Length(inputVectorNoraml) > 0) {
-			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+		// TO DO Fix Shoot Animation
+		if (shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT)) {
+			changeAnimation_BodyPart(&(game_Manager.player.body), SHOOT);
+			if (CP_Vector_Length(inputVectorNoraml) > 0) {
+				changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+			}
+			else {
+				changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+			}
 		}
 		else {
-			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+			if (CP_Vector_Length(inputVectorNoraml) > 0) {
+				changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
+				changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
+			}
+			else {
+				changeAnimation_BodyPart(&(game_Manager.player.body), IDLE);
+				changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
+			}
 		}
-	}
-	else {
-		if (CP_Vector_Length(inputVectorNoraml) > 0) {
-			changeAnimation_BodyPart(&(game_Manager.player.body), MOVE);
-			changeAnimation_BodyPart(&(game_Manager.player.feet), MOVE);
-		}
-		else {
-			changeAnimation_BodyPart(&(game_Manager.player.body), IDLE);
-			changeAnimation_BodyPart(&(game_Manager.player.feet), IDLE);
-		}
-	}
 
-	update_BodyPart(&(game_Manager.player.body), dt * 100);
-	update_BodyPart(&(game_Manager.player.feet), dt * 100);
-
-	checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
-
-	update_Gun(&(game_Manager.player.gun), game_Manager.player.position, game_Manager.player.shooting_Vector, dt);
-
+		update_BodyPart(&(game_Manager.player.body), dt * 100);
+		update_BodyPart(&(game_Manager.player.feet), dt * 100);
 
 		checkAiming_Player(&(game_Manager.player), KEY_K, MOUSE_BUTTON_RIGHT);
 
-		shootingBullet_Player(&(game_Manager.player), KEY_J, MOUSE_BUTTON_LEFT);
+		update_Gun(&(game_Manager.player.gun), game_Manager.player.position, game_Manager.player.shooting_Vector, dt);
 
-		update_Gun(&(game_Manager.player.gun), dt);
 
 		turn_On_Light(&(game_Manager.light), game_Manager.player.isLampOn);
 
@@ -265,16 +239,18 @@ void update_Game_Manager(void) {
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
 			check_DetectPlayer_Enemy(game_Manager.enemies + i, game_Manager.player.position, game_Manager.player.radius);
 			update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
-
-	// Block Movement of Player when collision
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
-			getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
-			rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt * 3);
 		}
 
-		for (int i = 0; i < game_Manager.itemCount; i++) {
+		// Block Movement of Player when collision
+		for (int i = 0; i < game_Manager.enemyCount; i++) {
+			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
+				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+				rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
+				rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 3);
+			}
+		}
+
+			for (int i = 0; i < game_Manager.itemCount; i++) {
 			if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
 				collide_itemBox(game_Manager.item_Boxes + i);
 				get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
@@ -288,14 +264,15 @@ void update_Game_Manager(void) {
 			}
 		}
 
-	if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-		rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
-		rollback_Player_Icon_Position(&(game_Manager.minimab), inputVectorNoraml, dt);
-	}
+		if (check_Collision_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+			rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
+			rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt);
+		}
 
-	for (int i = 0; i < game_Manager.enemyCount; i++) {
-		if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-			rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
+		for (int i = 0; i < game_Manager.enemyCount; i++) {
+			if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
+				rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
+			}
 		}
 
 		check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
@@ -311,52 +288,56 @@ void update_Game_Manager(void) {
 		}
 	}
 
-	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
-		
-		float animationTotalTime = 1;
-		static float elapsedTime = 0;
-    
-		if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
-			elapsedTime += dt;
-      
-			printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
-			//사망시 애니메이션 재생
+	
+		if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
 
-			if (elapsedTime > animationTotalTime)
+			float animationTotalTime = 1;
+			static float elapsedTime = 0;
+
+			update_Player(&(game_Manager.player), CP_Vector_Set(0, 0), dt);
+			
+			if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
+				elapsedTime += dt;
+
+				printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
+				//사망시 애니메이션 재생
+
+
+				if (elapsedTime > animationTotalTime)
+				{
+					game_Manager.result_Screen.animationState = ANIMATION_GAME_OVER;
+					elapsedTime = 0;
+				}
+
+			}
+
+
+			if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
+				elapsedTime += dt;
+				change_Minimap_Alpha(&(game_Manager.minimap), dt);
+				game_Manager.light.lightState = end;
+				update_Light(&(game_Manager.light), dt);
+
+				if (elapsedTime > animationTotalTime)
+				{
+					game_Manager.result_Screen.animationState = ANIMATION_NONE;
+					elapsedTime = 0;
+				}
+			}
+
+			if (game_Manager.result_Screen.animationState == ANIMATION_NONE)
 			{
-				game_Manager.result_Screen.animationState = ANIMATION_GAME_OVER;
-				elapsedTime = 0;
+				update_Result_Screen_Button(&(game_Manager.result_Screen));
+
 			}
 			
-		}
-	
-		
-		if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
-			elapsedTime += dt;
-			change_Minimap_Alpha(&(game_Manager.minimap), dt);
-			game_Manager.light.lightState = end;
-			update_Light(&(game_Manager.light), dt);
 
-			if (elapsedTime > animationTotalTime)
-			{
-				game_Manager.result_Screen.animationState = ANIMATION_NONE;
-				elapsedTime = 0;
-			}
+
 		}
 		
-		if (game_Manager.result_Screen.animationState == ANIMATION_NONE)
-		{
-			update_Result_Screen_Button(&(game_Manager.result_Screen));
-			
-		}
-
-	
-	
-	}
-
-	print_GameObjects(&game_Manager);
-
+		print_GameObjects(&game_Manager);
 }
+
 
 int check_Collision_Player_Enemy(PLAYER* player, ENEMY* enemy)
 {
@@ -462,8 +443,6 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	print_Exit_Place(&(gameManager->exit_Place));
 	
-	print_Obstacles(gameManager->obstacles, gameManager->obstacleCount);
-
 	for (int i = 0; i < gameManager->enemyCount; i++) {
 		print_Enemy(gameManager->enemies + i);
 	}
@@ -472,12 +451,13 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 		print_itemBox(&(gameManager->item_Boxes[i]));
 	}
 
-
-	printBullet(&(gameManager->player.gun));
-
-	printVisionblocker(&(game_Manager.light));
+	//printBullet(&(gameManager->player.gun));
 
 	print_Player(&(gameManager->player));
+
+	print_Obstacles(gameManager->obstacles, gameManager->obstacleCount);
+
+	printVisionblocker(&(game_Manager.light));
 
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 

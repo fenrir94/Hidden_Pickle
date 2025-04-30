@@ -59,7 +59,7 @@ void update_Result_Screen(RESULT_SCREEN* result_screen, int gameResult)
 	{
 		result_screen->animationState = ANIMATION_GAME_OVER;
 	}
-	else if (result_screen->gameState == ANIMATION_LOSE)
+	else if (result_screen->gameState == GAME_STATE_LOSE)
 	{
 		result_screen->animationState = ANIMATION_LOSE;
 	}
