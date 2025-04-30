@@ -6,17 +6,17 @@
 
 extern GAME_MANAGER game_Manager;
 
-CP_Vector initCamera(MAB* mab, CP_Vector mab_size)
+CP_Vector init_Camera(MAP* map, CP_Vector map_size)
 {
 
 	// 플레이어의 시작 위치가 중심이 되도록 모든 오브젝트의 위치를 초기화
 	CP_Vector center_xy = CP_Vector_Set((float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2);
 	CP_Vector initVector = CP_Vector_Subtract(center_xy, (&game_Manager)->player.position);
 
-	mab->minX = center_xy.x - mab_size.x / 2;
-	mab->maxX = center_xy.x + mab_size.x / 2;
-	mab->minY = center_xy.y - mab_size.y / 2;
-	mab->maxY = center_xy.y + mab_size.y / 2;
+	map->minX = center_xy.x - map_size.x / 2;
+	map->maxX = center_xy.x + map_size.x / 2;
+	map->minY = center_xy.y - map_size.y / 2;
+	map->maxY = center_xy.y + map_size.y / 2;
 	(&game_Manager)->player.worldPos = (&game_Manager)->player.position;
 
 
@@ -54,15 +54,15 @@ CP_Vector initCamera(MAB* mab, CP_Vector mab_size)
 	*/
 }
 
-void updateCamera(CP_Vector updateVector, float dt)
+void update_Camera(MAP* map, CP_Vector updateVector, float dt)
 {
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (&game_Manager)->player.speed);
 
 	CP_Vector movingVector = CP_Vector_Negate(dPoistion);
 
 
-	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - movingVector.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
-	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y - movingVector.y, game_Manager.map_Bounds.minY, game_Manager.map_Bounds.maxY);
+	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - movingVector.x, map->minX, map->maxX);
+	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y - movingVector.y, map->minY, map->maxY);
 
 	for (int i = 0; i < (&game_Manager)->enemyCount; i++) 
 	// 에너미 위치 변경
@@ -157,15 +157,4 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 }
 
 
-void printVisionblocker(CP_Image* visionblockerOff, CP_Image* visionblockerOn, int checkLampOn)
-{
 
-	if (checkLampOn == 1) // to do 랜턴 추가하고 수정
-	{
-		CP_Image_Draw(*visionblockerOn , (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
-	}
-	else
-	{
-		CP_Image_Draw(*visionblockerOff, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, (float)CP_System_GetWindowWidth() * 2, (float)CP_System_GetWindowHeight() * 2, 255);
-	}
-}

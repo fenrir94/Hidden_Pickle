@@ -25,6 +25,7 @@ typedef enum state {
 State isSelectButtonPressed = false;
 
 int stage_Number = -1;
+int max_Stage_Number = 1; //stage는 0부터 시작. 스테이지 2개라는 뜻
 
 void Init_Stage_Select_Menu(void)
 {
@@ -75,7 +76,10 @@ void Update_Stage_Select_Menu(void)
 
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
 
-
+	if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
+	{
+		isSelectButtonPressed = false;
+	}
 	// 함수로 빼야함
 
 }
@@ -132,6 +136,7 @@ void Print_Button(IMAGE* stageSelect_Button, int stageNumber)
 			}
 		}
 	}
+
 }
 
 void Print_Exit_Button(IMAGE* exit_Button)
