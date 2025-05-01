@@ -6,6 +6,12 @@
 
 float mapWidth;
 float mapHeight;
+
+float vision_Line_Width;
+float vision_Line_Height;
+
+float vision_Line_Expanded_Width;
+float vision_Line_Expanded_Height;
    
 CP_Vector centerPosition;
 
@@ -16,6 +22,7 @@ CP_Image player_Icon_Image_File;
 CP_Image minimap_Frame_Icon_Image_File;
 CP_Image minimap_Background_Image_File;
 CP_Image minimap_Black_Image_File;
+CP_Image vision_line_icon_Image_File;
 
 void init_Minimap(MINIMAP* minimap, CP_Vector map_size, CP_Vector initVector)
 // 플레이어 초기 좌표 오류 수정해야함
@@ -72,7 +79,11 @@ void init_Minimap(MINIMAP* minimap, CP_Vector map_size, CP_Vector initVector)
 	}
 
 	minimap->normal.alpha = 255;
-	minimap->expanded.alpha = 0;
+
+	minimap->normal.vision_Line_size = CP_Vector_Set(200 * minimap->normal.minimapWidth / mapWidth, 200 * minimap->normal.minimapHeight / mapHeight);
+
+	vision_Line_Width = minimap->normal.vision_Line_size.x;
+	vision_Line_Height = minimap->normal.vision_Line_size.y;
 
 	init_Minimap_Expanded(minimap, initVector);
 
@@ -83,6 +94,7 @@ void init_Minimap(MINIMAP* minimap, CP_Vector map_size, CP_Vector initVector)
 	minimap_Frame_Icon_Image_File = CP_Image_Load("Assets/Icon/minimap_frame.png");
 	minimap_Background_Image_File = CP_Image_Load("Assets/Map_data/Background/Dirt_02_Full.png");
 	minimap_Black_Image_File = CP_Image_Load("Assets/Image/black.png");
+	vision_line_icon_Image_File = CP_Image_Load("Assets/Icon/vision_line_icon.png");
 	
 }
 
@@ -131,7 +143,12 @@ void init_Minimap_Expanded(MINIMAP* minimap, CP_Vector initVector)
 		minimap->expanded.obstacleIconPosition[i].y = minimap->expanded.minimapPosition.y + (game_Manager.obstacles[i].position.y - centerPosition.y - initVector.y) * (minimap->expanded.minimapHeight / mapHeight);
 	}
 
-	minimap->expanded.alpha = 255; // to do 추후 수정
+	minimap->expanded.vision_Line_size = CP_Vector_Set(200 * minimap->expanded.minimapWidth / mapWidth, 200 * minimap->expanded.minimapHeight / mapHeight);
+
+	vision_Line_Expanded_Width = minimap->expanded.vision_Line_size.x;
+	vision_Line_Expanded_Height = minimap->expanded.vision_Line_size.y;
+
+	minimap->expanded.alpha = 0; // to do 추후 수정
 
 }
 /*
@@ -161,6 +178,8 @@ void update_Minimap(MINIMAP* minimap, CP_Vector updateVector, float dt)
 	
 	minimap->expanded.playerIconPosition.x = clamp(minimap->expanded.playerIconPosition.x + dPoistion_expanded.x, minimap->expanded.minimapPosition.x - minimap->expanded.minimapWidth / 2, minimap->expanded.minimapPosition.x + minimap->expanded.minimapWidth / 2);
 	minimap->expanded.playerIconPosition.y = clamp(minimap->expanded.playerIconPosition.y + dPoistion_expanded.y, minimap->expanded.minimapPosition.y - minimap->expanded.minimapHeight / 2, minimap->expanded.minimapPosition.y + minimap->expanded.minimapHeight / 2);
+
+	update_Vision_Line(minimap, dt);
 }
 /*
 
@@ -219,23 +238,13 @@ void change_Minimap_State(MINIMAP* minimap)
 
 void print_Minimap(MINIMAP* minimap)
 {
-/*
- CP_Image exit_Icon_Image_File;
-CP_Image obstacle_Icon_Image_File;
-CP_Image chest_Icon_Image_File;
-CP_Image player_Icon_Image_File;
-CP_Image minimap_Frame_Icon_Image_File;
-CP_Image minimap_Background_Image_File;
-*/
+
 	CP_Image_Draw(minimap_Frame_Icon_Image_File, minimap->normal.minimapPosition.x, minimap->normal.minimapPosition.y, minimap->normal.minimapUiSize + 10, minimap->normal.minimapUiSize + 10, minimap->normal.alpha);
 	CP_Image_Draw(minimap_Frame_Icon_Image_File, minimap->expanded.minimapPosition.x, minimap->expanded.minimapPosition.y, minimap->expanded.minimapUiSize + 10, minimap->expanded.minimapUiSize + 10, minimap->expanded.alpha);
 
 	CP_Image_Draw(minimap_Background_Image_File, minimap->normal.minimapPosition.x, minimap->normal.minimapPosition.y, minimap->normal.minimapUiSize, minimap->normal.minimapUiSize, minimap->normal.alpha);
 	CP_Image_Draw(minimap_Background_Image_File, minimap->expanded.minimapPosition.x, minimap->expanded.minimapPosition.y, minimap->expanded.minimapUiSize, minimap->expanded.minimapUiSize, minimap->expanded.alpha);
 
-
-	CP_Image_Draw(player_Icon_Image_File, minimap->normal.playerIconPosition.x, minimap->normal.playerIconPosition.y, 9, 9, minimap->normal.alpha);
-	CP_Image_Draw(player_Icon_Image_File, minimap->expanded.playerIconPosition.x, minimap->expanded.playerIconPosition.y, 24, 24, minimap->expanded.alpha);
 
 
 	CP_Image_Draw(exit_Icon_Image_File, minimap->normal.exitIconPosition.x, minimap->normal.exitIconPosition.y, 18, 18, minimap->normal.alpha);
@@ -283,7 +292,67 @@ CP_Image minimap_Background_Image_File;
 		}
 	}
 
+	CP_Settings_NoStroke();
 
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, minimap->normal.alpha));
+
+	if (minimap->normal.minimapWidth > minimap->normal.minimapHeight)
+	{
+		CP_Graphics_DrawRect(minimap->normal.minimapPosition.x, minimap->normal.minimapPosition.y - minimap->normal.minimapHeight / 2 - (minimap->normal.minimapUiSize - minimap->normal.minimapHeight) / 4, minimap->normal.minimapWidth, (minimap->normal.minimapUiSize - minimap->normal.minimapHeight) / 2);
+		CP_Graphics_DrawRect(minimap->normal.minimapPosition.x, minimap->normal.minimapPosition.y + minimap->normal.minimapHeight / 2 + (minimap->normal.minimapUiSize - minimap->normal.minimapHeight) / 4, minimap->normal.minimapWidth, (minimap->normal.minimapUiSize - minimap->normal.minimapHeight) / 2);
+	}
+	else if (minimap->normal.minimapWidth < minimap->normal.minimapHeight)
+	{
+		CP_Graphics_DrawRect(minimap->normal.minimapPosition.x - minimap->normal.minimapWidth / 2 - (minimap->normal.minimapUiSize - minimap->normal.minimapWidth) / 4, minimap->normal.minimapPosition.y, (minimap->normal.minimapUiSize - minimap->normal.minimapWidth) / 2, minimap->normal.minimapHeight);
+		CP_Graphics_DrawRect(minimap->normal.minimapPosition.x + minimap->normal.minimapWidth / 2 + (minimap->normal.minimapUiSize - minimap->normal.minimapWidth) / 4, minimap->normal.minimapPosition.y, (minimap->normal.minimapUiSize - minimap->normal.minimapWidth) / 2, minimap->normal.minimapHeight);
+	}
+
+	
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, minimap->expanded.alpha));
+
+	if (minimap->expanded.minimapWidth > minimap->expanded.minimapHeight)
+	{
+		CP_Graphics_DrawRect(minimap->expanded.minimapPosition.x, minimap->expanded.minimapPosition.y - minimap->expanded.minimapHeight / 2 - (minimap->expanded.minimapUiSize - minimap->expanded.minimapHeight) / 4, minimap->expanded.minimapWidth, (minimap->expanded.minimapUiSize - minimap->expanded.minimapHeight) / 2);
+		CP_Graphics_DrawRect(minimap->expanded.minimapPosition.x, minimap->expanded.minimapPosition.y + minimap->expanded.minimapHeight / 2 + (minimap->expanded.minimapUiSize - minimap->expanded.minimapHeight) / 4, minimap->expanded.minimapWidth, (minimap->expanded.minimapUiSize - minimap->expanded.minimapHeight) / 2);
+	}
+	else if (minimap->expanded.minimapWidth < minimap->expanded.minimapHeight)
+	{
+		CP_Graphics_DrawRect(minimap->expanded.minimapPosition.x - minimap->expanded.minimapWidth / 2 - (minimap->expanded.minimapUiSize - minimap->expanded.minimapWidth) / 4, minimap->expanded.minimapPosition.y, (minimap->expanded.minimapUiSize - minimap->expanded.minimapWidth) / 2, minimap->expanded.minimapHeight);
+		CP_Graphics_DrawRect(minimap->expanded.minimapPosition.x + minimap->expanded.minimapWidth / 2 + (minimap->expanded.minimapUiSize - minimap->expanded.minimapWidth) / 4, minimap->expanded.minimapPosition.y, (minimap->expanded.minimapUiSize - minimap->expanded.minimapWidth) / 2, minimap->expanded.minimapHeight);
+	}
+
+	CP_Settings_Stroke(CP_Color_Create(0, 0, 0, 255));
+
+	CP_Image_Draw(player_Icon_Image_File, minimap->normal.playerIconPosition.x, minimap->normal.playerIconPosition.y, 9, 9, minimap->normal.alpha);
+	CP_Image_Draw(player_Icon_Image_File, minimap->expanded.playerIconPosition.x, minimap->expanded.playerIconPosition.y, 24, 24, minimap->expanded.alpha);
+
+	CP_Image_Draw(vision_line_icon_Image_File, minimap->normal.playerIconPosition.x, minimap->normal.playerIconPosition.y, minimap->normal.vision_Line_size.x, minimap->normal.vision_Line_size.y, minimap->normal.alpha);
+	CP_Image_Draw(vision_line_icon_Image_File, minimap->expanded.playerIconPosition.x, minimap->expanded.playerIconPosition.y, minimap->expanded.vision_Line_size.x, minimap->expanded.vision_Line_size.y, minimap->expanded.alpha);
+
+
+}
+float vision_Line_Width;
+float vision_Line_Height;
+
+void update_Vision_Line(MINIMAP* minimap, float dt)
+{
+
+	if (game_Manager.light.lightState == off)
+	{
+		minimap->normal.vision_Line_size.x = clamp(minimap->normal.vision_Line_size.x - vision_Line_Width * (dt * 10), vision_Line_Width, (vision_Line_Width * 2));
+		minimap->normal.vision_Line_size.y = clamp(minimap->normal.vision_Line_size.y - vision_Line_Height * (dt * 10), vision_Line_Height, (vision_Line_Height * 2));
+
+		minimap->expanded.vision_Line_size.x = clamp(minimap->expanded.vision_Line_size.x - vision_Line_Expanded_Width * (dt * 10), vision_Line_Expanded_Width, (vision_Line_Expanded_Width * 2));
+		minimap->expanded.vision_Line_size.y = clamp(minimap->expanded.vision_Line_size.y - vision_Line_Expanded_Height * (dt * 10), vision_Line_Expanded_Height, (vision_Line_Expanded_Height * 2));
+	}
+	else if (game_Manager.light.lightState == on)
+	{
+		minimap->normal.vision_Line_size.x = clamp(minimap->normal.vision_Line_size.x + vision_Line_Width * (dt * 10), vision_Line_Width, (vision_Line_Width * 2));
+		minimap->normal.vision_Line_size.y = clamp(minimap->normal.vision_Line_size.y + vision_Line_Height * (dt * 10), vision_Line_Height, (vision_Line_Height * 2));
+
+		minimap->expanded.vision_Line_size.x = clamp(minimap->expanded.vision_Line_size.x + vision_Line_Expanded_Width * (dt * 10), vision_Line_Expanded_Width, (vision_Line_Expanded_Width * 2));
+		minimap->expanded.vision_Line_size.y = clamp(minimap->expanded.vision_Line_size.y + vision_Line_Expanded_Height * (dt * 10), vision_Line_Expanded_Height, (vision_Line_Expanded_Height * 2));
+	}
 }
 
 void rollback_Player_Icon_Position(MINIMAP* minimap, CP_Vector updateVector, float dt)

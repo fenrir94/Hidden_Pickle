@@ -7,6 +7,7 @@ typedef struct minimapDate {
 	CP_Vector exitIconPosition;
 	CP_Vector* itemIconPosition;
 	CP_Vector* obstacleIconPosition;
+	CP_Vector vision_Line_size;
 	float minimapUiSize;
 	float minimapWidth;
 	float minimapHeight;
@@ -36,5 +37,7 @@ void change_Minimap_Alpha(MINIMAP* minimap, RESULT_SCREEN* result_screen, float 
 void change_Minimap_State(MINIMAP* minimap);
 
 void print_Minimap(MINIMAP* minimap);
+
+void update_Vision_Line(MINIMAP* minimap, float dt);
 
 void rollback_Player_Icon_Position(MINIMAP* minimap, CP_Vector updateVector, float dt);

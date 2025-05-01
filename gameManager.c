@@ -35,6 +35,7 @@ extern CP_Image player_Icon_Image_File;
 extern CP_Image minimap_Frame_Icon_Image_File;
 extern CP_Image minimap_Background_Image_File;
 extern CP_Image minimap_Black_Image_File;
+extern CP_Image vision_line_icon_Image_File;
 
 extern int stage_Number_State;
 
@@ -323,6 +324,7 @@ void update_Game_Manager(void) {
 
 			if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
 				elapsedTime += dt;
+				change_Player_Alpha(&(game_Manager.player), &(game_Manager.result_Screen), dt);
 				change_Minimap_Alpha(&(game_Manager.minimap), &(game_Manager.result_Screen), dt);
 				game_Manager.light.lightState = end;
 				update_Light(&(game_Manager.light), dt);
@@ -493,7 +495,8 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&minimap_Background_Image_File);
 	CP_Image_Free(&minimap_Black_Image_File);
 	CP_Image_Free(&game_Manager.light.lightImage);
-	
+	CP_Image_Free(&vision_line_icon_Image_File);
+
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
