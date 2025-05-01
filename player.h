@@ -8,6 +8,7 @@
 #include "bodyPart.h"
 #include "utility.h"
 #include "bloodpool.h"	
+#include "resultScreen.h"
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
@@ -29,6 +30,7 @@ typedef struct player {
 	BODY_PART feet;
 	BODY_PART body;
 	BLOODPOOL bloodpool;
+	int ui_Alpha;
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
@@ -62,3 +64,5 @@ int isInvincibility(PLAYER* player, float dt);
 void rotate_Player(PLAYER* player);
 
 void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun);
+
+void change_Player_Alpha(PLAYER* player, RESULT_SCREEN* result_screen, float dt);
