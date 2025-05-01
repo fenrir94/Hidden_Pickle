@@ -29,6 +29,7 @@ typedef struct enemy {
 	int destinationIndex;
 	ENEMY_TYPE enemyType;
 	BLOODPOOL bloodpool;
+	CP_Sound soundFootprint;
 } ENEMY;
 
 void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
@@ -54,3 +55,5 @@ void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float rad
 void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player);
 
 void getDamage_Enemy(ENEMY* enemy, int attackPoint);
+
+void controlVolumeFootprint_Enemy(ENEMY* enemy, int count_Enemy, CP_Vector position_Player);
