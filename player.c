@@ -108,6 +108,7 @@ void getDamage_Player(PLAYER* player, int attackPoint) {
 	
 	if (player->life == 0) {
 		init_Bloodpool(&player->bloodpool, player->position, 5);
+		CP_Sound_StopGroup(CP_SOUND_GROUP_2);
 	}
 }
 

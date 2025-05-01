@@ -36,8 +36,6 @@ void init_Enemy(ENEMY* enemy, CP_Vector startPosition);
 
 void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destination, int patrolPoints);
 
-void update_Enemies(ENEMY* enemy, CP_Vector positon_player, float dt);;
-
 void update_Enemy(ENEMY* enemy, CP_Vector positon_player, float dt);
 
 void updatePosition_Bloodpool_Enemy(ENEMY* enemy, CP_Vector moveVector);
@@ -57,3 +55,5 @@ void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float rad
 void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player);
 
 void getDamage_Enemy(ENEMY* enemy, int attackPoint);
+
+void controlVolumeFootprint_Enemy(ENEMY* enemy, int count_Enemy, CP_Vector position_Player);

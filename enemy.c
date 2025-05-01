@@ -30,12 +30,7 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	init_Footprint(&(enemy->footprint));
 	enemy->enemyType = PATROL;
 	enemy->soundFootprint = CP_Sound_Load("./Assets/SFX/walk_Enemy.wav");
-	CP_Sound_PlayAdvanced(enemy->soundFootprint, 0.0f, 1.0f, TRUE, CP_SOUND_GROUP_2);
-}
-
-void update_Enemies(ENEMY* enemy, CP_Vector positon_player, float dt)
-{
-
+	CP_Sound_PlayAdvanced(enemy->soundFootprint, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_2);
 }
 
 void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)
@@ -65,23 +60,23 @@ void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)
 
 		//To Do need to Fix
 		// CP_SOUND_GROUP_2 is SFX for Enemy Footprint
-		float distancePlayer = CP_Vector_Distance(enemy->position, position_player);
-		printf("DIstance: %f\n", distancePlayer);
-		if (distancePlayer < 700) {
-			/*if (CP_Vector_Distance(enemy->position, position_player) > 2) {
-				CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, CP_Vector_Distance(enemy->position, position_player));
-			}
-			else {
-				CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 0.5);
-
-			}*/
-			CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (600 - distancePlayer) / 600);
-			//CP_Sound_ResumeGroup(CP_SOUND_GROUP_2);
-		}
-		else {
-			//CP_Sound_PauseGroup(CP_SOUND_GROUP_2);
-			CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 0.0f);
-		}
+		//float distancePlayer = CP_Vector_Distance(enemy->position, position_player);
+		//printf("DIstance: %f\n", distancePlayer);
+		//if (distancePlayer < 700) {
+		//	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (800 - distancePlayer) / 600);
+		//}
+		//
+		////if (distancePlayer < 700) {
+		//
+		////	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (600 - distancePlayer) / 600);
+		////	
+		////}
+		//else {
+		//	//CP_Sound_PauseGroup(CP_SOUND_GROUP_2);
+		//	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 0.0f);
+		//}
+		//CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 1.0f );
+		//printf("Update!");
 	}
 	else { 
 		update_Bloodpool(&enemy->bloodpool);
@@ -185,5 +180,26 @@ void getDamage_Enemy(ENEMY* enemy, int attackPoint)
 {
 	enemy->life -= attackPoint;
 	//CP_Sound_Free(&enemy->soundFootprint);
+}
+
+void controlVolumeFootprint_Enemy(ENEMY* enemy, int count_Enemy, CP_Vector position_Player)
+{
+	int checkAllDie = 1;
+	float distance = 800.0f;
+	for (int i = 0; i < count_Enemy; i++) {
+		if (enemy[i].life > 0 ) {
+			checkAllDie = 0;
+			if (distance > CP_Vector_Distance(enemy[i].position, position_Player)) {
+				distance = CP_Vector_Distance(enemy[i].position, position_Player);
+			}
+		}
+	}
+
+	if (checkAllDie) {
+		CP_Sound_StopGroup(CP_SOUND_GROUP_2);
+	}
+	else {
+		CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (600 - distance) / 1000);
+	}
 }
 

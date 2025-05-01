@@ -241,6 +241,8 @@ void update_Game_Manager(void) {
 			update_Enemy(game_Manager.enemies + i, game_Manager.player.position, dt);
 		}
 
+		controlVolumeFootprint_Enemy(game_Manager.enemies, game_Manager.enemyCount, game_Manager.player.position);
+
 		// Block Movement of Player when collision
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
 			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
