@@ -204,8 +204,6 @@ void print_Player(PLAYER* player) {
 		print_Bloodpool(&player->bloodpool);
 	}
 
-
-
 	CP_Settings_RectMode(CP_POSITION_CORNER);
 
 	print_Player_Life(player, player->life);
@@ -282,5 +280,19 @@ void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
 
 		}
+	}
+}
+
+//To Do 
+// check radius and distance to rollback player position
+int checkPosition_inOtherObject_Player(PLAYER* player, CP_Vector position, float radius)
+{
+	float distance = CP_Vector_Distance(player->position, position);
+
+	if (distance < radius/2) {
+		return 1;
+	}
+	else {
+		return 0;
 	}
 }

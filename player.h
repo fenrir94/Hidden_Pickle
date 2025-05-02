@@ -62,3 +62,5 @@ int isInvincibility(PLAYER* player, float dt);
 void rotate_Player(PLAYER* player);
 
 void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun);
+
+int checkPosition_inOtherObject_Player(PLAYER* player, CP_Vector position, float radius);
