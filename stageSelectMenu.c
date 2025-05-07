@@ -3,6 +3,7 @@
 #include "stageSelectMenu.h"
 #include "mainmenu.h"
 #include "gameManager.h"
+#include "cursor.h"
 
 CP_Image stageSelect_Background_Image_File;
 CP_Image* stageSelect_Button_Image_List;
@@ -52,6 +53,8 @@ void Init_Stage_Select_Menu(void)
 
 	stageSelect_Button_Image_List = LoadImagesFromAssets(3, "Assets/UI/select_menu_button%d.png");
 
+	init_Cursor();
+
 	click_SFX_File = CP_Sound_Load("Assets/SFX/click.ogg");
 }
 
@@ -82,6 +85,7 @@ void Update_Stage_Select_Menu(void)
 	}
 	// 함수로 빼야함
 
+	print_Cursor();
 }
 
 void Exit_Stage_Select_Menu(void)
@@ -99,6 +103,7 @@ void Exit_Stage_Select_Menu(void)
 		stageSelect_Button_Image_List = NULL;
 	}
 
+	free_Cursor();
 	CP_Sound_Free(&click_SFX_File);
 }
 

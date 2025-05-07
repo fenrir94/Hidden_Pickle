@@ -26,8 +26,8 @@ void update_Light(LIGHT* light, float dt)
 	}
 	else if (light->lightState == on)
 	{
-		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + light_Width * (dt * 10), light_Width, (light_Width * 2));
-		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + light_Height * (dt * 10), light_Height, (light_Height * 2));
+		game_Manager.light.lightSize.x = clamp(game_Manager.light.lightSize.x + light_Width * (dt * 20), light_Width, (light_Width * 2));
+		game_Manager.light.lightSize.y = clamp(game_Manager.light.lightSize.y + light_Height * (dt * 20), light_Height, (light_Height * 2));
 	}
 	else if (light->lightState == end)
 	{

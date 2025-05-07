@@ -12,6 +12,7 @@
 #include "stageSelectMenu.h"
 #include "resultScreen.h"
 #include "bloodpool.h"
+#include "cursor.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -172,6 +173,8 @@ void init_Game_Manager(void)
 
 	init_Light(&(game_Manager.light));
 
+	init_Cursor();
+
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
@@ -307,6 +310,8 @@ void update_Game_Manager(void) {
 			static float elapsedTime = 0;
 
 			update_Player(&(game_Manager.player), CP_Vector_Set(0, 0), dt);
+
+			CP_Sound_StopGroup(CP_SOUND_GROUP_2);
 			
 			if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
 				elapsedTime += dt;
@@ -475,6 +480,8 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 
 	print_Result_Screen(&(gameManager->result_Screen));
+
+	print_Cursor_Playing();
 }
 
 
@@ -524,6 +531,7 @@ void exit_Game_Manager(void)
 	free(patrolPointEnemies);
 	free(destinationsEnemies);
 
+	free_Cursor();
 
 	stage_Number_State = 1;
 
