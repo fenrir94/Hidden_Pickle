@@ -247,8 +247,11 @@ void update_Game_Manager(void) {
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
 			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
 				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
-				rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt*3);
-				rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt*3);
+				// check Directions of player and enemy, then rollback position
+				if (CP_Vector_AngleCCW(inputVectorNoraml, game_Manager.enemies[i].vector_Sight) < 0) {
+					rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
+					rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 3);
+				}
 			}
 		}
 
