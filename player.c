@@ -205,8 +205,6 @@ void print_Player(PLAYER* player) {
 		print_Bloodpool(&player->bloodpool);
 	}
 
-
-
 	CP_Settings_RectMode(CP_POSITION_CORNER);
 
 	CP_Settings_Stroke(CP_Color_Create(0, 0, 0, player->ui_Alpha));
@@ -282,12 +280,25 @@ void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
 		CP_Settings_Fill(CP_Color_Create(205, 127, 50, player->ui_Alpha));
 		for (int i = 0; i < 7; i++) {
 			/*CP_Graphics_DrawRectAdvanced(player->position.x + i * player->shooting_Vector.x * 40,
-				player->position.y + i * player->shooting_Vector.y * 40, 
+				player->position.y + i * player->shooting_Vector.y * 40,
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);*/
-			CP_Graphics_DrawRectAdvanced(player->gun.position_Gun.x + i * player->shooting_Vector.x * 30,player->gun.position_Gun.y + i * player->shooting_Vector.y * 30,
+			CP_Graphics_DrawRectAdvanced(player->gun.position_Gun.x + i * player->shooting_Vector.x * 30, player->gun.position_Gun.y + i * player->shooting_Vector.y * 30,
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
-
 		}
+	}
+}
+
+//To Do 
+// check radius and distance to rollback player position
+int checkPosition_inOtherObject_Player(PLAYER* player, CP_Vector position, float radius)
+{
+	float distance = CP_Vector_Distance(player->position, position);
+
+	if (distance < radius/2) {
+		return 1;
+	}
+	else {
+		return 0;
 	}
 }
 
