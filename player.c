@@ -16,6 +16,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->isLampOn = 0;
 	player->time_Hit = 0;
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
+	player->ui_Alpha = 255;
 
 	player_Hit_SFX_File = CP_Sound_Load("Assets/SFX/hit_Sound.wav");
 	
@@ -206,23 +207,28 @@ void print_Player(PLAYER* player) {
 
 	CP_Settings_RectMode(CP_POSITION_CORNER);
 
+	CP_Settings_Stroke(CP_Color_Create(0, 0, 0, player->ui_Alpha));
+
 	print_Player_Life(player, player->life);
 	print_Player_Battery(player, player->battery);
 	print_Player_Bulltet_UI(player, player->gun.count_Bullet);
 	
+	print_Player_Aiming(player, player->gun.position_Gun);
+
+	CP_Settings_Stroke(CP_Color_Create(0, 0, 0, 255));
+
 	CP_Settings_RectMode(CP_POSITION_CENTER);
 	printBullet(&(player->gun), player->position, angle_player - 90);
 
-	print_Player_Aiming(player, player->gun.position_Gun);
-}
 
+}
 
 void print_Player_Life(PLAYER* player, int life) {
 
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, player->ui_Alpha));
 	CP_Graphics_DrawRect(player->position.x - 50, player->position.y - 90, 100, 20);
 
-	CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
+	CP_Settings_Fill(CP_Color_Create(0, 255, 0, player->ui_Alpha));
 	float gap = (float)100 / BASIC_LIFE;
 
 	for (int i = 0; i < life; i++) {
@@ -245,14 +251,14 @@ void print_Player_Battery(PLAYER* player, int battery)
 	//CP_Settings_Fill(CP_Color_Create(255, 0, 255, 0));
 	//CP_Graphics_DrawRect(31, 101, 200, 30);
 
-	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
+	CP_Settings_Fill(CP_Color_Create(255, 255, 0, player->ui_Alpha));
 	CP_Graphics_DrawRect(player->position.x - 50, player->position.y - 80, (float)battery, 10);
 
 }
 
 void print_Player_Bulltet_UI(PLAYER* player, int count_Bullet)
 {
-	CP_Settings_Fill(CP_Color_Create(200, 200, 200, 255));
+	CP_Settings_Fill(CP_Color_Create(200, 200, 200, player->ui_Alpha));
 	float gap = (float)100 / MAX_BULLET;
 	
 	//TO DO 
@@ -271,14 +277,13 @@ void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
 {
 	// print Aiming
 	if (player->isAiming) {
-		CP_Settings_Fill(CP_Color_Create(205, 127, 50, 255));
+		CP_Settings_Fill(CP_Color_Create(205, 127, 50, player->ui_Alpha));
 		for (int i = 0; i < 7; i++) {
 			/*CP_Graphics_DrawRectAdvanced(player->position.x + i * player->shooting_Vector.x * 40,
-				player->position.y + i * player->shooting_Vector.y * 40, 
+				player->position.y + i * player->shooting_Vector.y * 40,
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);*/
-			CP_Graphics_DrawRectAdvanced(player->gun.position_Gun.x + i * player->shooting_Vector.x * 30,player->gun.position_Gun.y + i * player->shooting_Vector.y * 30,
+			CP_Graphics_DrawRectAdvanced(player->gun.position_Gun.x + i * player->shooting_Vector.x * 30, player->gun.position_Gun.y + i * player->shooting_Vector.y * 30,
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
-
 		}
 	}
 }
@@ -294,5 +299,14 @@ int checkPosition_inOtherObject_Player(PLAYER* player, CP_Vector position, float
 	}
 	else {
 		return 0;
+	}
+}
+
+void change_Player_Alpha(PLAYER* player, RESULT_SCREEN* result_screen, float dt)
+{
+	if (result_screen->isScreenOn == RESULT_SCREEN_ON)
+	{
+		player->ui_Alpha = (int)clamp((float)player->ui_Alpha - 255 * (int)(dt * 1000) / 1000, 0, 255);
+		player->ui_Alpha = (int)clamp((float)player->ui_Alpha - 255 * (int)(dt * 1000) / 1000, 0, 255);
 	}
 }

@@ -12,6 +12,7 @@
 #include "stageSelectMenu.h"
 #include "resultScreen.h"
 #include "bloodpool.h"
+#include "cursor.h"
 
 // GLOBAL
 GAME_MANAGER game_Manager;
@@ -28,6 +29,14 @@ extern CP_Image next_Icon_Image_File;
 extern CP_Image repeat_Icon_Image_File;
 extern CP_Image select_Icon_Image_File;
 extern CP_Image screen_Black_Image_File;
+extern CP_Image exit_Icon_Image_File;
+extern CP_Image obstacle_Icon_Image_File;
+extern CP_Image chest_Icon_Image_File;
+extern CP_Image player_Icon_Image_File;
+extern CP_Image minimap_Frame_Icon_Image_File;
+extern CP_Image minimap_Background_Image_File;
+extern CP_Image minimap_Black_Image_File;
+extern CP_Image vision_line_icon_Image_File;
 
 extern int stage_Number_State;
 
@@ -164,6 +173,8 @@ void init_Game_Manager(void)
 
 	init_Light(&(game_Manager.light));
 
+	init_Cursor();
+
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
@@ -234,6 +245,8 @@ void update_Game_Manager(void) {
 		update_Light(&(game_Manager.light), dt);
 
 		update_Minimap(&(game_Manager.minimap), inputVectorNoraml, dt);
+		change_Minimap_State(&(game_Manager.minimap));
+		change_Minimap_Alpha(&(game_Manager.minimap), &(game_Manager.result_Screen), dt);
 
 		// Check Enemy Detected Player
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
@@ -308,10 +321,12 @@ void update_Game_Manager(void) {
 	
 		if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
 
-			float animationTotalTime = 1;
+			float animationTotalTime = 2;
 			static float elapsedTime = 0;
 
 			update_Player(&(game_Manager.player), CP_Vector_Set(0, 0), dt);
+
+			CP_Sound_StopGroup(CP_SOUND_GROUP_2);
 			
 			if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
 				elapsedTime += dt;
@@ -331,7 +346,8 @@ void update_Game_Manager(void) {
 
 			if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
 				elapsedTime += dt;
-				change_Minimap_Alpha(&(game_Manager.minimap), dt);
+				change_Player_Alpha(&(game_Manager.player), &(game_Manager.result_Screen), dt);
+				change_Minimap_Alpha(&(game_Manager.minimap), &(game_Manager.result_Screen), dt);
 				game_Manager.light.lightState = end;
 				update_Light(&(game_Manager.light), dt);
 
@@ -499,6 +515,8 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 
 	print_Result_Screen(&(gameManager->result_Screen));
+
+	print_Cursor_Playing();
 }
 
 
@@ -513,14 +531,21 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&repeat_Icon_Image_File);
 	CP_Image_Free(&select_Icon_Image_File);
 	CP_Image_Free(&screen_Black_Image_File);
-
+	CP_Image_Free(&exit_Icon_Image_File);
+	CP_Image_Free(&obstacle_Icon_Image_File);
+	CP_Image_Free(&chest_Icon_Image_File);
+	CP_Image_Free(&player_Icon_Image_File);
+	CP_Image_Free(&minimap_Frame_Icon_Image_File);
+	CP_Image_Free(&minimap_Background_Image_File);
+	CP_Image_Free(&minimap_Black_Image_File);
 	CP_Image_Free(&game_Manager.light.lightImage);
-	
+	CP_Image_Free(&vision_line_icon_Image_File);
+
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
 	CP_Sound_Free(&result_Click_SFX_File);
-
+	
 	free(buffer);
 	free(game_Manager.player.body.animation);
 	free(game_Manager.player.feet.animation);
@@ -530,13 +555,18 @@ void exit_Game_Manager(void)
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
 	}
 	free(game_Manager.enemies);
-	free(game_Manager.obstacles);
-	free(game_Manager.minimap.itemIconPosition);
-	free(game_Manager.minimap.obstacleIconPosition);
+	free(game_Manager.obstacles)
+		;
+	free(game_Manager.minimap.normal.itemIconPosition);
+	free(game_Manager.minimap.normal.obstacleIconPosition);
+	free(game_Manager.minimap.expanded.itemIconPosition);
+	free(game_Manager.minimap.expanded.obstacleIconPosition);
+
 	free(startPositionEnemies);
 	free(patrolPointEnemies);
 	free(destinationsEnemies);
 
+	free_Cursor();
 
 	stage_Number_State = 1;
 

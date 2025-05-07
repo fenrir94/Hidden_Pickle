@@ -3,6 +3,7 @@
 #include "gameManager.h"
 #include "utility.h"
 #include "stageSelectMenu.h"
+#include "cursor.h"
 
 //제목
 char Title[15] = "Hidden Pickle";
@@ -58,6 +59,8 @@ int is_Moved = 0;
 
 void Init_Main_Menu(void)
 {
+	CP_System_ShowCursor(false);
+
 	CP_System_SetWindowTitle(Title);
 
 	button_Font = CP_Font_Load("Assets/Exo2-Regular.ttf"); // 폰트 불러오기, 추후 변경
@@ -90,6 +93,7 @@ void Init_Main_Menu(void)
 
 		is_Moved = 1;
 	}
+	init_Cursor();
 
 	DigiPen_SFX_File = CP_Sound_Load("Assets/SFX/Clap.wav"); // 사운드 불러오기
 	click_SFX_File = CP_Sound_Load("Assets/SFX/click.ogg");
@@ -252,10 +256,14 @@ void Print_Main_Menu(void)
 		}
 	}
 
+	print_Cursor();
+
 }
 
 void Exit_Main_Menu(void)
 {
+	free_Cursor();
+
 	CP_Image_Free(&digiPen_Image_File); // 이미지 해제
 	CP_Image_Free(&title_Logo_Image_File);
 	CP_Image_Free(&config_Image_File);
