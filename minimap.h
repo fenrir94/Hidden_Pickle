@@ -1,7 +1,7 @@
 #pragma once
 #include "resultScreen.h"
 
-typedef struct minimapDate {
+typedef struct minimapData {
 	CP_Vector minimapPosition;
 	CP_Vector playerIconPosition;
 	CP_Vector exitIconPosition;
