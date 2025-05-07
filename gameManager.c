@@ -252,10 +252,15 @@ void update_Game_Manager(void) {
 					rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
 					rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 3);
 				}
+				else if (CP_Vector_Length(inputVectorNoraml) <= 0 ) {
+					rollback_Player_Position(&(game_Manager.player), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt*3 );
+					rollback_Player_Icon_Position(&(game_Manager.minimap), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt*3 );
+				}
+				else{}
 			}
 		}
 
-			for (int i = 0; i < game_Manager.itemCount; i++) {
+		for (int i = 0; i < game_Manager.itemCount; i++) {
 			if (!isEmptyBox(game_Manager.item_Boxes + i) && check_Collision_Player_Item(&(game_Manager.player), game_Manager.item_Boxes + i)) {
 				collide_itemBox(game_Manager.item_Boxes + i);
 				get_Item(&(game_Manager.player), get_Item_Type(game_Manager.item_Boxes + i));
@@ -388,10 +393,11 @@ void check_Collision_Rollback_Player_Obstacles(PLAYER* player, OBSTACLE* obstacl
 	for (int i = 0; i < count_Obstacles; i++) {
 		if (checkCollision_Circle_to_Circle(player->position, player->radius, obstacles[i].position, obstacles[i].radius)) {
 			if (checkPosition_inOtherObject_Player(player, obstacles[i].position, obstacles[i].radius)) {
-				CP_Vector dVectorUnit = CP_Vector_Normalize(CP_Vector_Subtract(obstacles[i].position, player->position));
+				CP_Vector subVector = CP_Vector_Subtract(obstacles[i].position, player->position);
+				CP_Vector dVectorUnit = CP_Vector_Normalize(subVector);
 				
-				player->position = CP_Vector_Subtract(player->position, CP_Vector_Scale(dVectorUnit, player->radius + obstacles[i].radius));
-				rollback_Player_Icon_Position(&(game_Manager.minimap), dVectorUnit, dt);
+				player->position = CP_Vector_Subtract(player->position, CP_Vector_Scale(dVectorUnit, player->radius + obstacles[i].radius - CP_Vector_Length(subVector)));
+				rollback_Player_Icon_Position(&(game_Manager.minimap), dVectorUnit,dt);
 			}
 			else {
 				rollback_Player_Position(&(game_Manager.player), input, dt);
