@@ -20,13 +20,7 @@ float screen_Black_Alpha;
 typedef enum isResultScreenOn {
 	RESULT_SCREEN_OFF,
 	RESULT_SCREEN_ON
-} EisResultScreenOn;
-
-typedef enum game_State {
-	GAME_STATE_PLAYING,
-	GAME_STATE_WIN,
-	GAME_STATE_LOSE
-} EgameState;
+} EisResultScreenOn; 
 
 typedef enum animation_State {
 	ANIMATION_NONE,
@@ -48,7 +42,6 @@ typedef struct uiImage {
 
 typedef struct result_Screen {
 	EisResultScreenOn isScreenOn;
-	EgameState gameState;
 	EanimationState animationState;
 	UI_IMAGE button_Image[3];
 } RESULT_SCREEN;
@@ -61,4 +54,8 @@ void update_Result_Screen(RESULT_SCREEN* result_screen, int gameResult);
 
 void update_Result_Screen_Button(RESULT_SCREEN* result_screen);
 
+void update_Pause_Screen_Button(RESULT_SCREEN* result_screen);
+
 void print_Result_Screen(RESULT_SCREEN* result_screen);
+
+void print_Pause_Screen(RESULT_SCREEN* result_screen);

@@ -18,7 +18,7 @@ void print_Cursor(void)
 
 void print_Cursor_Playing(void)
 {
-	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON)
+	if (game_Manager.game_State != GAME_STATE_PLAYING)
 	{
 		CP_Image_Draw(pointer_Cursor_Image_File, CP_Input_GetMouseX() + 12, CP_Input_GetMouseY() + 12, 32, 32, 255);
 	}

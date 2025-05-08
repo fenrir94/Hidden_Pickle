@@ -67,6 +67,23 @@ void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
 {
 	CP_Vector dPoistion = CP_Vector_Scale(updateVector, dt * (player->speed));
 
+	if (game_Manager.player.worldPos.x == game_Manager.map_Bounds.minX && updateVector.x < 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.x == game_Manager.map_Bounds.maxX && updateVector.x > 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.y == game_Manager.map_Bounds.minY && updateVector.y < 0)
+	{
+		dPoistion.y = 0;
+	}
+	if (game_Manager.player.worldPos.y == game_Manager.map_Bounds.maxY && updateVector.y > 0)
+	{
+		dPoistion.y = 0;
+	}
+
 	player->position = CP_Vector_Subtract(player->position, dPoistion);
 
 	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - dPoistion.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
@@ -100,7 +117,7 @@ void getDamage_Player(PLAYER* player, int attackPoint) {
 	float time_Present = CP_System_GetSeconds();
 	if (isInvincibility(player, time_Present) == 0 ) {
 		if (player->life > 0) {
-			CP_Sound_Play(player_Hit_SFX_File);
+			CP_Sound_PlayAdvanced(player_Hit_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
 		}
 
 		player->life -= attackPoint;
