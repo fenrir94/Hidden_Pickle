@@ -24,6 +24,14 @@ CP_Image config_Silde_On_File;
 CP_Image config_Silde_Off_Section_File;
 CP_Image config_Silde_On_Section_File;
 CP_Image config_Silde_Circle_Icon_File;
+CP_Image config_Kerboard_W_File;
+CP_Image config_Kerboard_A_File;
+CP_Image config_Kerboard_S_File;
+CP_Image config_Kerboard_D_File;
+CP_Image config_Kerboard_Esc_File;
+CP_Image config_Kerboard_Tab_File;
+CP_Image config_Kerboard_Space_File;
+CP_Image config_Mouse_File;
 
 CP_Image* button_Image_List; // 버튼 이미지 리스트 0: Normal, 1: Hover, 2: Pressed
 
@@ -91,6 +99,15 @@ void Init_Main_Menu(void)
 	config_Silde_Off_Section_File = CP_Image_Load("Assets/UI/slide_horizontal_color_section.png");
 	config_Silde_On_Section_File = CP_Image_Load("Assets/UI/slide_horizontal_grey_section.png");
 	config_Silde_Circle_Icon_File = CP_Image_Load("Assets/UI/icon_circle.png");
+
+	config_Kerboard_W_File = CP_Image_Load("Assets/UI/keyboard_w_outline.png");
+	config_Kerboard_A_File = CP_Image_Load("Assets/UI/keyboard_a_outline.png");
+	config_Kerboard_S_File = CP_Image_Load("Assets/UI/keyboard_s_outline.png");
+	config_Kerboard_D_File = CP_Image_Load("Assets/UI/keyboard_d_outline.png");
+	config_Kerboard_Esc_File = CP_Image_Load("Assets/UI/keyboard_escape_outline.png");
+	config_Kerboard_Tab_File = CP_Image_Load("Assets/UI/keyboard_tab_outline.png");
+	config_Kerboard_Space_File = CP_Image_Load("Assets/UI/keyboard_space_outline.png");
+	config_Mouse_File = CP_Image_Load("Assets/UI/mouse_outline.png");
 
 	if (!is_Moved)
 	{
@@ -371,12 +388,49 @@ void Print_Main_Menu(void)
 
 		CP_Image_Draw(config_Silde_Circle_Icon_File, (float)CP_System_GetWindowWidth() / 2 - 250 + CP_Sound_GetGroupVolume(CP_SOUND_GROUP_0) * 500, (float)CP_System_GetWindowHeight() / 2 + 320, (float)20, (float)20, 255);
 
-		CP_Font_DrawText(":CONTROLS", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 - 350);
-		CP_Font_DrawText(":BGM", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 + 170);
-		CP_Font_DrawText(":SFX", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 + 270);
+		CP_Font_DrawText("CONTROLS", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 - 350);
+		CP_Font_DrawText("BGM", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 + 170);
+		CP_Font_DrawText("SFX", (float)CP_System_GetWindowWidth() / 2 - 300, (float)CP_System_GetWindowHeight() / 2 + 270);
 		
 		CP_Settings_TextSize(72.f);
 		CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE);
+
+		/*
+		config_Kerboard_W_File = CP_Image_Load("Assets/UI/keyboard_w_outline.png");
+		config_Kerboard_A_File = CP_Image_Load("Assets/UI/keyboard_a_outline.png");
+		config_Kerboard_S_File = CP_Image_Load("Assets/UI/keyboard_d_outline.png");
+		config_Kerboard_D_File = CP_Image_Load("Assets/UI/keyboard_s_outline.png");
+		config_Kerboard_Esc_File = CP_Image_Load("Assets/UI/keyboard_escape_outline.png");
+		config_Kerboard_Tab_File = CP_Image_Load("Assets/UI/keyboard_tab_outline.png");
+		config_Kerboard_Space_File = CP_Image_Load("Assets/UI/keyboard_space_outline.png");
+		config_Mouse_File = CP_Image_Load("Assets/UI/keyboard_w_outline.png");
+		*/
+		CP_Settings_TextSize(32.f);
+
+		CP_Image_Draw(config_Kerboard_W_File, (float)CP_System_GetWindowWidth() / 2 - 130, (float)CP_System_GetWindowHeight() / 2 - 250, 128, 128, 255);
+		CP_Image_Draw(config_Kerboard_S_File, (float)CP_System_GetWindowWidth() / 2 - 130, (float)CP_System_GetWindowHeight() / 2 - 150, 128, 128, 255);
+		CP_Image_Draw(config_Kerboard_A_File, (float)CP_System_GetWindowWidth() / 2 - 230, (float)CP_System_GetWindowHeight() / 2 - 150, 128, 128, 255);
+		CP_Image_Draw(config_Kerboard_D_File, (float)CP_System_GetWindowWidth() / 2 - 30, (float)CP_System_GetWindowHeight() / 2 - 150, 128, 128, 255);
+
+		CP_Font_DrawText("Movement", (float)CP_System_GetWindowWidth() / 2 - 130, (float)CP_System_GetWindowHeight() / 2 - 85);
+
+		CP_Image_Draw(config_Kerboard_Esc_File, (float)CP_System_GetWindowWidth() / 2 - 180, (float)CP_System_GetWindowHeight() / 2, 128, 128, 255);
+		CP_Font_DrawText("Pause", (float)CP_System_GetWindowWidth() / 2 - 180, (float)CP_System_GetWindowHeight() / 2 + 65);
+
+		CP_Image_Draw(config_Kerboard_Tab_File, (float)CP_System_GetWindowWidth() / 2 + 50, (float)CP_System_GetWindowHeight() / 2 - 30, 128, 128, 255);
+		CP_Font_DrawText("Minimap Toggle", (float)CP_System_GetWindowWidth() / 2 + 200, (float)CP_System_GetWindowHeight() / 2 - 30);
+
+		CP_Image_Draw(config_Kerboard_Space_File, (float)CP_System_GetWindowWidth() / 2 + 50, (float)CP_System_GetWindowHeight() / 2 + 50, 128, 128, 255);
+		CP_Font_DrawText("Lantern", (float)CP_System_GetWindowWidth() / 2 + 150, (float)CP_System_GetWindowHeight() / 2 + 50);
+
+		CP_Image_Draw(config_Mouse_File, (float)CP_System_GetWindowWidth() / 2 + 180, (float)CP_System_GetWindowHeight() / 2 - 180, 256, 256, 255);
+		CP_Graphics_DrawLine((float)CP_System_GetWindowWidth() / 2 + 130, (float)CP_System_GetWindowHeight() / 2 - 250, (float)CP_System_GetWindowWidth() / 2 + 80, (float)CP_System_GetWindowHeight() / 2 - 300);
+		CP_Font_DrawText("Fire", (float)CP_System_GetWindowWidth() / 2 + 80, (float)CP_System_GetWindowHeight() / 2 - 320);
+
+		CP_Graphics_DrawLine((float)CP_System_GetWindowWidth() / 2 + 230, (float)CP_System_GetWindowHeight() / 2 - 250, (float)CP_System_GetWindowWidth() / 2 + 280, (float)CP_System_GetWindowHeight() / 2 - 300);
+		CP_Font_DrawText("Aim", (float)CP_System_GetWindowWidth() / 2 + 280, (float)CP_System_GetWindowHeight() / 2 - 320);
+
+		CP_Settings_TextSize(72.f);
 
 		if (isMouseInsideRect(Config_Exit_Image.x, Config_Exit_Image.y, Config_Exit_width, Config_Exit_width, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
@@ -407,6 +461,14 @@ void Exit_Main_Menu(void)
 	CP_Image_Free(&config_Silde_On_Section_File);
 	CP_Image_Free(&config_Silde_Circle_Icon_File);
 	CP_Image_Free(&config_Divider_File);
+	CP_Image_Free(&config_Kerboard_W_File);
+	CP_Image_Free(&config_Kerboard_A_File);
+	CP_Image_Free(&config_Kerboard_S_File);
+	CP_Image_Free(&config_Kerboard_D_File);
+	CP_Image_Free(&config_Kerboard_Esc_File);
+	CP_Image_Free(&config_Kerboard_Tab_File);
+	CP_Image_Free(&config_Kerboard_Space_File);
+	CP_Image_Free(&config_Mouse_File);
 
 	if (button_Image_List != NULL)
 	{
