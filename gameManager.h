@@ -27,6 +27,12 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #define WINDOW_HEIGHT 900
 #define PLAYER_SPEED 400
 
+typedef enum gameState {
+	GAME_STATE_PLAYING,
+	GAME_STATE_PAUSE,
+	GAME_STATE_WIN,
+	GAME_STATE_LOSE
+} EgameState;
 
 typedef struct gameManager {
 	PLAYER player;
@@ -42,6 +48,7 @@ typedef struct gameManager {
 	BACKGROUND background;
 	LIGHT light;
 	RESULT_SCREEN result_Screen;
+	EgameState game_State;
 
 } GAME_MANAGER;
 

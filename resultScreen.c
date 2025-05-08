@@ -15,7 +15,12 @@ int printed_Stage_Number = 0;
 
 void init_Result_Screen(RESULT_SCREEN* result_screen)
 {
-	result_screen->gameState = GAME_STATE_PLAYING;
+	if (stage_Number_State)
+	{
+		printed_Stage_Number = stage_Number + 1;
+		stage_Number_State = 0;
+	}
+
 	result_screen->isScreenOn = RESULT_SCREEN_OFF;
 	result_screen->animationState = ANIMATION_NONE;
 
@@ -52,14 +57,14 @@ void init_Result_Screen_Button(RESULT_SCREEN* result_screen)
 
 void update_Result_Screen(RESULT_SCREEN* result_screen, int gameResult)
 {
-	result_screen->gameState = gameResult;
+	game_Manager.game_State = gameResult;
 	result_screen->isScreenOn = RESULT_SCREEN_ON;
 
-	if (result_screen->gameState == GAME_STATE_WIN)
+	if (game_Manager.game_State == GAME_STATE_WIN)
 	{
 		result_screen->animationState = ANIMATION_GAME_OVER;
 	}
-	else if (result_screen->gameState == GAME_STATE_LOSE)
+	else if (game_Manager.game_State == GAME_STATE_LOSE)
 	{
 		result_screen->animationState = ANIMATION_LOSE;
 	}
@@ -71,7 +76,7 @@ void update_Result_Screen_Button(RESULT_SCREEN* result_screen)
 	{
 		if (isMouseInsideCircle(result_screen->button_Image[i].x, result_screen->button_Image[i].y, result_screen->button_Image[i].size, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
-			if ((result_screen->gameState == GAME_STATE_LOSE || (result_screen->gameState == GAME_STATE_WIN && stage_Number == max_Stage_Number)) && i == 1)
+			if ((game_Manager.game_State == GAME_STATE_LOSE || (game_Manager.game_State == GAME_STATE_WIN && stage_Number == max_Stage_Number)) && i == 1)
 			{
 				continue;
 			}
@@ -79,7 +84,7 @@ void update_Result_Screen_Button(RESULT_SCREEN* result_screen)
 
 			if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
 			{
-				CP_Sound_Play(result_Click_SFX_File);
+				CP_Sound_PlayAdvanced(result_Click_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
 				result_screen->button_Image[i].isButtonPressed = PRESSED;
 			}
 			if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
@@ -110,15 +115,49 @@ void update_Result_Screen_Button(RESULT_SCREEN* result_screen)
 
 }
 
+void update_Pause_Screen_Button(RESULT_SCREEN* result_screen)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (isMouseInsideCircle(result_screen->button_Image[i].x, result_screen->button_Image[i].y - 150, result_screen->button_Image[i].size, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+		{
+
+			if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
+			{
+				CP_Sound_PlayAdvanced(result_Click_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
+				result_screen->button_Image[i].isButtonPressed = PRESSED;
+			}
+			if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
+			{
+				result_screen->button_Image[i].isButtonPressed = NOT_PRESSED;
+
+				if (i == 0)
+				{
+					CP_Engine_SetNextGameState(Init_Stage_Select_Menu, Update_Stage_Select_Menu, Exit_Stage_Select_Menu);
+				}
+				else if (i == 1)
+				{
+					game_Manager.game_State = GAME_STATE_PLAYING;
+				}
+				else if (i == 2)
+				{
+					CP_Engine_SetNextGameStateForced(init_Game_Manager, update_Game_Manager, exit_Game_Manager);
+				}
+			}
+
+		}
+		if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
+		{
+			result_screen->button_Image[i].isButtonPressed = NOT_PRESSED;
+		}
+	}
+
+}
+
 void print_Result_Screen(RESULT_SCREEN* result_screen)
 {
 	if (result_screen->animationState == ANIMATION_NONE && result_screen->isScreenOn == RESULT_SCREEN_ON)
 	{
-		if (stage_Number_State)
-		{
-			printed_Stage_Number = stage_Number + 1;
-			stage_Number_State = 0;
-		}
 
 		screen_Black_Alpha = clamp(screen_Black_Alpha + 10, 0 , 150);
 
@@ -133,7 +172,7 @@ void print_Result_Screen(RESULT_SCREEN* result_screen)
 
 		CP_Font_DrawText(stage_Buffer, (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2 - 150);
 
-		if (result_screen->gameState == GAME_STATE_WIN)
+		if (game_Manager.game_State == GAME_STATE_WIN)
 		{
 			CP_Font_DrawText("CLEAR!", (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2);
 		}
@@ -158,7 +197,7 @@ void print_Result_Screen(RESULT_SCREEN* result_screen)
 
 		CP_Image_Draw(repeat_Icon_Image_File, result_screen->button_Image[2].x, result_screen->button_Image[2].y, (float)90, (float)90, 255);
 
-		if (result_screen->gameState == GAME_STATE_LOSE || (result_screen->gameState == GAME_STATE_WIN && stage_Number == max_Stage_Number))
+		if (game_Manager.game_State == GAME_STATE_LOSE || (game_Manager.game_State == GAME_STATE_WIN && stage_Number == max_Stage_Number))
 		{
 			CP_Image_Draw(round_Button_Pressed_Image_File, result_screen->button_Image[1].x, result_screen->button_Image[1].y, result_screen->button_Image[1].size, result_screen->button_Image[1].size, 255);
 		}
@@ -172,3 +211,38 @@ void print_Result_Screen(RESULT_SCREEN* result_screen)
 		
 	}
 }
+
+void print_Pause_Screen(RESULT_SCREEN* result_screen)
+{
+	if (game_Manager.game_State == GAME_STATE_PAUSE) {
+
+		CP_Image_Draw(menu_Ui_Image_File, (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2, 700, 500, 255);
+
+		CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+
+		char stage_Buffer[15];
+		sprintf_s(stage_Buffer, sizeof(stage_Buffer), "STAGE %d", printed_Stage_Number);
+
+		CP_Font_DrawText(stage_Buffer, (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2 - 100);
+
+		for (int i = 0; i < 3; i++)
+		{
+			if (result_screen->button_Image[i].isButtonPressed == PRESSED)
+			{
+				CP_Image_Draw(round_Button_Pressed_Image_File, result_screen->button_Image[i].x, result_screen->button_Image[i].y - 150, result_screen->button_Image[i].size, result_screen->button_Image[i].size, 255);
+			}
+			else if (result_screen->button_Image[i].isButtonPressed == NOT_PRESSED)
+			{
+				CP_Image_Draw(round_Button_Image_File, result_screen->button_Image[i].x, result_screen->button_Image[i].y - 150, result_screen->button_Image[i].size, result_screen->button_Image[i].size, 255);
+			}
+
+
+		}
+		CP_Image_Draw(select_Icon_Image_File, result_screen->button_Image[0].x, result_screen->button_Image[0].y - 150, result_screen->button_Image[0].size, result_screen->button_Image[0].size, 255);
+
+		CP_Image_Draw(repeat_Icon_Image_File, result_screen->button_Image[2].x, result_screen->button_Image[2].y - 150, (float)90, (float)90, 255);
+
+		CP_Image_Draw(next_Icon_Image_File, result_screen->button_Image[1].x, result_screen->button_Image[1].y - 150, (float)90, (float)90., 255);
+	}
+}
+	

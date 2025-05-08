@@ -8,7 +8,7 @@ void init_Bloodpool(BLOODPOOL* bloodpool, CP_Vector position, float timeDuration
 	bloodpool->position = position;
 	bloodpool->timeGenerated = CP_System_GetSeconds();
 	bloodpool->size = 100;
-	bloodpool->alpha = 225;
+	bloodpool->alpha = 200;
 	bloodpool->timeDuration = timeDuration;
 }
 

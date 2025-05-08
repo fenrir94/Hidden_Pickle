@@ -23,9 +23,9 @@ void add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Si
 	}
 	else {
 		footprint->rear = (footprint->rear + 1) % COUNT_FOOTPRINT;
-		
 		footprint->position[footprint->rear] = CP_Vector_Set(position.x, position.y);
-		footprint->generatedTime[footprint->rear] = CP_System_GetSeconds();
+		footprint->generatedTime[footprint->rear] = 0;
+		footprint->alpha[footprint->rear] = 255;
 		
 		footprint->angle[footprint->rear] = getAngle_Vector_AxisX(vector_Sight);
 		
@@ -43,26 +43,27 @@ void del_Footprint(FOOTPRINT* footprint) {
 }
 
 // each footprint adds dt 
-// To do 
-// Dump
 void update_Footprint(FOOTPRINT* footprint, float dt)
 {
 	int i = footprint->front;
+
 	while (i != footprint->rear) {
 		i = (i + 1) % COUNT_FOOTPRINT;
 		footprint->generatedTime[i] += dt;
+		printf("time: %f", footprint->generatedTime[i]);
 		
+		footprint->alpha[i] = 255 - (int)footprint->generatedTime[i]*50;
 	}
 }
 
 
-void checkDuration_Footprint(FOOTPRINT* footprint, float time_present)
+void checkDuration_Footprint(FOOTPRINT* footprint)
 {
 	int i = footprint->front;
 
 	while (i != footprint->rear) {
 		i = (i + 1) % COUNT_FOOTPRINT;
-		if ((time_present - footprint->generatedTime[i]) >= ENDTIME_FOOTPRINT) {
+		if (footprint->generatedTime[i] >= ENDTIME_FOOTPRINT) {
 			del_Footprint(footprint);
 		}
 	}
@@ -73,23 +74,18 @@ void print_Footprint(FOOTPRINT* footprint)
 {
 	// TO DO Change to Image
 	CP_Settings_RectMode(CP_POSITION_CENTER);
-
-	float time_present = CP_System_GetSeconds();
-
+	
 	int i = footprint->front;
 	while (i != footprint->rear) {
 		i = (i + 1) % COUNT_FOOTPRINT;
-		float time_footprint_duration = time_present - footprint->generatedTime[i];
-		if (time_footprint_duration < ENDTIME_FOOTPRINT) {
-			int alpha = 255 - (int)time_footprint_duration*50; 
-			//CP_Settings_Fill(CP_Color_Create(0, 0, 0, alpha));
-			//CP_Graphics_DrawRect(footprint->position[i].x, footprint->position[i].y, 50, 50);
-			//CP_Graphics_DrawRectAdvanced(footprint->position[i].x, footprint->position[i].y, 50, 80, footprint->angle[i], 0);
+		if (footprint->generatedTime[i] < ENDTIME_FOOTPRINT) {
 			if (i % 2 == 0) {
-				CP_Image_DrawAdvanced(footprint->imageFootLeft, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootLeft), (float)CP_Image_GetHeight(footprint->imageFootLeft), alpha, footprint->angle[i]);
+				CP_Image_DrawAdvanced(footprint->imageFootLeft, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootLeft), (float)CP_Image_GetHeight(footprint->imageFootLeft), footprint->alpha[i], footprint->angle[i]);
+			
 			} 
 			else {
-				CP_Image_DrawAdvanced(footprint->imageFootRight, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootRight), (float)CP_Image_GetHeight(footprint->imageFootRight), alpha, footprint->angle[i]);
+				CP_Image_DrawAdvanced(footprint->imageFootRight, footprint->position[i].x, footprint->position[i].y, (float)CP_Image_GetWidth(footprint->imageFootRight), (float)CP_Image_GetHeight(footprint->imageFootRight), footprint->alpha[i], footprint->angle[i]);
+				
 			}
 		}
 	}

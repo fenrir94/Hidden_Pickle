@@ -52,6 +52,7 @@ extern int stage_Number;
 void init_Game_Manager(void)
 {
 	init_ImageManager(&image_Manager);
+	game_Manager.game_State = GAME_STATE_PLAYING;
 
 	char map_Name_Buffer[100];
 
@@ -188,8 +189,9 @@ void update_Game_Manager(void) {
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 0, 0));
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
+	float pause_Time = 0;
 
-	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_OFF) {
+	if (game_Manager.game_State == GAME_STATE_PLAYING) {
 		// get WASD Vector
 		CP_Vector inputVector = get_InputVector();
 
@@ -308,6 +310,11 @@ void update_Game_Manager(void) {
 		check_Collsion_Bullet_Enemy(&(game_Manager.player.gun), game_Manager.enemies, game_Manager.enemyCount);
 		check_Collsion_Bullet_Obstacles(&(game_Manager.player.gun), game_Manager.obstacles, game_Manager.obstacleCount);
 
+		if (CP_Input_KeyTriggered(KEY_ESCAPE))
+		{
+			pause_Time = CP_System_GetSeconds();
+			game_Manager.game_State = GAME_STATE_PAUSE;
+		}
 
 		if (check_Player_Win()) {
 			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_WIN);
@@ -316,59 +323,74 @@ void update_Game_Manager(void) {
 		if (check_Player_Lose(&(game_Manager.player))) {
 			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_LOSE);
 		}
+
+		CP_Sound_ResumeAll();
+
+	}
+	
+	if (game_Manager.game_State == GAME_STATE_PAUSE) {
+
+		if (CP_Input_KeyTriggered(KEY_ESCAPE) && CP_System_GetSeconds() - pause_Time > 0.1)
+		{
+			game_Manager.game_State = GAME_STATE_PLAYING;
+		}
+
+		update_Pause_Screen_Button(&(game_Manager.result_Screen));
+		// 사운드그룹 정지 시켜야함. result_screen에도 적용, play시 다시 재생
+
+		CP_Sound_PauseAll();
+
 	}
 
 	
-		if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
+	if (game_Manager.result_Screen.isScreenOn == RESULT_SCREEN_ON) {
 
-			float animationTotalTime = 2;
-			static float elapsedTime = 0;
+		float animationTotalTime = 2;
+		static float elapsedTime = 0;
 
-			update_Player(&(game_Manager.player), CP_Vector_Set(0, 0), dt);
+		update_Player(&(game_Manager.player), CP_Vector_Set(0, 0), dt);
 
-			CP_Sound_StopGroup(CP_SOUND_GROUP_2);
+		CP_Sound_StopGroup(CP_SOUND_GROUP_2);
 			
-			if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
-				elapsedTime += dt;
+		if (game_Manager.result_Screen.animationState == ANIMATION_LOSE) {
+			elapsedTime += dt;
 
-				printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
-				//사망시 애니메이션 재생
-
-
-				if (elapsedTime > animationTotalTime)
-				{
-					game_Manager.result_Screen.animationState = ANIMATION_GAME_OVER;
-					elapsedTime = 0;
-				}
-
-			}
+			printf("Death Animation! %d\n", getAnimationEnded_Bloodpool(&(game_Manager.player.bloodpool)));
+			//사망시 애니메이션 재생
 
 
-			if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
-				elapsedTime += dt;
-				change_Player_Alpha(&(game_Manager.player), &(game_Manager.result_Screen), dt);
-				change_Minimap_Alpha(&(game_Manager.minimap), &(game_Manager.result_Screen), dt);
-				game_Manager.light.lightState = end;
-				update_Light(&(game_Manager.light), dt);
-
-				if (elapsedTime > animationTotalTime)
-				{
-					game_Manager.result_Screen.animationState = ANIMATION_NONE;
-					elapsedTime = 0;
-				}
-			}
-
-			if (game_Manager.result_Screen.animationState == ANIMATION_NONE)
+			if (elapsedTime > animationTotalTime)
 			{
-				update_Result_Screen_Button(&(game_Manager.result_Screen));
-
+				game_Manager.result_Screen.animationState = ANIMATION_GAME_OVER;
+				elapsedTime = 0;
 			}
-			
-
 
 		}
+
+
+		if (game_Manager.result_Screen.animationState == ANIMATION_GAME_OVER) {
+			elapsedTime += dt;
+			change_Player_Alpha(&(game_Manager.player), &(game_Manager.result_Screen), dt);
+			change_Minimap_Alpha(&(game_Manager.minimap), &(game_Manager.result_Screen), dt);
+			game_Manager.light.lightState = end;
+			update_Light(&(game_Manager.light), dt);
+
+			if (elapsedTime > animationTotalTime)
+			{
+				game_Manager.result_Screen.animationState = ANIMATION_NONE;
+				elapsedTime = 0;
+			}
+		}
+
+		if (game_Manager.result_Screen.animationState == ANIMATION_NONE)
+		{
+			update_Result_Screen_Button(&(game_Manager.result_Screen));
+
+		}
+
+	}
 		
-		print_GameObjects(&game_Manager);
+	print_GameObjects(&game_Manager);
 }
 
 
@@ -513,6 +535,8 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	printVisionblocker(&(game_Manager.light));
 
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
+
+	 print_Pause_Screen(&(gameManager->result_Screen));
 
 	print_Result_Screen(&(gameManager->result_Screen));
 

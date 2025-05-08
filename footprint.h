@@ -15,6 +15,7 @@ typedef struct footprint {
 	CP_Image imageFootRight;
 	CP_Vector position[COUNT_FOOTPRINT];
 	float generatedTime[COUNT_FOOTPRINT];
+	int alpha[COUNT_FOOTPRINT];
 	float angle[COUNT_FOOTPRINT];
 	int rear; 
 	int front;
@@ -27,7 +28,7 @@ int is_Full(FOOTPRINT* footprint);
 
 void  add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Sight);
 
-void checkDuration_Footprint(FOOTPRINT* footprint, float time_present);
+void checkDuration_Footprint(FOOTPRINT* footprint);
 
 void del_Footprint(FOOTPRINT* footprint);
 
