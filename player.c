@@ -17,6 +17,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->time_Hit = 0;
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
 	player->ui_Alpha = 255;
+	player->imageDead = CP_Image_Load("./Assets/Top_Down_Survivor/dead.png");
 
 	player_Hit_SFX_File = CP_Sound_Load("Assets/SFX/hit_Sound.wav");
 	
@@ -203,6 +204,8 @@ void print_Player(PLAYER* player) {
 	}
 	else {
 		print_Bloodpool(&player->bloodpool);
+
+		CP_Image_Draw(player->imageDead, player->position.x, player->position.y, 300, 300, 255);
 	}
 
 	CP_Settings_RectMode(CP_POSITION_CORNER);
