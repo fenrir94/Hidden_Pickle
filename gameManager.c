@@ -540,6 +540,9 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&minimap_Black_Image_File);
 	CP_Image_Free(&game_Manager.light.lightImage);
 	CP_Image_Free(&vision_line_icon_Image_File);
+	CP_Image_Free(&game_Manager.player.imageDead);
+	CP_Image_Free(&game_Manager.player.imageKey);
+	CP_Image_Free(&game_Manager.player.bloodpool.imageBP);
 
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
@@ -549,14 +552,18 @@ void exit_Game_Manager(void)
 	free(buffer);
 	free(game_Manager.player.body.animation);
 	free(game_Manager.player.feet.animation);
+	
 	free(game_Manager.item_Boxes);
+
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		CP_Sound_Free(&game_Manager.enemies[i].soundFootprint);
+		CP_Image_Free(&game_Manager.enemies[i].bloodpool.imageBP);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootLeft);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
 	}
+
 	free(game_Manager.enemies);
-	free(game_Manager.obstacles)
-		;
+	free(game_Manager.obstacles);
 	free(game_Manager.minimap.normal.itemIconPosition);
 	free(game_Manager.minimap.normal.obstacleIconPosition);
 	free(game_Manager.minimap.expanded.itemIconPosition);
