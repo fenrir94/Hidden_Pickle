@@ -443,6 +443,7 @@ void check_Collision_Rollback_Player_Obstacles(PLAYER* player, OBSTACLE* obstacl
 			}
 
 		}
+		update_Alpha_Obstacle(&obstacles[i], checkNearPlayer_Obstacle(&obstacles[i], player->position, player->radius));
 	}
 }
 

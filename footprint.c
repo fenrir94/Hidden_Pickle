@@ -29,7 +29,7 @@ void add_Footprint(FOOTPRINT* footprint, CP_Vector position, CP_Vector vector_Si
 		
 		footprint->angle[footprint->rear] = getAngle_Vector_AxisX(vector_Sight);
 		
-		printf("Queue Added in [%d] at %.2f\n", footprint->rear, footprint->generatedTime[footprint->rear]);
+		//printf("Queue Added in [%d] at %.2f\n", footprint->rear, footprint->generatedTime[footprint->rear]);
 	}
 }
 
@@ -50,7 +50,7 @@ void update_Footprint(FOOTPRINT* footprint, float dt)
 	while (i != footprint->rear) {
 		i = (i + 1) % COUNT_FOOTPRINT;
 		footprint->generatedTime[i] += dt;
-		printf("time: %f", footprint->generatedTime[i]);
+		//printf("time: %f", footprint->generatedTime[i]);
 		
 		footprint->alpha[i] = 255 - (int)footprint->generatedTime[i]*50;
 	}
