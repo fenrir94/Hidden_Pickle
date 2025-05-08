@@ -10,6 +10,7 @@ typedef struct bloodpool {
 	int size;
 	int hue;
 	float timeDuration;
+	CP_Image imageBP;
 } BLOODPOOL;
 
 

@@ -31,6 +31,7 @@ typedef struct player {
 	BODY_PART body;
 	BLOODPOOL bloodpool;
 	int ui_Alpha;
+	CP_Image imageDead;
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);

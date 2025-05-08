@@ -6,26 +6,27 @@ void init_Bloodpool(BLOODPOOL* bloodpool, CP_Vector position, float timeDuration
 {
 	bloodpool->position = position;
 	bloodpool->timeGenerated = CP_System_GetSeconds();
-	bloodpool->size = 0;
+	bloodpool->size = 100;
 	bloodpool->hue = 200;
 	bloodpool->timeDuration = timeDuration;
+	bloodpool->imageBP = CP_Image_Load("./Assets/Image/bloodpool.png");
 }
 
 // update time to size up and reduce alpha value 
 void update_Bloodpool(BLOODPOOL* bloodpool)
 {
 	// To Do change data
-	if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration/2) {
-		if(bloodpool->size < 200) bloodpool->size++;
+	if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration / 2) {
+		if (bloodpool->size < 300) bloodpool->size++;
 		//printf("Blood Size %d\n", bloodpool->size);
 
 	}
-	else if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration && CP_System_GetSeconds() - bloodpool->timeGenerated > bloodpool->timeDuration / 2) {
-		if (bloodpool->hue > 59) {
-			bloodpool->hue -= 1;
-			//printf("Hue %d\n", bloodpool->hue);
-		}
-	}
+	//else if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration && CP_System_GetSeconds() - bloodpool->timeGenerated > bloodpool->timeDuration / 2) {
+	//	if (bloodpool->hue > 59) {
+	//		bloodpool->hue -= 1;
+	//		//printf("Hue %d\n", bloodpool->hue);
+	//	}
+	//}
 }
 
 
@@ -40,8 +41,10 @@ void print_Bloodpool(BLOODPOOL* bloodpool)
 {
 	if (CP_System_GetSeconds() - bloodpool->timeGenerated < bloodpool->timeDuration) {
 		// TO DO Fix
-		CP_Settings_Fill(CP_Color_Create(bloodpool->hue, 0, 0, 255));
-		CP_Graphics_DrawCircle(bloodpool->position.x, bloodpool->position.y, (float)bloodpool->size);
+		//CP_Settings_Fill(CP_Color_Create(bloodpool->hue, 0, 0, 255));
+		//CP_Graphics_DrawCircle(bloodpool->position.x, bloodpool->position.y, (float)bloodpool->size);
+		CP_Image_Draw(bloodpool->imageBP, bloodpool->position.x, bloodpool->position.y, (float)bloodpool->size, (float)bloodpool->size, 255);
+
 	}
 
 }
