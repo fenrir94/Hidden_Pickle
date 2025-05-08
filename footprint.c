@@ -1,5 +1,6 @@
 
 #include "footprint.h"
+#include "imageManager.h"
 
 int is_Empty(FOOTPRINT* footprint)
 {
@@ -11,8 +12,8 @@ int is_Full(FOOTPRINT* footprint) {
 }
 
 void init_Footprint(FOOTPRINT* footprint) {
-	footprint->imageFootLeft = CP_Image_Load("./Assets/Footprint/footLeft_Cat.png");
-	footprint->imageFootRight = CP_Image_Load("./Assets/Footprint/footRight_Cat.png");
+	footprint->imageFootLeft = image_Manager.imageFootLeft_Patrol;
+	footprint->imageFootRight = image_Manager.imageFootLeft_Patrol;
 	footprint->rear = footprint->front = -1;
 }
 

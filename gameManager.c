@@ -16,6 +16,7 @@
 
 // GLOBAL
 GAME_MANAGER game_Manager;
+IMAGE_MANAGER image_Manager;
 
 extern CP_Sound gunshot_SFX_File;
 extern CP_Sound player_Hit_SFX_File;
@@ -40,9 +41,6 @@ extern CP_Image vision_line_icon_Image_File;
 
 extern int stage_Number_State;
 
-// GLOBAL
-GAME_MANAGER game_Manager;
-
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
 CP_Vector* destinationsEnemies;
@@ -53,6 +51,8 @@ extern int stage_Number;
 //to do fix -> to .
 void init_Game_Manager(void)
 {
+	init_ImageManager(&image_Manager);
+
 	char map_Name_Buffer[100];
 
 	sprintf_s(map_Name_Buffer, sizeof(map_Name_Buffer), "./Assets/Map_data/map_data_Test%d.JSON", stage_Number);
@@ -542,7 +542,8 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&vision_line_icon_Image_File);
 	CP_Image_Free(&game_Manager.player.imageDead);
 	CP_Image_Free(&game_Manager.player.imageKey);
-	CP_Image_Free(&game_Manager.player.bloodpool.imageBP);
+
+	free_ImageManager(&image_Manager);
 
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
@@ -557,7 +558,6 @@ void exit_Game_Manager(void)
 
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
 		CP_Sound_Free(&game_Manager.enemies[i].soundFootprint);
-		CP_Image_Free(&game_Manager.enemies[i].bloodpool.imageBP);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootLeft);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
 	}

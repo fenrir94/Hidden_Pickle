@@ -1,5 +1,6 @@
 
 #include "itemBox.h"
+#include "imageManager.h"
 
 CP_Sound chest_Open_SFX_File;
 
@@ -29,7 +30,7 @@ void print_itemBox(ITEM_BOX* item_box)
 {
 	//printf("%d\n", item_box->isCollided);
 	if (item_box->isCollided == 0) {
-		if (item_box->item_type == KEY_Item)
+		/*if (item_box->item_type == KEY_Item)
 		{
 			CP_Settings_Fill(CP_Color_Create(255, 255, 0, 255));
 		}
@@ -41,9 +42,11 @@ void print_itemBox(ITEM_BOX* item_box)
 		{
 			CP_Settings_Fill(CP_Color_Create(0, 0, 255, 255));
 
-		}
+		}*/
 
-		CP_Graphics_DrawCircle(item_box->position.x, item_box->position.y, item_box->radius);
+		//CP_Graphics_DrawCircle(item_box->position.x, item_box->position.y, item_box->radius);
+		CP_Image_Draw(image_Manager.itemBox, item_box->position.x, item_box->position.y, 70, 70, 255);
+
 	}
 
 }

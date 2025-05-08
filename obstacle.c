@@ -1,5 +1,6 @@
 
 #include "obstacle.h"
+#include "imageManager.h"
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type)
 {
@@ -18,6 +19,7 @@ void print_Obstacles(OBSTACLE* obstacle, int count_Obstacle)
 
 void print_Obstacle(OBSTACLE* obstacle)
 {
-	CP_Settings_Fill(CP_Color_Create(165, 42, 42, 255));
-	CP_Graphics_DrawCircle(obstacle->position.x, obstacle->position.y, obstacle->radius);
+	//CP_Settings_Fill(CP_Color_Create(165, 42, 42, 255));
+	//CP_Graphics_DrawCircle(obstacle->position.x, obstacle->position.y, obstacle->radius);
+	CP_Image_Draw(image_Manager.tree, obstacle->position.x, obstacle->position.y, obstacle->radius*2, obstacle->radius*2, 255);
 }
