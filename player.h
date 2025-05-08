@@ -32,6 +32,7 @@ typedef struct player {
 	BLOODPOOL bloodpool;
 	int ui_Alpha;
 	CP_Image imageDead;
+	CP_Image imageKey;
 } PLAYER;
 
 void init_Player(PLAYER* player, CP_Vector startPosition);
@@ -57,6 +58,8 @@ void print_Player_Life(PLAYER* player, int life);
 void print_Player_Battery(PLAYER* player, int battery);
 
 void print_Player_Bulltet_UI(PLAYER* player, int bullet);
+
+void print_Player_Key(PLAYER* player);
 
 void print_Player(PLAYER* player);
 

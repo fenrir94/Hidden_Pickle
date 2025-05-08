@@ -18,6 +18,7 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->shooting_Vector = CP_Vector_Normalize(CP_Vector_Subtract(getMousePosition(), player->position));
 	player->ui_Alpha = 255;
 	player->imageDead = CP_Image_Load("./Assets/Top_Down_Survivor/dead.png");
+	player->imageKey = CP_Image_Load("./Assets/Image/key.png");
 
 	player_Hit_SFX_File = CP_Sound_Load("Assets/SFX/hit_Sound.wav");
 	
@@ -215,7 +216,8 @@ void print_Player(PLAYER* player) {
 	print_Player_Life(player, player->life);
 	print_Player_Battery(player, player->battery);
 	print_Player_Bulltet_UI(player, player->gun.count_Bullet);
-	
+	print_Player_Key(player);
+
 	print_Player_Aiming(player, player->gun.position_Gun);
 
 	CP_Settings_Stroke(CP_Color_Create(0, 0, 0, 255));
@@ -274,6 +276,13 @@ void print_Player_Bulltet_UI(PLAYER* player, int count_Bullet)
 	}
 
 	
+}
+
+void print_Player_Key(PLAYER* player)
+{
+	if (player->getKey == 1) {
+		CP_Image_Draw(player->imageKey, player->position.x + 65, player->position.y - 80, 30, 30, 255);
+	}
 }
 
 void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
