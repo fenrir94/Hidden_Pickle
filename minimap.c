@@ -282,16 +282,6 @@ void print_Minimap(MINIMAP* minimap)
 		
 }
 
-	
-	for (int i = 0; i < game_Manager.obstacleCount; i++)
-	{
-		if (game_Manager.obstacles[i].isCollided == 1)
-		{
-			CP_Image_Draw(obstacle_Icon_Image_File, minimap->normal.obstacleIconPosition[i].x, minimap->normal.obstacleIconPosition[i].y, 18, 18, minimap->normal.alpha);
-			CP_Image_Draw(obstacle_Icon_Image_File, minimap->expanded.obstacleIconPosition[i].x, minimap->expanded.obstacleIconPosition[i].y, 48, 48, minimap->expanded.alpha);
-		}
-	}
-
 	CP_Settings_NoStroke();
 
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, minimap->normal.alpha));
@@ -326,13 +316,20 @@ void print_Minimap(MINIMAP* minimap)
 	CP_Image_Draw(player_Icon_Image_File, minimap->normal.playerIconPosition.x, minimap->normal.playerIconPosition.y, 9, 9, minimap->normal.alpha);
 	CP_Image_Draw(player_Icon_Image_File, minimap->expanded.playerIconPosition.x, minimap->expanded.playerIconPosition.y, 24, 24, minimap->expanded.alpha);
 
+	for (int i = 0; i < game_Manager.obstacleCount; i++)
+	{
+		if (game_Manager.obstacles[i].isCollided == 1)
+		{
+			CP_Image_Draw(obstacle_Icon_Image_File, minimap->normal.obstacleIconPosition[i].x, minimap->normal.obstacleIconPosition[i].y, 18, 18, minimap->normal.alpha);
+			CP_Image_Draw(obstacle_Icon_Image_File, minimap->expanded.obstacleIconPosition[i].x, minimap->expanded.obstacleIconPosition[i].y, 48, 48, minimap->expanded.alpha);
+		}
+	}
+
 	CP_Image_Draw(vision_line_icon_Image_File, minimap->normal.playerIconPosition.x, minimap->normal.playerIconPosition.y, minimap->normal.vision_Line_size.x, minimap->normal.vision_Line_size.y, minimap->normal.alpha);
 	CP_Image_Draw(vision_line_icon_Image_File, minimap->expanded.playerIconPosition.x, minimap->expanded.playerIconPosition.y, minimap->expanded.vision_Line_size.x, minimap->expanded.vision_Line_size.y, minimap->expanded.alpha);
 
 
 }
-float vision_Line_Width;
-float vision_Line_Height;
 
 void update_Vision_Line(MINIMAP* minimap, float dt)
 {
@@ -358,8 +355,10 @@ void update_Vision_Line(MINIMAP* minimap, float dt)
 void rollback_Player_Icon_Position(MINIMAP* minimap, CP_Vector updateVector, float dt)
 {
 	CP_Vector dPoistion = CP_Vector_Scale(CP_Vector_Scale(updateVector, dt * (game_Manager.player.speed)), minimap->normal.minimapWidth / mapWidth);
+	CP_Vector dPoistion_ex = CP_Vector_Scale(CP_Vector_Scale(updateVector, dt * (game_Manager.player.speed)), minimap->expanded.minimapWidth / mapWidth);
 
 	minimap->normal.playerIconPosition = CP_Vector_Subtract(minimap->normal.playerIconPosition, dPoistion);
+	minimap->expanded.playerIconPosition = CP_Vector_Subtract(minimap->expanded.playerIconPosition, dPoistion_ex);
 } 
 /*
 각 프린트된 오브젝트의 좌표 및 카운트를 사용해 미니맵 이미지를 그려냄.

@@ -20,7 +20,7 @@ void init_itemBox(ITEM_BOX* item_box, EItemType itemType, CP_Vector position_ite
 // Check not to display item box
 void collide_itemBox(ITEM_BOX* item_box)
 {
-	CP_Sound_Play(chest_Open_SFX_File);
+	CP_Sound_PlayAdvanced(chest_Open_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
 		
 	item_box->isCollided = 1;
 }

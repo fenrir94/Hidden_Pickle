@@ -125,7 +125,7 @@ void Print_Button(IMAGE* stageSelect_Button, int stageNumber)
 		CP_Image_Draw(stageSelect_Button_Image_List[1], stageSelect_Button->x, stageSelect_Button->y, stageSelect_Button->width, stageSelect_Button->height, stageSelect_Button->alpha);
 		if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
 		{
-			CP_Sound_Play(click_SFX_File);
+			CP_Sound_PlayAdvanced(click_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
 			isSelectButtonPressed = true;
 		}
 		if (isSelectButtonPressed)
@@ -153,7 +153,7 @@ void Print_Exit_Button(IMAGE* exit_Button)
 		CP_Image_Draw(stageSelect_Button_Image_List[1], exit_Button->x, exit_Button->y, exit_Button->width, exit_Button->height, exit_Button->alpha);
 		if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
 		{
-			CP_Sound_Play(click_SFX_File);
+			CP_Sound_PlayAdvanced(click_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);
 			isSelectButtonPressed = true;
 		}
 		if (isSelectButtonPressed)

@@ -30,7 +30,7 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 	init_Footprint(&(enemy->footprint));
 	enemy->enemyType = PATROL;
 	enemy->soundFootprint = CP_Sound_Load("./Assets/SFX/walk_Enemy.wav");
-	CP_Sound_PlayAdvanced(enemy->soundFootprint, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_2);
+	CP_Sound_PlayAdvanced(enemy->soundFootprint, 0.6f * CP_Sound_GetGroupVolume(CP_SOUND_GROUP_0), 1.0f, TRUE, CP_SOUND_GROUP_2);
 }
 
 void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)

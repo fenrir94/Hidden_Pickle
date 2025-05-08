@@ -10,13 +10,12 @@ typedef struct Image {
     float timeForAlpha; // 인트로 투명도 조절용
 } IMAGE;
 
+
 void Init_Main_Menu(void);
 
 void Update_Main_Menu(void);
 
 void Exit_Main_Menu(void);
-
-void Update_Main_Menu(void);
 
 void Print_Main_Menu_Intro(void);
 
