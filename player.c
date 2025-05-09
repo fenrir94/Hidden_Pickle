@@ -298,7 +298,7 @@ void print_Player_Bulltet_UI(PLAYER* player, int count_Bullet)
 void print_Player_Key(PLAYER* player)
 {
 	if (player->getKey == 1) {
-		CP_Image_Draw(player->imageKey, player->position.x + 65, player->position.y - 80, 30, 30, 255);
+		CP_Image_Draw(player->imageKey, player->position.x + 65, player->position.y - 80, 30, 30, player->ui_Alpha);
 	}
 }
 
