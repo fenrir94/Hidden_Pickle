@@ -41,6 +41,10 @@ extern CP_Image vision_line_icon_Image_File;
 
 extern int stage_Number_State;
 
+
+CP_Sound gamemanager_Bgm_FILE;
+int is_BGM_Played = 1;
+
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
 CP_Vector* destinationsEnemies;
@@ -181,6 +185,8 @@ void init_Game_Manager(void)
 
 	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
 
+	gamemanager_Bgm_FILE = CP_Sound_LoadMusic("./Assets/BGM/gamemanager_BGM.wav");
+
 	cJSON_Delete(root);  // root를 지우면 내부 모든 것도 같이 해제됨
 }
 
@@ -190,6 +196,12 @@ void update_Game_Manager(void) {
 	// check input, update simulation, render etc.
 	float dt = CP_System_GetDt();
 	float pause_Time = 0;
+
+	if (is_BGM_Played == 1) {
+		CP_Sound_PlayAdvanced(gamemanager_Bgm_FILE, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_1);
+
+		is_BGM_Played = 0;
+	}
 
 	if (game_Manager.game_State == GAME_STATE_PLAYING) {
 		// get WASD Vector
@@ -565,15 +577,18 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&minimap_Black_Image_File);
 	CP_Image_Free(&game_Manager.light.lightImage);
 	CP_Image_Free(&vision_line_icon_Image_File);
+
 	CP_Image_Free(&game_Manager.player.imageDead);
 	CP_Image_Free(&game_Manager.player.imageKey);
 
 	free_ImageManager(&image_Manager);
 
+
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
 	CP_Sound_Free(&result_Click_SFX_File);
+	CP_Sound_Free(&gamemanager_Bgm_FILE);
 	
 	free(buffer);
 	free(game_Manager.player.body.animation);

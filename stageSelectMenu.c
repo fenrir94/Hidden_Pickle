@@ -85,6 +85,11 @@ void Update_Stage_Select_Menu(void)
 	}
 	// 함수로 빼야함
 
+	if (CP_Input_KeyTriggered(KEY_ESCAPE))
+	{
+		CP_Engine_SetNextGameState(Init_Main_Menu, Update_Main_Menu, Exit_Main_Menu);
+	}
+
 	print_Cursor();
 }
 
