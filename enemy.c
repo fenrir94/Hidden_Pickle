@@ -52,13 +52,11 @@ void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)
 		if (is_Empty(&(enemy->footprint)) || (enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT) {
 			add_Footprint(&(enemy->footprint), enemy->position, enemy->vector_Sight);
 		}
-
-		update_Footprint(&(enemy->footprint), dt);
-
 	}
 	else { 
 		update_Bloodpool(&enemy->bloodpool);
 	}
+	update_Footprint(&(enemy->footprint), dt);
 	checkDuration_Footprint(&(enemy->footprint));
 }
 
