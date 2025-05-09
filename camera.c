@@ -64,6 +64,23 @@ void update_Camera(MAP* map, CP_Vector updateVector, float dt)
 	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - movingVector.x, map->minX, map->maxX);
 	game_Manager.player.worldPos.y = clamp(game_Manager.player.worldPos.y - movingVector.y, map->minY, map->maxY);
 
+	if (game_Manager.player.worldPos.x <= game_Manager.map_Bounds.minX && updateVector.x < 0)
+	{
+		movingVector.x = 0;
+	}
+	if (game_Manager.player.worldPos.x >= game_Manager.map_Bounds.maxX && updateVector.x > 0)
+	{
+		movingVector.x = 0;
+	}
+	if (game_Manager.player.worldPos.y <= game_Manager.map_Bounds.minY && updateVector.y < 0)
+	{
+		movingVector.y = 0;
+	}
+	if (game_Manager.player.worldPos.y >= game_Manager.map_Bounds.maxY && updateVector.y > 0)
+	{
+		movingVector.y = 0;
+	}
+
 	for (int i = 0; i < (&game_Manager)->enemyCount; i++) 
 	// 에너미 위치 변경
 	{
@@ -132,26 +149,21 @@ int checkCameraTrigger(PLAYER* player, CP_Vector updateVector)
 	float worldX = game_Manager.player.worldPos.x;
 	float worldY = game_Manager.player.worldPos.y;
 
-	if ((worldX <= game_Manager.map_Bounds.minX && updateVector.x < 0) ||
-		(worldX >= game_Manager.map_Bounds.maxX && updateVector.x > 0) ||
-		(worldY <= game_Manager.map_Bounds.minY && updateVector.y < 0) ||
-		(worldY >= game_Manager.map_Bounds.maxY && updateVector.y > 0))
+	if (dx * dx + dy * dy < 300 * 300)
+		return 0;
+
+	if ((worldX <= game_Manager.map_Bounds.minX && updateVector.x == -1) ||
+		(worldX >= game_Manager.map_Bounds.maxX && updateVector.x == 1) ||
+		(worldY <= game_Manager.map_Bounds.minY && updateVector.y == -1) ||
+		(worldY >= game_Manager.map_Bounds.maxY && updateVector.y == 1))
 
 	{
+		printf("%f \n", updateVector.x);
 		return 0;
 	}
 
 
-	if (dx * dx + dy * dy < 300 * 300)
-		return 0;
-
-	// 카메라가 이동하려는 방향이 없다면 굳이 갱신 안함
-	if (CP_Vector_DotProduct(CP_Vector_Set(dx, dy), updateVector) <= 0)
-		return 0;
-
-	// 경계 충돌 검사
 	
-
 
 	return 1;
 }
