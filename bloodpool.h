@@ -8,9 +8,8 @@ typedef struct bloodpool {
 	CP_Vector position;
 	float timeGenerated;
 	int size;
-	int hue;
+	int alpha;
 	float timeDuration;
-	CP_Image imageBP;
 } BLOODPOOL;
 
 

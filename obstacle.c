@@ -1,5 +1,6 @@
 
 #include "obstacle.h"
+#include "imageManager.h"
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type)
 {
@@ -7,17 +8,38 @@ void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacl
 	obstacle->radius = 100; // TO DO Need to Change
 	obstacle->obstacle_Type = obstacle_Type;
 	obstacle->isCollided = 0;
+	obstacle->alpha = 255;
 }
+
+void update_Alpha_Obstacle(OBSTACLE* obstacle, int isPlayerNear) {
+	if (isPlayerNear)
+	{
+		obstacle->alpha = 125;
+	}
+	else {
+		obstacle->alpha = 255;
+	}
+}
+
+int checkNearPlayer_Obstacle(OBSTACLE* obstacle, CP_Vector positionPlayer, float radiusPlayer)
+{
+	if (CP_Vector_Distance(obstacle->position, positionPlayer) < obstacle->radius * 1.5 + radiusPlayer) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
 
 void print_Obstacles(OBSTACLE* obstacle, int count_Obstacle)
 {
 	for (int i = 0; i < count_Obstacle; i++) {
-		print_Obstacle(obstacle+i);
+		print_Obstacle(&obstacle[i]);
 	}
 }
 
 void print_Obstacle(OBSTACLE* obstacle)
 {
-	CP_Settings_Fill(CP_Color_Create(165, 42, 42, 255));
-	CP_Graphics_DrawCircle(obstacle->position.x, obstacle->position.y, obstacle->radius);
+	CP_Image_Draw(image_Manager.tree, obstacle->position.x, obstacle->position.y, obstacle->radius*2, obstacle->radius*2, obstacle->alpha);
 }

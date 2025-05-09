@@ -36,8 +36,6 @@ void init_Enemy_Patrol(ENEMY* enemy, CP_Vector startPosition, CP_Vector* destina
 void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)
 {
 	// Need to check time to update, add and delete footprint
-	float time_present = CP_System_GetSeconds();
-
 	if (enemy->life > 0) {
 		if (enemy->enemyType == PATROL || enemy->enemyType == PATROL_ONLY) {
 			patrol_Enemy(enemy, dt);
@@ -51,38 +49,17 @@ void update_Enemy(ENEMY* enemy, CP_Vector position_player, float dt)
 
 		}
 
-		//update_Footprint(&(enemy->footprint), dt);
-
-		// To Do need to fix
-		if (is_Empty(&(enemy->footprint)) || (time_present - enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT) {
+		if (is_Empty(&(enemy->footprint)) || (enemy->footprint.generatedTime[enemy->footprint.rear]) >= GENTIMEGAP_FOOTPRINT) {
 			add_Footprint(&(enemy->footprint), enemy->position, enemy->vector_Sight);
 		}
 
-		//To Do need to Fix
-		// CP_SOUND_GROUP_2 is SFX for Enemy Footprint
-		//float distancePlayer = CP_Vector_Distance(enemy->position, position_player);
-		//printf("DIstance: %f\n", distancePlayer);
-		//if (distancePlayer < 700) {
-		//	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (800 - distancePlayer) / 600);
-		//}
-		//
-		////if (distancePlayer < 700) {
-		//
-		////	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, (600 - distancePlayer) / 600);
-		////	
-		////}
-		//else {
-		//	//CP_Sound_PauseGroup(CP_SOUND_GROUP_2);
-		//	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 0.0f);
-		//}
-		//CP_Sound_SetGroupVolume(CP_SOUND_GROUP_2, 1.0f );
-		//printf("Update!");
+		update_Footprint(&(enemy->footprint), dt);
+
 	}
 	else { 
 		update_Bloodpool(&enemy->bloodpool);
 	}
-	//add_Footprint(&(enemy->footprint), enemy->position);
-	checkDuration_Footprint(&(enemy->footprint), time_present);
+	checkDuration_Footprint(&(enemy->footprint));
 }
 
 void updatePosition_Bloodpool_Enemy(ENEMY* enemy, CP_Vector moveVector) {

@@ -8,6 +8,7 @@ Game Manager manages game objects such as player, enemies, map, and etc.
 #include <stdio.h>
 #include <time.h>
 #include "cprocessing.h"
+#include "imageManager.h"
 #include "player.h"
 #include "enemy.h"
 #include "camera.h"

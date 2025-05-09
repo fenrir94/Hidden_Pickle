@@ -16,6 +16,7 @@
 
 // GLOBAL
 GAME_MANAGER game_Manager;
+IMAGE_MANAGER image_Manager;
 
 extern CP_Sound gunshot_SFX_File;
 extern CP_Sound player_Hit_SFX_File;
@@ -40,11 +41,9 @@ extern CP_Image vision_line_icon_Image_File;
 
 extern int stage_Number_State;
 
+
 CP_Sound gamemanager_Bgm_FILE;
 int is_BGM_Played = 1;
-
-// GLOBAL
-GAME_MANAGER game_Manager;
 
 CP_Vector* startPositionEnemies;
 int* patrolPointEnemies;
@@ -56,6 +55,7 @@ extern int stage_Number;
 //to do fix -> to .
 void init_Game_Manager(void)
 {
+	init_ImageManager(&image_Manager);
 	game_Manager.game_State = GAME_STATE_PLAYING;
 
 	char map_Name_Buffer[100];
@@ -335,6 +335,9 @@ void update_Game_Manager(void) {
 		if (check_Player_Lose(&(game_Manager.player))) {
 			update_Result_Screen(&(game_Manager.result_Screen), GAME_STATE_LOSE);
 		}
+
+		CP_Sound_ResumeAll();
+
 	}
 	
 	if (game_Manager.game_State == GAME_STATE_PAUSE) {
@@ -346,6 +349,9 @@ void update_Game_Manager(void) {
 
 		update_Pause_Screen_Button(&(game_Manager.result_Screen));
 		// 사운드그룹 정지 시켜야함. result_screen에도 적용, play시 다시 재생
+
+		CP_Sound_PauseAll();
+
 	}
 
 	
@@ -449,6 +455,7 @@ void check_Collision_Rollback_Player_Obstacles(PLAYER* player, OBSTACLE* obstacl
 			}
 
 		}
+		update_Alpha_Obstacle(&obstacles[i], checkNearPlayer_Obstacle(&obstacles[i], player->position, player->radius));
 	}
 }
 
@@ -570,7 +577,13 @@ void exit_Game_Manager(void)
 	CP_Image_Free(&minimap_Black_Image_File);
 	CP_Image_Free(&game_Manager.light.lightImage);
 	CP_Image_Free(&vision_line_icon_Image_File);
-	
+
+	CP_Image_Free(&game_Manager.player.imageDead);
+	CP_Image_Free(&game_Manager.player.imageKey);
+
+	free_ImageManager(&image_Manager);
+
+
 	CP_Sound_Free(&gunshot_SFX_File);
 	CP_Sound_Free(&player_Hit_SFX_File);
 	CP_Sound_Free(&chest_Open_SFX_File);
@@ -580,14 +593,17 @@ void exit_Game_Manager(void)
 	free(buffer);
 	free(game_Manager.player.body.animation);
 	free(game_Manager.player.feet.animation);
+	
 	free(game_Manager.item_Boxes);
+
 	for (int i = 0; i < game_Manager.enemyCount; i++) {
+		CP_Sound_Free(&game_Manager.enemies[i].soundFootprint);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootLeft);
 		CP_Image_Free(&game_Manager.enemies[i].footprint.imageFootRight);
 	}
+
 	free(game_Manager.enemies);
-	free(game_Manager.obstacles)
-		;
+	free(game_Manager.obstacles);
 	free(game_Manager.minimap.normal.itemIconPosition);
 	free(game_Manager.minimap.normal.obstacleIconPosition);
 	free(game_Manager.minimap.expanded.itemIconPosition);
