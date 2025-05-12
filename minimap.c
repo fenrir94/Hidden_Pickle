@@ -320,8 +320,8 @@ void print_Minimap(MINIMAP* minimap)
 	{
 		if (game_Manager.obstacles[i].isCollided == 1)
 		{
-			CP_Image_Draw(obstacle_Icon_Image_File, minimap->normal.obstacleIconPosition[i].x, minimap->normal.obstacleIconPosition[i].y, 18, 18, minimap->normal.alpha);
-			CP_Image_Draw(obstacle_Icon_Image_File, minimap->expanded.obstacleIconPosition[i].x, minimap->expanded.obstacleIconPosition[i].y, 48, 48, minimap->expanded.alpha);
+			CP_Image_Draw(obstacle_Icon_Image_File, minimap->normal.obstacleIconPosition[i].x, minimap->normal.obstacleIconPosition[i].y, 21, 21, minimap->normal.alpha);
+			CP_Image_Draw(obstacle_Icon_Image_File, minimap->expanded.obstacleIconPosition[i].x, minimap->expanded.obstacleIconPosition[i].y, 63, 63, minimap->expanded.alpha);
 		}
 	}
 

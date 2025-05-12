@@ -2,6 +2,8 @@
 
 CP_Sound gunshot_SFX_File;
 
+extern int stage_Number;
+
 void init_Gun(GUN* gun, CP_Vector vector_Shooting)
 {
 	gunshot_SFX_File = CP_Sound_Load("Assets/SFX/gun_Shot.wav");
@@ -14,6 +16,10 @@ void init_Gun(GUN* gun, CP_Vector vector_Shooting)
 	gun->attackPoint = 1;
 	gun->radius_Bullet = 20;
 	gun->speed_Bullet = 800;
+
+	if (stage_Number < 2) {
+		gun->count_Bullet = 0;
+	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		gun->position_Bullet[i] = CP_Vector_Set(0, 0);
 		gun->vector_Shooting[i] = CP_Vector_Set(0, 0);

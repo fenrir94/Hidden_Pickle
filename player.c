@@ -3,6 +3,8 @@
 #include "gameManager.h"
 #include "imageManager.h"
 
+extern int stage_Number;
+
 CP_Sound player_Hit_SFX_File;
 
 void init_Player(PLAYER* player, CP_Vector startPosition) {
@@ -19,6 +21,10 @@ void init_Player(PLAYER* player, CP_Vector startPosition) {
 	player->ui_Alpha = 255;
 	player->imageDead = CP_Image_Load("./Assets/Top_Down_Survivor/dead.png");
 	player->imageKey = CP_Image_Load("./Assets/Image/key.png");
+
+	if (stage_Number < 1) {
+		player->battery = 0;
+	}
 
 	player_Hit_SFX_File = CP_Sound_Load("Assets/SFX/hit_Sound.wav");
 	

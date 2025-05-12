@@ -26,7 +26,7 @@ typedef enum state {
 State isSelectButtonPressed = false;
 
 int stage_Number = -1;
-int max_Stage_Number = 1; //stage는 0부터 시작. 스테이지 2개라는 뜻
+int max_Stage_Number = 4; //stage는 0부터 시작. 스테이지 2개라는 뜻
 
 void Init_Stage_Select_Menu(void)
 {
@@ -35,11 +35,11 @@ void Init_Stage_Select_Menu(void)
 	stageSelect_Background_Image.x = centerVector.x;
 	stageSelect_Background_Image.y = centerVector.y;
 
-	stageSelect_Button_Image = (IMAGE*)malloc(2 * sizeof(IMAGE));
+	stageSelect_Button_Image = (IMAGE*)malloc((max_Stage_Number + 1) * sizeof(IMAGE));
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i <= max_Stage_Number; i++)
 	{
-		Init_Button(stageSelect_Button_Image + i, CP_Vector_Set(centerVector.x / 2 + i * centerVector.x, centerVector.y), 256, 256);
+		Init_Button(stageSelect_Button_Image + i, CP_Vector_Set((i + 1) * (float)CP_System_GetWindowWidth() / (max_Stage_Number + 2), centerVector.y), 128, 128);
 	}
 
 	Init_Button(&exit_Button_Image, CP_Vector_Set((float)CP_System_GetWindowWidth() - 100, 100), 64, 64);
@@ -47,7 +47,7 @@ void Init_Stage_Select_Menu(void)
 	button_Font = CP_Font_Load("Assets/Exo2-Regular.ttf"); // 폰트 불러오기, 추후 변경
 	CP_Font_Set(button_Font); // 폰트 적용
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE); // 폰트 수직, 수평 가운데 정렬
-	CP_Settings_TextSize(72.f); // 폰트 사이즈 설정
+	CP_Settings_TextSize(36.f); // 폰트 사이즈 설정
 
 	stageSelect_Background_Image_File = CP_Image_Load("Assets/Image/stageSelect_Background.png");
 
@@ -66,7 +66,7 @@ void Update_Stage_Select_Menu(void)
 
 	char buffer[15];
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i <= max_Stage_Number; i++)
 	{
 		Print_Button(stageSelect_Button_Image + i, i);
 
@@ -96,7 +96,6 @@ void Update_Stage_Select_Menu(void)
 void Exit_Stage_Select_Menu(void)
 {    
 	CP_Image_Free(&stageSelect_Background_Image_File);
-	free(stageSelect_Button_Image);
 
 	if (stageSelect_Button_Image_List != NULL)
 	{
@@ -107,6 +106,8 @@ void Exit_Stage_Select_Menu(void)
 		free(stageSelect_Button_Image_List); // 배열 자체도 해제
 		stageSelect_Button_Image_List = NULL;
 	}
+
+	free(stageSelect_Button_Image);
 
 	free_Cursor();
 	CP_Sound_Free(&click_SFX_File);
