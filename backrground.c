@@ -6,7 +6,7 @@ void init_Background(BACKGROUND* background, MAP map, int width_Map, int height_
 {
 	background->width_Tile = CP_Image_GetWidth(image_Manager.tileDirt);
 	background->height_Tile = CP_Image_GetHeight(image_Manager.tileDirt);
-	background->count_Width = width_Map / background->width_Tile + 3;
+	background->count_Width = width_Map / background->width_Tile + 4;
 	background->count_Height = height_Map / background->height_Tile + 3;
 	background->startPosition = CP_Vector_Set(map.minX + initVector.x, map.minY + initVector.y);
 

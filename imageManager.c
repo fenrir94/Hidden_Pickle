@@ -14,11 +14,10 @@ void init_ImageManager(IMAGE_MANAGER* imageManager)
 	imageManager->tree[1] = CP_Image_Load("./Assets/Image/tree1.png");
 
 	imageManager->bloodpool = CP_Image_Load("./Assets/Image/bloodpool.png");
-
+	imageManager->bloodEffect = CP_Image_Load("./Assets/Image/BloodOverlay.png");
 	imageManager->exit = CP_Image_Load("./Assets/Image/exit.png");
 
 	imageManager->exit = CP_Image_Load("./Assets/Image/exit.png");
-
 }
 
 void free_ImageManager(IMAGE_MANAGER* imageManager) {

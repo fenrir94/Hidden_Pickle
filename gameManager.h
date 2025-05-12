@@ -49,7 +49,6 @@ typedef struct gameManager {
 	LIGHT light;
 	RESULT_SCREEN result_Screen;
 	EgameState game_State;
-
 } GAME_MANAGER;
 
 extern GAME_MANAGER game_Manager;

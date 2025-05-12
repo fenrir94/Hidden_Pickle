@@ -1,7 +1,7 @@
 
 #include "player.h"
 #include "gameManager.h"
-#include "utility.h"
+#include "imageManager.h"
 
 CP_Sound player_Hit_SFX_File;
 
@@ -314,6 +314,14 @@ void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun)
 			CP_Graphics_DrawRectAdvanced(player->gun.position_Gun.x + i * player->shooting_Vector.x * 30, player->gun.position_Gun.y + i * player->shooting_Vector.y * 30,
 				4, 20, getAngle_Vector_AxisX(player->shooting_Vector), 0);
 		}
+	}
+}
+
+void print_Player_HitBlood(PLAYER* player)
+{
+	float timePresent = CP_System_GetSeconds();
+	if (timePresent - player->time_Hit <= TIME_INVINCIBILITY+1) {
+		CP_Image_Draw(image_Manager.bloodEffect, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH, WINDOW_HEIGHT, 150);
 	}
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdio.h>
 #include "cprocessing.h"
 #include "itemBox.h"
 #include "gun.h"
@@ -9,6 +8,7 @@
 #include "utility.h"
 #include "bloodpool.h"	
 #include "resultScreen.h"
+
 
 #define BASIC_LIFE 3
 #define TIME_INVINCIBILITY 1
@@ -68,6 +68,8 @@ int isInvincibility(PLAYER* player, float dt);
 void rotate_Player(PLAYER* player);
 
 void print_Player_Aiming(PLAYER* player, CP_Vector vector_Gun);
+
+void print_Player_HitBlood(PLAYER* player);
 
 int checkPosition_inOtherObject_Player(PLAYER* player, CP_Vector position, float radius);
 

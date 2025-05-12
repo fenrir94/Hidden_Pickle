@@ -9,8 +9,8 @@ typedef struct imageManager {
 	CP_Image itemBox;
 	CP_Image tree[2];
 	CP_Image bloodpool;
-	CP_Image exit;
 	CP_Image bloodEffect;
+	CP_Image exit;
 } IMAGE_MANAGER;
 
 extern IMAGE_MANAGER image_Manager;
