@@ -18,8 +18,14 @@ void init_ImageManager(IMAGE_MANAGER* imageManager)
 
 void free_ImageManager(IMAGE_MANAGER* imageManager) {
 
+	CP_Image_Free(&imageManager->tileDirt);
+	
+	CP_Image_Free(&imageManager->imageFootLeft_Patrol);
+	CP_Image_Free(&imageManager->imageFootRight_Patrol);
+
 	CP_Image_Free(&imageManager->itemBox);
 	CP_Image_Free(&imageManager->tree);
 	CP_Image_Free(&imageManager->bloodpool);
 
+	CP_Image_Free(&imageManager->exit);
 }
