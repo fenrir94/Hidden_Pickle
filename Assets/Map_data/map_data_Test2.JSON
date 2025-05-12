@@ -1,0 +1,250 @@
+{
+  "mapsize": {
+    "w": 1800,
+    "h": 900
+  },
+  "player": {
+    "startPosition": {
+      "x": 1710,
+      "y": 147
+    }
+  },
+  "enemies": [{
+        "startPosition": {
+          "x": 1253.56,
+          "y": 147.35
+        },
+
+        "patrolPoints": 2,
+
+        "destinations": [
+          {
+            "x": 1253.56,
+            "y": 147.35
+          },
+          {
+            "x": 1517.35,
+            "y": 728.82
+          }
+        ]
+      },
+      {
+        "startPosition": {
+          "x": 846.53,
+          "y": 160.11
+        },
+
+        "patrolPoints": 2,
+
+        "destinations": [
+          {
+            "x": 846.53,
+            "y": 160.11
+          },
+          {
+            "x": 1110.32,
+            "y": 741.58
+          }
+        ]
+      },
+      {
+        "startPosition": {
+          "x": 460.77,
+          "y": 162.95
+        },
+
+        "patrolPoints": 2,
+
+        "destinations": [
+          {
+            "x": 460.77,
+            "y": 162.95
+          },
+          {
+            "x": 724.56,
+            "y": 744.42
+          }
+        ]
+      },
+      {
+        "startPosition": {
+          "x": 63.67,
+          "y": 154.44
+        },
+
+        "patrolPoints": 2,
+
+        "destinations": [
+          {
+            "x": 63.67,
+            "y": 154.44
+          },
+          {
+            "x": 327.46,
+            "y": 735.91
+          }
+        ]
+      }],
+  "item_boxes": [
+    {
+      "startPosition": {
+        "x": 502,
+        "y": 72
+      },
+      "item": 0
+    },
+    {
+      "startPosition": {
+        "x": 695,
+        "y": 851
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 902,
+        "y": 68
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 1078,
+        "y": 848
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 1327,
+        "y": 77
+      },
+      "item": 1
+    },
+    {
+      "startPosition": {
+        "x": 1469,
+        "y": 834
+      },
+      "item": 1
+    }
+  ],
+  "obstacles": [
+    {
+      "startPosition": {
+        "x": 1489,
+        "y": 370
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 396,
+        "y": 379
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 600,
+        "y": 679
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1666,
+        "y": 882
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 397,
+        "y": 178
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 402,
+        "y": 75
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1664,
+        "y": 678
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1665,
+        "y": 778
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1661,
+        "y": 574
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 402,
+        "y": 282
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 599,
+        "y": 787
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 602,
+        "y": 892
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 601,
+        "y": 578
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1487,
+        "y": 173
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1490,
+        "y": 74
+      },
+      "type": 0
+    },
+    {
+      "startPosition": {
+        "x": 1488,
+        "y": 267
+      },
+      "type": 0
+    }
+  ],
+  "exit_place": {
+    "x": 191,
+    "y": 793
+  }
+}
