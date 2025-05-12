@@ -180,9 +180,6 @@ void init_Game_Manager(void)
 
 	init_Cursor();
 
-	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
-	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
-
 	init_Background(&(game_Manager.background), game_Manager.map_Bounds, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, initVector);
 
 	gamemanager_Bgm_FILE = CP_Sound_LoadMusic("./Assets/BGM/gamemanager_BGM.wav");
@@ -548,6 +545,8 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 	print_Boundary_Background(&game_Manager.background);
 
 	printVisionblocker(&(game_Manager.light));
+
+	print_Player_HitBlood(&gameManager->player);
 
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 

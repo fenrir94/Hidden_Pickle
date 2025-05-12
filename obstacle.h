@@ -12,6 +12,7 @@ typedef struct obstacle {
 	EObstacleType obstacle_Type;
 	int isCollided;
 	int alpha;
+	CP_Image imageObstacle;
 } OBSTACLE;
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type);
