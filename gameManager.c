@@ -180,10 +180,10 @@ void init_Game_Manager(void)
 
 	init_Cursor();
 
-	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
+	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
-	init_Background(&(game_Manager.background), directoryImage, game_Manager.map_Bounds, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, initVector);
+	init_Background(&(game_Manager.background), game_Manager.map_Bounds, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, initVector);
 
 	gamemanager_Bgm_FILE = CP_Sound_LoadMusic("./Assets/BGM/gamemanager_BGM.wav");
 

@@ -14,7 +14,7 @@ typedef struct background {
 	CP_Vector boundaryMax;
 } BACKGROUND;
 
-void init_Background(BACKGROUND* background, char* directory_Image, MAP map, int width_Map, int height_Map, CP_Vector initVector);
+void init_Background(BACKGROUND* background, MAP map, int width_Map, int height_Map, CP_Vector initVector);
 
 void move_Background(BACKGROUND* background, CP_Vector moveCamera);
 

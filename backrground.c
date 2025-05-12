@@ -2,14 +2,12 @@
 #include "imageManager.h"
 
 
-void init_Background(BACKGROUND* background, char* directory_Image, MAP map, int width_Map, int height_Map, CP_Vector initVector)
+void init_Background(BACKGROUND* background, MAP map, int width_Map, int height_Map, CP_Vector initVector)
 {
-	background->image_Background = CP_Image_Load(directory_Image);
-	background->width_Tile = CP_Image_GetWidth(background->image_Background);
-	background->height_Tile = CP_Image_GetHeight(background->image_Background);
+	background->width_Tile = CP_Image_GetWidth(image_Manager.tileDirt);
+	background->height_Tile = CP_Image_GetHeight(image_Manager.tileDirt);
 	background->count_Width = width_Map / background->width_Tile + 3;
 	background->count_Height = height_Map / background->height_Tile + 3;
-	//background->startPosition = CP_Vector_Set(map.minX + initVector.x - background->width_Tile, map.minY + initVector.y- background->height_Tile);
 	background->startPosition = CP_Vector_Set(map.minX + initVector.x, map.minY + initVector.y);
 
 	background->sizeBoundaryImage = 300;
@@ -28,7 +26,7 @@ void print_Background(BACKGROUND* background)
 	//CP_Settings_ImageMode(CP_POSITION_CORNER);
 	for (int i = 0; i < background->count_Width; i++) {
 		for (int j = 0; j < background->count_Height; j++) {
-			CP_Image_Draw(background->image_Background, (float)background->startPosition.x + (i-1) * background->width_Tile, (float)background->startPosition.y + (j-1) * background->height_Tile, (float)background->width_Tile, (float)background->height_Tile, 255);
+			CP_Image_Draw(image_Manager.tileDirt, (float)background->startPosition.x + (i-1) * background->width_Tile, (float)background->startPosition.y + (j-1) * background->height_Tile, (float)background->width_Tile, (float)background->height_Tile, 255);
 		}
 	}
 
