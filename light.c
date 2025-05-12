@@ -50,6 +50,6 @@ void turn_On_Light(LIGHT* light, int checkLampOn)
 
 void printVisionblocker(LIGHT* light)
 {
-	//CP_Image_Draw(light->lightImage, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, light->lightSize.x, light->lightSize.y, 215);
-	//CP_Image_Draw(light->lightImage, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, light->lightSize.x * 7 / 8, light->lightSize.y * 7 / 8, 127);
+	CP_Image_Draw(light->lightImage, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, light->lightSize.x, light->lightSize.y, 215);
+	CP_Image_Draw(light->lightImage, (&game_Manager)->player.position.x, (&game_Manager)->player.position.y, light->lightSize.x * 7 / 8, light->lightSize.y * 7 / 8, 127);
 }
