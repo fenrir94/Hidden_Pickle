@@ -183,7 +183,7 @@ void init_Game_Manager(void)
 	char* directoryImage = "./Assets/Map_data/Background/Dirt_02.png";
 	//char* directoryImage = "./Assets/Map_data/Background/Dirt_02_Full.png";
 
-	init_Background(&(game_Manager.background), directoryImage, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, game_Manager.map_Bounds.minX + initVector.x, game_Manager.map_Bounds.minY + initVector.y);
+	init_Background(&(game_Manager.background), directoryImage, game_Manager.map_Bounds, (int)cJSON_GetObjectItem(mapSize_cJSON, "w")->valuedouble, (int)cJSON_GetObjectItem(mapSize_cJSON, "h")->valuedouble, initVector);
 
 	gamemanager_Bgm_FILE = CP_Sound_LoadMusic("./Assets/BGM/gamemanager_BGM.wav");
 
@@ -528,7 +528,7 @@ void check_Collsion_Bullet_Obstacles(GUN* gun, OBSTACLE* obstacles, int count_Ob
 void print_GameObjects(GAME_MANAGER* gameManager)
 {
 	print_Background(&(game_Manager.background));
-
+	
 	print_Exit_Place(&(gameManager->exit_Place));
 	
 	for (int i = 0; i < gameManager->enemyCount; i++) {
@@ -545,11 +545,13 @@ void print_GameObjects(GAME_MANAGER* gameManager)
 
 	print_Obstacles(gameManager->obstacles, gameManager->obstacleCount);
 
+	print_Boundary_Background(&game_Manager.background);
+
 	printVisionblocker(&(game_Manager.light));
 
 	print_Minimap(&(game_Manager.minimap)); // 게임 종료시 미니맵 알파 낮춰서 0으로
 
-	 print_Pause_Screen(&(gameManager->result_Screen));
+	print_Pause_Screen(&(gameManager->result_Screen));
 
 	print_Result_Screen(&(gameManager->result_Screen));
 
