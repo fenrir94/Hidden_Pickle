@@ -37,14 +37,14 @@ void print_Boundary_Background(BACKGROUND* background)
 {
 	// pirnt boundary row
 	for (float i = background->startPosition.x - background->sizeBoundaryImage / 2; i < background->boundaryMax.x + background->sizeBoundaryImage; i += (float)background->sizeBoundaryImage*2/3) {
-		CP_Image_Draw(image_Manager.tree, i, background->startPosition.y - background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
-		CP_Image_Draw(image_Manager.tree, i, background->boundaryMax.y + background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[0], i, background->startPosition.y - background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[0], i, background->boundaryMax.y + background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
 	}
 
 	// print boundary column
 	for (float i = background->startPosition.y - background->sizeBoundaryImage / 2; i < background->boundaryMax.y + background->sizeBoundaryImage; i += background->sizeBoundaryImage*2/3) {
-		CP_Image_Draw(image_Manager.tree, background->startPosition.x - background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
-		CP_Image_Draw(image_Manager.tree, background->boundaryMax.x + background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[0], background->startPosition.x - background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[0], background->boundaryMax.x + background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
 	}
 
 }

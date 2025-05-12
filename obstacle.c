@@ -9,6 +9,9 @@ void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacl
 	obstacle->obstacle_Type = obstacle_Type;
 	obstacle->isCollided = 0;
 	obstacle->alpha = 255;
+
+	int index = ((int)position.x - (int)position.y) % 2 == 0;
+	obstacle->imageObstacle = image_Manager.tree[index];
 }
 
 void update_Alpha_Obstacle(OBSTACLE* obstacle, int isPlayerNear) {
@@ -41,5 +44,6 @@ void print_Obstacles(OBSTACLE* obstacle, int count_Obstacle)
 
 void print_Obstacle(OBSTACLE* obstacle)
 {
-	CP_Image_Draw(image_Manager.tree, obstacle->position.x, obstacle->position.y, obstacle->radius*2, obstacle->radius*2, obstacle->alpha);
+	CP_Image_Draw(obstacle->imageObstacle, obstacle->position.x, obstacle->position.y, obstacle->radius * 2, obstacle->radius * 2, obstacle->alpha);
+	
 }
