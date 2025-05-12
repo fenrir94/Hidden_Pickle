@@ -116,7 +116,8 @@ void update_Camera(MAP* map, CP_Vector updateVector, float dt)
 		game_Manager.player.gun.position_Bullet[i] = CP_Vector_Add(game_Manager.player.gun.position_Bullet[i], movingVector);
 	}
 
-	game_Manager.background.startPosition = CP_Vector_Add(game_Manager.background.startPosition, movingVector);
+	//game_Manager.background.startPosition = CP_Vector_Add(game_Manager.background.startPosition, movingVector);
+	move_Background(&game_Manager.background, movingVector);
 
 	game_Manager.exit_Place.position = CP_Vector_Add(game_Manager.exit_Place.position, movingVector);
 

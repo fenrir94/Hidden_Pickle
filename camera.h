@@ -1,4 +1,5 @@
 #pragma once
+#include "player.h"
 
 typedef struct map {
 	float minX;

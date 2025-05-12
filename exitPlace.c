@@ -1,5 +1,6 @@
 
 #include "exitPlace.h"
+#include "imageManager.h"
 
 void init_Exit_Place(EXIT_PLACE* exit_Place, CP_Vector position)
 {
@@ -9,6 +10,7 @@ void init_Exit_Place(EXIT_PLACE* exit_Place, CP_Vector position)
 
 void print_Exit_Place(EXIT_PLACE* exit_Place)
 {
-	CP_Settings_Fill(CP_Color_Create(255, 255, 0, 125));
-	CP_Graphics_DrawCircle(exit_Place->position.x, exit_Place->position.y, exit_Place->radius);
+	//CP_Settings_Fill(CP_Color_Create(255, 255, 0, 125));
+	//CP_Graphics_DrawCircle(exit_Place->position.x, exit_Place->position.y, exit_Place->radius);
+	CP_Image_Draw(image_Manager.exit, exit_Place->position.x, exit_Place->position.y, exit_Place->radius, exit_Place->radius, 255);
 }
