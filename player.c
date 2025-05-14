@@ -92,6 +92,23 @@ void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt)
 		dPoistion.y = 0;
 	}
 
+	if (game_Manager.player.worldPos.x <= game_Manager.map_Bounds.minX && updateVector.x > 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.x >= game_Manager.map_Bounds.maxX && updateVector.x < 0)
+	{
+		dPoistion.x = 0;
+	}
+	if (game_Manager.player.worldPos.y <= game_Manager.map_Bounds.minY && updateVector.y > 0)
+	{
+		dPoistion.y = 0;
+	}
+	if (game_Manager.player.worldPos.y >= game_Manager.map_Bounds.maxY && updateVector.y < 0)
+	{
+		dPoistion.y = 0;
+	}
+
 	player->position = CP_Vector_Subtract(player->position, dPoistion);
 
 	game_Manager.player.worldPos.x = clamp(game_Manager.player.worldPos.x - dPoistion.x, game_Manager.map_Bounds.minX, game_Manager.map_Bounds.maxX);
