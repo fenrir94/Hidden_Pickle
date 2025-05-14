@@ -9,9 +9,9 @@ void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacl
 	obstacle->obstacle_Type = obstacle_Type;
 	obstacle->isCollided = 0;
 	obstacle->alpha = 255;
-
-	int index = ((int)position.x - (int)position.y) % 2 == 0;
-	obstacle->imageObstacle = image_Manager.tree[index];
+	obstacle->indexTree = CP_Random_GetInt() % 4;
+	
+	obstacle->imageObstacle = image_Manager.tree[obstacle->indexTree];
 }
 
 void update_Alpha_Obstacle(OBSTACLE* obstacle, int isPlayerNear) {

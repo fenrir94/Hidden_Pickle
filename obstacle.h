@@ -12,6 +12,7 @@ typedef struct obstacle {
 	EObstacleType obstacle_Type;
 	int isCollided;
 	int alpha;
+	int indexTree;
 	CP_Image imageObstacle;
 } OBSTACLE;
 
