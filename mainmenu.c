@@ -6,7 +6,7 @@
 #include "mainmenu.h"
 
 //제목
-char Title[15] = "Hidden Pickle";
+char Title[25] = "ESCAPE FROM FOOTPRINT";
 
 CP_Image digiPen_Image_File; // 인트로 이미지 파일
 
