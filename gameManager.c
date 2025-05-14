@@ -330,7 +330,7 @@ void update_Game_Manager(void) {
 					rollback_Move_Enemy_PositionTranspose(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
 				}
 				else {
-					rollback_Move_Enemy_PositionTranspose(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt);
+					rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt);
 
 				}
 			}
