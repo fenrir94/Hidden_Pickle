@@ -1,5 +1,5 @@
 
-# 게임 개발 마일스톤 플랜 & 게임 문서
+# Escape from Footprint 개발 마일스톤 플랜 & 게임 문서
 
 ### Development Plan
 
@@ -9,7 +9,7 @@
 | 개발 | 2주차 | 04-19 ~ 04-25 | 적 AI<br> 미니맵 구현<br> 총 구현 | - 적 AI 구현<br>- 미니맵 적용<br>- 미니맵 내 아이콘 표시<br>- 사격 시스템 구현 |  |
 | 폴리싱 | 3주차 | 04-26 ~ 05-02 | 전투 연출 & UI 개선  | - 캐릭터 소지 아이템 UI 수정<br>- 승리/패배 화면 추가<br>- 커서 추가<br>- UI 이미지 에셋 추가<br>- 미니맵 수정 및 기능 추가 |  |
 | 폴리싱 | 4주차 | 05-03 ~ 05-09 | UI&UX 개선 & 결함 수정 | - Config 추가<br>- 행동 제한 UI 안내<br>- 아이템 이미지 에셋 추가<br>- 장애물 이미지 에셋 추가<br>- 카메라 결함 수정<br>- 발자국 결함 수정<br>- 충돌 결함 수정 |  |
-| 빌드 안정화 | 5주차 | 05-10 ~ 05-15 | 최종 디버깅 & 밸런스 조정 | - 리그레션 테스트<br>- 유닛/시너지 수치 조정<br>- 최종 배포용 빌드 |  |
+| 빌드 안정화 | 5주차 | 05-10 ~ 05-14 | 최종 디버깅 & 밸런스 조정 | - 리그레션 테스트<br>- 객체 충돌 결함 수정<br>- 플레이 맵 추가 <br>- 최종 배포용 빌드 |  |
 
 ---
 
@@ -85,7 +85,7 @@
 ### 플레이 영상
  - [1주차 영상](https://drive.google.com/file/d/1BqVm4FLjJSyTmXvmstXeTHG4rbAm1HtL/view?usp=sharing)
  - [2주차 영상](https://drive.google.com/file/d/1R1Mjlr5Y0Pl_4wG_M6nOKJTBQZtZmAoq/view?usp=sharing)
- - [3주차 영상](https://drive.google.com/file/d/1Jt7K_uEIvVanf0UT7CTEN79YoT9408p8/view?usp=sharing)
+ - [4주차 영상](https://drive.google.com/file/d/1Jt7K_uEIvVanf0UT7CTEN79YoT9408p8/view?usp=sharing)
 
 ---
  
