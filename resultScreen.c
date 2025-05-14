@@ -32,7 +32,7 @@ void init_Result_Screen(RESULT_SCREEN* result_screen)
 	select_Icon_Image_File = CP_Image_Load("Assets/UI/icon_select.png");
 	screen_Black_Image_File = CP_Image_Load("Assets/Image/black.png");
 
-	ui_Font = CP_Font_Load("Assets/Exo2-Regular.ttf");
+	ui_Font = CP_Font_Load("Assets/Cinzel-Bold.ttf");
 	CP_Font_Set(ui_Font); // 폰트 적용
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE); // 폰트 수직, 수평 가운데 정렬
 	CP_Settings_TextSize(150.f); // 폰트 사이즈 설정
@@ -165,7 +165,7 @@ void print_Result_Screen(RESULT_SCREEN* result_screen)
 
 		CP_Image_Draw(menu_Ui_Image_File, (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2, 700, 800, 255);
 
-		CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+		CP_Settings_Fill(CP_Color_Create(86, 82, 79, 255));
 
 		char stage_Buffer[15];
 		sprintf_s(stage_Buffer, sizeof(stage_Buffer), "STAGE %d", printed_Stage_Number);
@@ -218,7 +218,7 @@ void print_Pause_Screen(RESULT_SCREEN* result_screen)
 
 		CP_Image_Draw(menu_Ui_Image_File, (float)CP_System_GetWindowWidth() / 2, (float)CP_System_GetWindowHeight() / 2, 700, 500, 255);
 
-		CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+		CP_Settings_Fill(CP_Color_Create(86, 82, 79, 255));
 
 		char stage_Buffer[15];
 		sprintf_s(stage_Buffer, sizeof(stage_Buffer), "STAGE %d", printed_Stage_Number);
