@@ -36,15 +36,27 @@ void print_Background(BACKGROUND* background)
 void print_Boundary_Background(BACKGROUND* background)
 {
 	// pirnt boundary row
+	int indexTree = 0;
 	for (float i = background->startPosition.x - background->sizeBoundaryImage / 2; i < background->boundaryMax.x + background->sizeBoundaryImage; i += (float)background->sizeBoundaryImage*2/3) {
-		CP_Image_Draw(image_Manager.tree[0], i, background->startPosition.y - background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
-		CP_Image_Draw(image_Manager.tree[0], i, background->boundaryMax.y + background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		
+		if (indexTree >= 4 ) {
+			indexTree = 0;
+		}
+
+		CP_Image_Draw(image_Manager.tree[indexTree], i, background->startPosition.y - background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[indexTree], i, background->boundaryMax.y + background->sizeBoundaryImage / 2, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		indexTree++;
+		
 	}
 
 	// print boundary column
 	for (float i = background->startPosition.y - background->sizeBoundaryImage / 2; i < background->boundaryMax.y + background->sizeBoundaryImage; i += background->sizeBoundaryImage*2/3) {
-		CP_Image_Draw(image_Manager.tree[0], background->startPosition.x - background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
-		CP_Image_Draw(image_Manager.tree[0], background->boundaryMax.x + background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		if (indexTree >= 4) {
+			indexTree = 0;
+		}
+		CP_Image_Draw(image_Manager.tree[indexTree], background->startPosition.x - background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		CP_Image_Draw(image_Manager.tree[indexTree], background->boundaryMax.x + background->sizeBoundaryImage / 2, i, background->sizeBoundaryImage, background->sizeBoundaryImage, 225);
+		indexTree++;
 	}
 
 }

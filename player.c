@@ -121,8 +121,8 @@ void rotate_Player(PLAYER* player)
 	//printf("Shooting Vector Angle %f\n", getAngle_Vector_AxisX(player->shooting_Vector));
 }
 
-void getDamage_Player(PLAYER* player, int attackPoint) {
-	float time_Present = CP_System_GetSeconds();
+void getDamage_Player(PLAYER* player, int attackPoint, float time_Present) {
+	//float time_Present = CP_System_GetSeconds();
 	if (isInvincibility(player, time_Present) == 0 ) {
 		if (player->life > 0) {
 			CP_Sound_PlayAdvanced(player_Hit_SFX_File, 1, 1, FALSE, CP_SOUND_GROUP_0);

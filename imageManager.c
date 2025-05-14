@@ -10,8 +10,11 @@ void init_ImageManager(IMAGE_MANAGER* imageManager)
 	imageManager->imageFootRight_Patrol = CP_Image_Load("./Assets/Footprint/footRight_Cat.png");
 
 	imageManager->itemBox = CP_Image_Load("./Assets/Image/box_Wood.png");
+
 	imageManager->tree[0] = CP_Image_Load("./Assets/Image/tree0.png");
 	imageManager->tree[1] = CP_Image_Load("./Assets/Image/tree1.png");
+	imageManager->tree[2] = CP_Image_Load("./Assets/Image/tree2.png");
+	imageManager->tree[3] = CP_Image_Load("./Assets/Image/tree3.png");
 
 	imageManager->bloodpool = CP_Image_Load("./Assets/Image/bloodpool.png");
 	imageManager->bloodEffect = CP_Image_Load("./Assets/Image/BloodOverlay.png");

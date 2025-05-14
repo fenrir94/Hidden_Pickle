@@ -118,7 +118,15 @@ void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt
 
 	enemy->position = CP_Vector_Subtract(enemy->position, dPosition);
 
-	CP_Vector dPosition_transpose = CP_Vector_Set(dPosition.y, -1*dPosition.x);
+}
+
+void rollback_Move_Enemy_PositionTranspose(ENEMY* enemy, CP_Vector updateVector, float dt)
+{
+	CP_Vector dPosition = CP_Vector_Scale(updateVector, dt * (enemy->speed));
+
+	enemy->position = CP_Vector_Subtract(enemy->position, dPosition);
+
+	CP_Vector dPosition_transpose = CP_Vector_Set(dPosition.y, -1 * dPosition.x);
 
 	enemy->position = CP_Vector_Subtract(enemy->position, dPosition_transpose);
 
