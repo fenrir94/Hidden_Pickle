@@ -6,7 +6,7 @@
 #include "mainmenu.h"
 
 //제목
-char Title[15] = "Hidden Pickle";
+char Title[25] = "ESCAPE FROM FOOTPRINT";
 
 CP_Image digiPen_Image_File; // 인트로 이미지 파일
 
@@ -41,9 +41,9 @@ CP_Font button_Font;
 #define Config_height 800
 #define Config_Exit_width 30 // width == height
 
-IMAGE DigiPen_Image = { 0, 0, 800, 200, 0, 0 }, Title_Image = { 0, 270, 600, 500, 255, 0 },
+IMAGE DigiPen_Image = { 0, 0, 800, 200, 0, 0 }, Title_Image = { 0, 270, 628, 628, 185, 0 },
 button_Image = { 0, 0, 384, 128, 255, 0 }, Config_Image = { 0, 0, Config_width, Config_height, 255, 0 }, background_Image = { 0, 0, 1800, 900, 255, 0 },
-Config_Exit_Image = { (Config_width - Config_Exit_width) / 2, (Config_height - Config_Exit_width) / 2, Config_Exit_width, Config_Exit_width, 255, 0 }; // 각 이미지 구조체 값
+Config_Exit_Image = { (Config_width - Config_Exit_width) / 2 - 35, (Config_height - Config_Exit_width) / 2 - 35, Config_Exit_width, Config_Exit_width, 255, 0 }; // 각 이미지 구조체 값
 
 #define Delta_alpha 3
 
@@ -75,7 +75,7 @@ void Init_Main_Menu(void)
 
 	CP_System_SetWindowTitle(Title);
 
-	button_Font = CP_Font_Load("Assets/Exo2-Regular.ttf"); // 폰트 불러오기, 추후 변경
+	button_Font = CP_Font_Load("Assets/Cinzel-Bold.ttf"); // 폰트 불러오기, 추후 변경
 	CP_Font_Set(button_Font); // 폰트 적용
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE); // 폰트 수직, 수평 가운데 정렬
 	CP_Settings_TextSize(72.f); // 폰트 사이즈 설정
@@ -257,7 +257,7 @@ void Print_Main_Menu(void)
 		}
 	}
 
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Settings_Fill(CP_Color_Create(86, 82, 79, 255));
 
 	CP_Font_DrawText("Play", button_Image.x, button_Image.y);
 	CP_Font_DrawText("Config", button_Image.x, button_Image.y + 150);
@@ -418,10 +418,10 @@ void Print_Main_Menu(void)
 		CP_Font_DrawText("Pause", (float)CP_System_GetWindowWidth() / 2 - 180, (float)CP_System_GetWindowHeight() / 2 + 65);
 
 		CP_Image_Draw(config_Kerboard_Tab_File, (float)CP_System_GetWindowWidth() / 2 + 50, (float)CP_System_GetWindowHeight() / 2 - 30, 128, 128, 255);
-		CP_Font_DrawText("Minimap Toggle", (float)CP_System_GetWindowWidth() / 2 + 200, (float)CP_System_GetWindowHeight() / 2 - 30);
+		CP_Font_DrawText("Minimap Toggle", (float)CP_System_GetWindowWidth() / 2 + 210, (float)CP_System_GetWindowHeight() / 2 - 30);
 
 		CP_Image_Draw(config_Kerboard_Space_File, (float)CP_System_GetWindowWidth() / 2 + 50, (float)CP_System_GetWindowHeight() / 2 + 50, 128, 128, 255);
-		CP_Font_DrawText("Lantern", (float)CP_System_GetWindowWidth() / 2 + 150, (float)CP_System_GetWindowHeight() / 2 + 50);
+		CP_Font_DrawText("Lantern", (float)CP_System_GetWindowWidth() / 2 + 160, (float)CP_System_GetWindowHeight() / 2 + 50);
 
 		CP_Image_Draw(config_Mouse_File, (float)CP_System_GetWindowWidth() / 2 + 180, (float)CP_System_GetWindowHeight() / 2 - 180, 256, 256, 255);
 		CP_Graphics_DrawLine((float)CP_System_GetWindowWidth() / 2 + 130, (float)CP_System_GetWindowHeight() / 2 - 250, (float)CP_System_GetWindowWidth() / 2 + 80, (float)CP_System_GetWindowHeight() / 2 - 300);

@@ -7,6 +7,7 @@
 
 CP_Image stageSelect_Background_Image_File;
 CP_Image* stageSelect_Button_Image_List;
+CP_Image exit_Button_Cross_File;
 
 CP_Vector centerVector;
 
@@ -44,7 +45,7 @@ void Init_Stage_Select_Menu(void)
 
 	Init_Button(&exit_Button_Image, CP_Vector_Set((float)CP_System_GetWindowWidth() - 100, 100), 64, 64);
 
-	button_Font = CP_Font_Load("Assets/Exo2-Regular.ttf"); // 폰트 불러오기, 추후 변경
+	button_Font = CP_Font_Load("Assets/Cinzel-Bold.ttf"); // 폰트 불러오기, 추후 변경
 	CP_Font_Set(button_Font); // 폰트 적용
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE); // 폰트 수직, 수평 가운데 정렬
 	CP_Settings_TextSize(36.f); // 폰트 사이즈 설정
@@ -52,6 +53,8 @@ void Init_Stage_Select_Menu(void)
 	stageSelect_Background_Image_File = CP_Image_Load("Assets/Image/stageSelect_Background.png");
 
 	stageSelect_Button_Image_List = LoadImagesFromAssets(3, "Assets/UI/select_menu_button%d.png");
+
+	exit_Button_Cross_File = CP_Image_Load("Assets/UI/icon_cross.png");
 
 	init_Cursor();
 
@@ -66,6 +69,8 @@ void Update_Stage_Select_Menu(void)
 
 	char buffer[15];
 
+	CP_Settings_Fill(CP_Color_Create(86, 82, 79, 255));
+
 	for (int i = 0; i <= max_Stage_Number; i++)
 	{
 		Print_Button(stageSelect_Button_Image + i, i);
@@ -75,7 +80,6 @@ void Update_Stage_Select_Menu(void)
 	}
 
 	Print_Exit_Button(&exit_Button_Image);
-	CP_Font_DrawText("x", exit_Button_Image.x, exit_Button_Image.y);
 
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
 
@@ -108,7 +112,7 @@ void Exit_Stage_Select_Menu(void)
 	}
 
 	free(stageSelect_Button_Image);
-
+	CP_Image_Free(&exit_Button_Cross_File);
 	free_Cursor();
 	CP_Sound_Free(&click_SFX_File);
 }
@@ -174,4 +178,6 @@ void Print_Exit_Button(IMAGE* exit_Button)
 			}
 		}
 	}
+
+	CP_Image_Draw(exit_Button_Cross_File,  exit_Button->x, exit_Button->y, exit_Button->width / 2, exit_Button->height / 2, exit_Button->alpha);
 }
