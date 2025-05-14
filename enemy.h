@@ -50,6 +50,8 @@ int check_Collision_Enemy_Object(ENEMY* enemy, CP_Vector position_Object, float 
 
 void rollback_Move_Enemy_Position(ENEMY* enemy, CP_Vector updateVector, float dt); 
 
+void rollback_Move_Enemy_PositionTranspose(ENEMY* enemy, CP_Vector updateVector, float dt);
+
 void check_DetectPlayer_Enemy(ENEMY* enemy, CP_Vector position_Player, float radius_Player);
 
 void chasePlayer_Enemy(ENEMY* enemy, CP_Vector position_Player);

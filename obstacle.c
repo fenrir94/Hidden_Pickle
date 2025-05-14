@@ -1,6 +1,7 @@
 
 #include "obstacle.h"
 #include "imageManager.h"
+#include "utility.h"
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type)
 {
@@ -12,6 +13,16 @@ void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacl
 	obstacle->indexTree = CP_Random_GetInt() % 4;
 	
 	obstacle->imageObstacle = image_Manager.tree[obstacle->indexTree];
+}
+
+int checkCollision_Object_Obstacles(OBSTACLE* obstacles, CP_Vector position, float radiusCollision, int obstaclesCount)
+{
+	for (int i = 0; i < obstaclesCount; i++) {
+		if (checkCollision_Circle_to_Circle(obstacles[i].position, obstacles[i].radius, position, radiusCollision)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void update_Alpha_Obstacle(OBSTACLE* obstacle, int isPlayerNear) {

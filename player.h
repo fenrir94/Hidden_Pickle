@@ -43,7 +43,7 @@ void rollback_Player_Position(PLAYER* player, CP_Vector updateVector, float dt);
 
 int check_Collision_Player_Object(PLAYER* player, CP_Vector position_Object, float radius_Object);
 
-void getDamage_Player(PLAYER* player, int attackPoint);
+void getDamage_Player(PLAYER* player, int attackPoint, float time_Present);
 
 void get_Item(PLAYER* player, EItemType item_type);
 

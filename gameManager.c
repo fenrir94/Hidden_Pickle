@@ -270,17 +270,30 @@ void update_Game_Manager(void) {
 		// Block Movement of Player when collision
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
 			if (check_Collision_Player_Enemy(&(game_Manager.player), game_Manager.enemies + i)) {
-				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint);
+				float time_Present = CP_System_GetSeconds();
+
 				// check Directions of player and enemy, then rollback position
-				if (CP_Vector_AngleCCW(inputVectorNoraml, game_Manager.enemies[i].vector_Sight) < 0) {
-					rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt * 3);
-					rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt * 3);
+				if (isInvincibility(&game_Manager.player, time_Present) == 0) {
+					for (int j = 0; j < 3; j++) {
+						if (CP_Vector_AngleCCW(inputVectorNoraml, game_Manager.enemies[i].vector_Sight) < 0) {
+							CP_Vector checkPositionPlayer = CP_Vector_Subtract(game_Manager.player.position, CP_Vector_Scale(inputVectorNoraml, dt * (game_Manager.player.speed)));
+							if (checkCollision_Object_Obstacles(game_Manager.obstacles, checkPositionPlayer, game_Manager.player.radius, game_Manager.obstacleCount) == 0) {
+								rollback_Player_Position(&(game_Manager.player), inputVectorNoraml, dt);
+								rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt);
+							}
+						}
+						else if (CP_Vector_Length(inputVectorNoraml) <= 0) {
+							CP_Vector checkPositionPlayer = CP_Vector_Subtract(game_Manager.player.position, CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, dt * (-1)));
+							if (checkCollision_Object_Obstacles(game_Manager.obstacles, checkPositionPlayer, game_Manager.player.radius, game_Manager.obstacleCount) == 0) {
+								rollback_Player_Position(&(game_Manager.player), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt);
+								rollback_Player_Icon_Position(&(game_Manager.minimap), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt);
+							}
+
+						}
+						else {}
+					}
 				}
-				else if (CP_Vector_Length(inputVectorNoraml) <= 0 ) {
-					rollback_Player_Position(&(game_Manager.player), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt*3 );
-					rollback_Player_Icon_Position(&(game_Manager.minimap), CP_Vector_Scale(game_Manager.enemies[i].vector_Sight, -1), dt*3 );
-				}
-				else{}
+				getDamage_Player(&(game_Manager.player), game_Manager.enemies[i].attackPoint, time_Present);
 			}
 		}
 
@@ -308,11 +321,18 @@ void update_Game_Manager(void) {
 		//	rollback_Player_Icon_Position(&(game_Manager.minimap), inputVectorNoraml, dt);
 		//}
 		check_Collision_Rollback_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount, inputVectorNoraml, dt);
-		
+		check_Collision_Rollback_Player_Obstacles(&(game_Manager.player), game_Manager.obstacles, game_Manager.obstacleCount, inputVectorNoraml, dt);
+
 
 		for (int i = 0; i < game_Manager.enemyCount; i++) {
 			if (check_Collision_Enemy_Obstacles(game_Manager.enemies + i, game_Manager.obstacles, game_Manager.obstacleCount) == 1) {
-				rollback_Move_Enemy_Position(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
+				if (game_Manager.enemies[i].enemyType == PATROL || game_Manager.enemies[i].enemyType == PATROL_ONLY) {
+					rollback_Move_Enemy_PositionTranspose(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt * 3);
+				}
+				else {
+					rollback_Move_Enemy_PositionTranspose(game_Manager.enemies + i, game_Manager.enemies[i].vector_Sight, dt);
+
+				}
 			}
 		}
 
@@ -443,7 +463,7 @@ void check_Collision_Rollback_Player_Obstacles(PLAYER* player, OBSTACLE* obstacl
 				CP_Vector subVector = CP_Vector_Subtract(obstacles[i].position, player->position);
 				CP_Vector dVectorUnit = CP_Vector_Normalize(subVector);
 				
-				player->position = CP_Vector_Subtract(player->position, CP_Vector_Scale(dVectorUnit, player->radius + obstacles[i].radius - CP_Vector_Length(subVector)));
+				player->position = CP_Vector_Subtract(player->position, CP_Vector_Scale(dVectorUnit, (player->radius + obstacles[i].radius)/2 - CP_Vector_Length(subVector)));
 				rollback_Player_Icon_Position(&(game_Manager.minimap), dVectorUnit,dt);
 			}
 			else {

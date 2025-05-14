@@ -18,6 +18,8 @@ typedef struct obstacle {
 
 void init_Obstacle(OBSTACLE* obstacle, CP_Vector position, EObstacleType obstacle_Type);
 
+int checkCollision_Object_Obstacles(OBSTACLE* obstacles, CP_Vector position, float radiusCollision, int obstaclesCount);
+
 void print_Obstacles(OBSTACLE* obstacle, int count_Obstacle);
 
 void print_Obstacle(OBSTACLE* obstacle);
