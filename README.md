@@ -86,6 +86,8 @@
  - [1주차 영상](https://drive.google.com/file/d/1BqVm4FLjJSyTmXvmstXeTHG4rbAm1HtL/view?usp=sharing)
  - [2주차 영상](https://drive.google.com/file/d/1R1Mjlr5Y0Pl_4wG_M6nOKJTBQZtZmAoq/view?usp=sharing)
  - [4주차 영상](https://drive.google.com/file/d/1Jt7K_uEIvVanf0UT7CTEN79YoT9408p8/view?usp=sharing)
+ - [5주차 영상](https://drive.google.com/file/d/1i8o4cIEUUz3HGpJOtxA5wHReE7EMRIyL/view?usp=sharing)
+
 
 ---
  
